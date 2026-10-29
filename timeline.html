@@ -31,19 +31,33 @@ a:focus-visible, button:focus-visible, .tl:focus-visible, .panel:focus-visible {
 h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4vw, 42px); line-height: 1.1; margin: 10px 0 0; text-wrap: balance; }
 .sub { color: var(--ink2); margin: 8px 0 0; max-width: 72ch; }
 
-/* controls */
-.toolbar { display: flex; flex-wrap: wrap; gap: 14px 30px; align-items: flex-end; margin: 22px 0 14px; }
+/* controls: three different kinds, so they look and behave differently.
+   Countries = a filter (tick any), View and Time scale = switches (pick one), Jump to = links that move the chart. */
+.toolbar { display: flex; flex-wrap: wrap; gap: 16px 34px; align-items: flex-start; margin: 22px 0 14px; }
 .toolbar [hidden] { display: none; }
-.tgroup { display: flex; flex-direction: column; gap: 5px; }
-.tgroup .gl { font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
-.seg { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 3px; border-radius: 9px; background: var(--band); }
-.seg button { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; font: 500 13px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 6px; padding: 6px 13px; cursor: pointer; }
-.seg button:hover { background: color-mix(in srgb, var(--card) 65%, transparent); }
-.seg button[aria-pressed="true"] { background: var(--highlight); font-weight: 700; box-shadow: inset 0 -4px 0 var(--ink); }
-.seg button[aria-pressed="true"]::before { content: "✓"; font-weight: 700; }
-.jumpset { display: flex; flex-wrap: wrap; gap: 6px; }
-.jumpset button { min-height: 32px; font: 500 13px var(--f-body); color: var(--ink); background: var(--band); border: 0; border-radius: 999px; padding: 5px 13px; cursor: pointer; }
-.jumpset button:hover { background: var(--highlight); }
+.tgroup { display: block; border: 0; margin: 0; padding: 0; min-width: 0; }
+.tgroup .gl { padding: 0; margin: 0 0 7px; font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chk { position: relative; display: inline-flex; align-items: center; gap: 9px; min-height: 36px; padding: 4px 14px 4px 9px; border-radius: 8px; background: var(--band); font: 500 13px var(--f-body); cursor: pointer; }
+.chk:hover { background: color-mix(in srgb, var(--band) 65%, var(--highlight)); }
+.chk input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.chk .box { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 5px; background: var(--card); box-shadow: inset 0 0 0 2px var(--edge); }
+.chk .box::after { content: ""; width: 11px; height: 6px; border-left: 3px solid var(--on-bar); border-bottom: 3px solid var(--on-bar); transform: translateY(-1px) rotate(-45deg); opacity: 0; }
+.chk input:checked + .box { background: var(--ink); box-shadow: none; }
+.chk input:checked + .box::after { opacity: 1; }
+.chk input:checked ~ .nm { font-weight: 700; }
+.chk input:focus-visible + .box { outline: 3px solid var(--ink); outline-offset: 2px; }
+.segr { display: inline-flex; gap: 3px; padding: 3px; border-radius: 10px; background: var(--band); }
+.sw { position: relative; display: inline-flex; cursor: pointer; }
+.sw input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.sw .t { display: inline-flex; align-items: center; min-height: 32px; padding: 5px 15px; border-radius: 7px; font: 500 13px var(--f-body); color: var(--ink); }
+.sw:hover .t { background: color-mix(in srgb, var(--card) 65%, transparent); }
+.sw input:checked + .t { background: var(--ink); color: var(--on-bar); font-weight: 600; }
+.sw input:focus-visible + .t { outline: 3px solid var(--ink); outline-offset: 2px; }
+.jumpset { display: flex; flex-wrap: wrap; gap: 2px 4px; }
+.jumpset button { min-height: 32px; font: 500 13px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 6px; padding: 5px 10px; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; text-decoration-color: var(--rule-strong); }
+.jumpset button::after { content: " →"; content: " →" / ""; }
+.jumpset button:hover { background: var(--highlight); text-decoration-color: var(--ink); }
 .key { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin: 0 0 10px; font-size: 13px; color: var(--ink2); }
 .key b { font-weight: 600; color: var(--ink); }
 .key i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--lc); margin-right: 6px; vertical-align: -1px; }
@@ -117,7 +131,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
 .node[aria-pressed="true"] .ring { opacity: 1; }
 .node[aria-pressed="true"] { --sc: 1.1; }
 .nlabel { position: absolute; width: 90px; text-align: center; font-size: 12px; line-height: 1.2; color: var(--ink2); pointer-events: none; }
-.nlabel.on { color: var(--ink); font-weight: 600; background: var(--highlight); border-radius: 4px; padding: 1px 3px; box-shadow: inset 0 -2px 0 var(--ink); }
+.nlabel.on { color: var(--ink); font-weight: 600; background: var(--highlight); border-radius: 4px; padding: 1px 3px; }
 .hint { font-size: 13px; color: var(--ink2); margin: 8px 2px 0; max-width: 90ch; }
 
 /* list view: the same events as a plain table */
@@ -196,11 +210,11 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
   </header>
 
   <main id="main">
-    <div class="toolbar" role="toolbar" aria-label="Timeline controls">
-      <div class="tgroup"><span class="gl" id="gl-c">Countries</span><div class="seg" role="group" aria-labelledby="gl-c" id="countries"></div></div>
-      <div class="tgroup"><span class="gl" id="gl-v">View</span><div class="seg" role="group" aria-labelledby="gl-v" id="view"></div></div>
-      <div class="tgroup" id="g-scale"><span class="gl" id="gl-s">Time scale</span><div class="seg" role="group" aria-labelledby="gl-s" id="scale"></div></div>
-      <div class="tgroup" id="g-jump"><span class="gl" id="gl-j">Jump to</span><div class="jumpset" role="group" aria-labelledby="gl-j" id="jump"></div></div>
+    <div class="toolbar">
+      <fieldset class="tgroup" id="g-countries"><legend class="gl">Show countries</legend><div class="chips" id="countries"></div></fieldset>
+      <fieldset class="tgroup" id="g-view"><legend class="gl">View as</legend><div class="segr" id="view"></div></fieldset>
+      <fieldset class="tgroup" id="g-scale"><legend class="gl">Time scale</legend><div class="segr" id="scale"></div></fieldset>
+      <nav class="tgroup" id="g-jump" aria-labelledby="gl-j"><div class="gl" id="gl-j">Jump to</div><div class="jumpset" id="jump"></div></nav>
     </div>
     <div class="key" id="key" aria-label="Category colours"></div>
 
@@ -527,36 +541,48 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
   }
 
   // ---- controls ----
-  function toggleButton(group, text, pressed, onClick, shape) {
-    var b = el("button");
-    b.type = "button";
-    if (shape) b.appendChild(icon(shape, 16));
-    b.appendChild(document.createTextNode(text));
-    b.setAttribute("aria-pressed", pressed ? "true" : "false");
-    b.addEventListener("click", function () { onClick(b); });
-    group.appendChild(b);
-    return b;
+  // A filter: tick any combination (real checkboxes).
+  function checkbox(group, text, checked, shape, onChange) {
+    var lab = el("label", "chk");
+    var inp = el("input");
+    inp.type = "checkbox"; inp.checked = checked;
+    inp.addEventListener("change", function () { onChange(inp); });
+    lab.appendChild(inp);
+    var box = el("span", "box"); box.setAttribute("aria-hidden", "true");
+    lab.appendChild(box);
+    if (shape) lab.appendChild(icon(shape, 16));
+    lab.appendChild(el("span", "nm", text));
+    group.appendChild(lab);
+    return inp;
+  }
+  // A switch: pick exactly one (real radio buttons).
+  function radios(group, name, options, value, onChange) {
+    options.forEach(function (o) {
+      var lab = el("label", "sw");
+      var inp = el("input");
+      inp.type = "radio"; inp.name = name; inp.value = o[0]; inp.checked = o[0] === value;
+      inp.addEventListener("change", function () { if (inp.checked) onChange(o[0]); });
+      lab.appendChild(inp);
+      lab.appendChild(el("span", "t", o[1]));
+      group.appendChild(lab);
+    });
   }
   var cg = document.getElementById("countries");
   COUNTRIES.forEach(function (c) {
-    toggleButton(cg, c.name + (c.main ? " (main)" : ""), true, function (b) {
-      var turnOn = !on[c.id];
-      if (!turnOn && visible().length === 1) return; // always keep one country on screen
-      on[c.id] = turnOn;
-      b.setAttribute("aria-pressed", turnOn ? "true" : "false");
+    checkbox(cg, c.name + (c.main ? " (main)" : ""), true, c.shape, function (inp) {
+      if (!inp.checked && visible().length === 1) { // always keep one country on screen
+        inp.checked = true;
+        status.textContent = "Keep at least one country switched on.";
+        return;
+      }
+      on[c.id] = inp.checked;
       build();
-    }, c.shape);
-  });
-  var vg = document.getElementById("view");
-  var vbtn = {};
-  [["chart", "Timeline"], ["list", "List"]].forEach(function (m) {
-    vbtn[m[0]] = toggleButton(vg, m[1], m[0] === view, function () {
-      if (view === m[0]) return;
-      view = m[0];
-      Object.keys(vbtn).forEach(function (k) { vbtn[k].setAttribute("aria-pressed", k === view ? "true" : "false"); });
-      applyView();
-      showCurrent();
     });
+  });
+  radios(document.getElementById("view"), "view", [["chart", "Timeline"], ["list", "List"]], view, function (v) {
+    view = v;
+    applyView();
+    showCurrent();
   });
   function applyView() {
     var chart = view === "chart";
@@ -570,16 +596,10 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
     var b = eventButton(current);
     if (b) { try { b.scrollIntoView({ inline: "center", block: "nearest", behavior: "auto" }); } catch (e) {} }
   }
-  var sg = document.getElementById("scale");
-  var sbtn = {};
-  [["compressed", "Compressed"], ["even", "Even time"]].forEach(function (m) {
-    sbtn[m[0]] = toggleButton(sg, m[1], m[0] === mode, function () {
-      if (mode === m[0]) return;
-      mode = m[0];
-      Object.keys(sbtn).forEach(function (k) { sbtn[k].setAttribute("aria-pressed", k === mode ? "true" : "false"); });
-      build();
-      if (current) showCurrent(); else tl.scrollLeft = 0;
-    });
+  radios(document.getElementById("scale"), "scale", [["compressed", "Compressed"], ["even", "Even time"]], mode, function (v) {
+    mode = v;
+    build();
+    if (current) showCurrent(); else tl.scrollLeft = 0;
   });
   var jg = document.getElementById("jump");
   BAND_NAMES.forEach(function (name, i) {
