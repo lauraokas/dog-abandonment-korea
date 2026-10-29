@@ -30,14 +30,14 @@
   --green: #1b742d;
   --navy: #181b67;
 
-  /* Surfaces and text: a light ivory is the page; cards, rows and buttons are cool, light blue-grey tints,
-     so the secondary tones stay clean (no khaki, no pink) */
+  /* Surfaces and text: a light ivory is the page; cards, rows and buttons are light violet tints
+     (blue-violet, hue about 256, so they read purple but not pink or khaki) */
   --bg: #fcfcf6;
-  --panel: #f1f5fa;
-  --note-bg: #e8eef6;
-  --band: #dce5f0;
-  --line: #c9d6e6;
-  --grid: #dce5f0;
+  --panel: #f4f1fb;
+  --note-bg: #ebe6f8;
+  --band: #e0d9f3;
+  --line: #cdc3e9;
+  --grid: #e0d9f3;
   --ink: #393e41;
   --ink2: #4f5558;
   --on-bar: #fcfcf6;     /* text colour on top of a solid category colour */
