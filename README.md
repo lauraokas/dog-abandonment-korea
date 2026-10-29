@@ -29,10 +29,11 @@ On each timeline, rows are roles, dots are dated events or finds, and bars are r
 ## Look and feel
 
 - Roboto for all text.
-- Crisp rules and borders where they help (chart rows, controls, the reading panel), and a country is told apart by its label colour and marker shape as well as its position.
+- Very few borders; spacing and tone do most of the separating.
 - The palette is yellow (accent), vintage grape, ivory, fiery terracotta and gunmetal. Surfaces are light violet tints, and each category has its own vivid colour, the same on every chart.
 - Light mode only.
 - Accessible contrast (WCAG AA): text is at least 4.5:1 and dots and bars at least 3:1 against what is behind them.
+- Nothing relies on colour alone. On the combined timeline each country has its own marker shape (filled circle, open diamond), bar pattern (plain, striped) and label style, and each category sits in a named block. Pressed buttons show a tick, click targets are at least 24 px, the whole page works from the keyboard, and a List view gives the same events as a plain table for screen readers and low vision.
 
 ## Adding a chart
 

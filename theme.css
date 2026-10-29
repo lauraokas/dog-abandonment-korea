@@ -49,12 +49,6 @@
   --rule: color-mix(in srgb, var(--ink) 14%, transparent);          /* hairlines between rows */
   --rule-strong: color-mix(in srgb, var(--ink) 32%, transparent);   /* dividers, rails, gutter edge */
   --edge: color-mix(in srgb, var(--ink) 58%, transparent);          /* borders of controls and cards (3:1 on --card) */
-  /* One identity colour per country, for labels and period ribbons. A country's markers also have their own
-     shape (circle, diamond, square), so a country is never told apart by colour alone. */
-  --ctry-0: #393e41;
-  --ctry-1: #5c415d;
-  --ctry-2: #6b6f3a;
-  --ctry-3: #3a5a78;
 
   /* One colour per category, the same on every chart */
   --c-origins: var(--magenta);
