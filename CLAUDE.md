@@ -6,18 +6,18 @@ https://lauraokas.github.io/dog-abandonment-korea/
 ## Files
 - `index.html`: landing page that links to every chart. Add a link here for each new chart.
 - `dutch-dog-timeline.html`, `korean-dog-timeline.html`: the timelines.
-- `theme.css`: shared colours, fonts and dark mode. All pages link to it.
+- `theme.css`: shared colours and fonts (light only). All pages link to it.
 
 ## Keeping the style consistent
 - Every page must include `<link rel="stylesheet" href="theme.css">`.
 - Use the CSS variables from `theme.css` (`--bg`, `--panel`, `--ink`, `--ink2`, `--line`, `--accent`, `--f-display`, `--f-body`, `--f-mono`). Do not hardcode colours or font names.
-- The project palette is Lime Cream `#c5d86d`, Coffee Bean `#261c15`, Porcelain `#f7f7f2`, Beige `#e4e6c3`, Tiger Flame `#f05d23` (the user's own choice; defined in `theme.css`). Stay inside it. Lime and flame are too light to read on beige, so `--green` and `--burnt` are darker versions, and `--amber`, `--oxblood`, `--olive` and `--forest` are blends, used for the other categories. The user is still trying out palettes, so always use the variables and never hardcode colours.
-- Category colours are fixed across all charts: origins `--c-origins` (green), food `--c-food` (burnt flame), ritual `--c-ritual` (amber), hunting `--c-hunt` (coffee), bond `--c-bond` (oxblood), breeds `--c-breed` (olive), law `--c-law` (forest). Reuse the same colour for the same category on every chart.
-- Accessibility is a requirement (WCAG AA): text 4.5:1 against its background, dots and bars 3:1 against the surfaces behind them. Bars are solid category colours with `--on-bar` text, never a pale tint under dark text. Check every new chart in light and dark mode (compute the ratios, do not judge by eye) and never use colour alone to tell categories apart: always add a label or legend.
-- In dark mode, every category colour is swapped for a lighter version in `theme.css`, so keep using the variables.
+- The project palette is Pitch Black `#0f0a0a`, Parchment `#f5efed`, Pacific Cyan `#2292a4`, Golden Glow `#bdbf09`, Chocolate `#d96c06` (the user's own choice; defined in `theme.css`). Parchment, the lightest, is the page background. Stay inside the palette. Cyan, golden glow and chocolate are too light to read on the surfaces, so `--teal`, `--olive` and `--burnt` are darker versions, and `--clay`, `--green` and `--navy` are blends, used for the other categories. The user is still trying out palettes, so always use the variables and never hardcode colours.
+- Category colours are fixed across all charts: origins `--c-origins` (teal), food `--c-food` (burnt orange), ritual `--c-ritual` (olive), hunting `--c-hunt` (pitch black), bond `--c-bond` (clay), breeds `--c-breed` (green), law `--c-law` (navy). Reuse the same colour for the same category on every chart.
+- Accessibility is a requirement (WCAG AA): text 4.5:1 against its background, dots and bars 3:1 against the surfaces behind them. Bars are solid category colours with `--on-bar` text, never a pale tint under dark text. Check every new chart (compute the ratios, do not judge by eye) and never use colour alone to tell categories apart: always add a label or legend.
+- Light only: the user does not want a dark mode, so do not add `prefers-color-scheme` or dark variants.
 - No borders on elements (the user's rule). Separate things with background tones instead: `--bg` (page), `--panel`, `--note-bg`, `--band`, `--line` (the deepest tone, for hover states and thin rails), and tints of the category colours. Use `color-mix` for tints. Selected states use a bigger size or a soft tinted halo, not an outline. The only outline allowed is the keyboard focus ring.
 - To change the look of the whole site, edit `theme.css`. Layout styles that only one chart uses stay in that chart's file.
-- New charts: self-contained HTML, lowercase hyphenated filename (`topic-name.html`), relative paths only (for example `data/results.csv`), no spaces in filenames. Match the existing timelines: Roboto (sans serif only, no serif fonts), light and dark mode, readable on a phone.
+- New charts: self-contained HTML, lowercase hyphenated filename (`topic-name.html`), relative paths only (for example `data/results.csv`), no spaces in filenames. Match the existing timelines: Roboto (sans serif only, no serif fonts), readable on a phone.
 
 ## Publishing
 - Pushing to `main` updates the live site within a minute or two.

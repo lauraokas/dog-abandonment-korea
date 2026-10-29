@@ -2,7 +2,9 @@
    Change colours and fonts here and all charts follow.
    Page-specific layout styles stay in each page.
 
-   Accessibility (WCAG AA), checked for light and dark mode:
+   Light only (no dark mode).
+
+   Accessibility (WCAG AA):
    - text on every surface is at least 4.5:1
    - dots and bars are at least 3:1 against the surfaces behind them
    - text on bars (--on-bar) is at least 4.5:1 on every category colour,
@@ -10,89 +12,46 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400..700&display=swap");
 
 :root {
-  /* Project palette */
-  --lime: #c5d86d;       /* Lime Cream */
-  --coffee: #261c15;     /* Coffee Bean */
-  --porcelain: #f7f7f2;  /* Porcelain */
-  --beige: #e4e6c3;      /* Beige */
-  --flame: #f05d23;      /* Tiger Flame */
-  /* Darker shades and blends so every category is readable on light surfaces */
-  --green: #2b7e1b;      /* lime darkened */
-  --burnt: #c9400f;      /* flame darkened */
-  --amber: #a36029;      /* flame + lime, darkened */
-  --oxblood: #611705;    /* flame + coffee */
-  --olive: #686c13;      /* lime + coffee */
-  --forest: #25471f;     /* lime + coffee, darker */
+  color-scheme: light;
 
-  /* Surfaces and text */
-  --bg: #e4e6c3;
-  --panel: #f7f7f2;
-  --note-bg: #eff0e0;
-  --band: #d4d7ab;
-  --line: #c3c795;
-  --grid: #d4d7ab;
-  --ink: #261c15;
-  --ink2: #5a4e44;
-  --on-bar: #fbfbf7;     /* text colour on top of a solid category colour */
+  /* Project palette */
+  --black: #0f0a0a;      /* Pitch Black */
+  --parchment: #f5efed;  /* Parchment (the main background) */
+  --cyan: #2292a4;       /* Pacific Cyan */
+  --glow: #bdbf09;       /* Golden Glow */
+  --choc: #d96c06;       /* Chocolate */
+  /* Darker shades and blends so every category is readable on the surfaces */
+  --teal: #167080;       /* cyan darkened */
+  --burnt: #b04e00;      /* chocolate darkened */
+  --olive: #6b6e00;      /* golden glow darkened */
+  --clay: #883e3a;       /* chocolate + black */
+  --green: #066b06;      /* cyan + golden glow, darkened */
+  --navy: #06336b;       /* cyan + black */
+
+  /* Surfaces and text: parchment is the page, cards and rows are slightly deeper tones */
+  --bg: #f5efed;
+  --panel: #ece5e2;
+  --note-bg: #e4dcd9;
+  --band: #d9cfcb;
+  --line: #c9bdb8;
+  --grid: #d9cfcb;
+  --ink: #0f0a0a;
+  --ink2: #574d4b;
+  --on-bar: #f5efed;     /* text colour on top of a solid category colour */
 
   /* One colour per category, the same on every chart */
-  --c-origins: var(--green);
+  --c-origins: var(--teal);
   --c-food: var(--burnt);
-  --c-ritual: var(--amber);
-  --c-hunt: var(--coffee);
-  --c-bond: var(--oxblood);
-  --c-breed: var(--olive);
-  --c-law: var(--forest);
-  --accent: #9a2f08;     /* flame darkened until it reads as text */
+  --c-ritual: var(--olive);
+  --c-hunt: var(--black);
+  --c-bond: var(--clay);
+  --c-breed: var(--green);
+  --c-law: var(--navy);
+  --accent: #125f6d;     /* cyan darkened until it reads as text */
 
   --tint-chip: 20%;      /* how much category colour goes into a chip */
 
   --f-display: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-body: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #1b1410;
-    --panel: #261c15;
-    --note-bg: #30251d;
-    --band: #40322a;
-    --line: #594839;
-    --grid: #40322a;
-    --ink: #f7f7f2;
-    --ink2: #c8c2b0;
-    --on-bar: #1b1410;
-    /* lighter versions of every category colour for dark surfaces */
-    --c-origins: #c5d86d;
-    --c-food: #f05d23;
-    --c-ritual: #e69e19;
-    --c-hunt: #f7f7f2;
-    --c-bond: #cc6666;
-    --c-breed: #bda075;
-    --c-law: #64db57;
-    --accent: #f58a5e;
-    --tint-chip: 14%;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #1b1410;
-  --panel: #261c15;
-  --note-bg: #30251d;
-  --band: #40322a;
-  --line: #594839;
-  --grid: #40322a;
-  --ink: #f7f7f2;
-  --ink2: #c8c2b0;
-  --on-bar: #1b1410;
-  --c-origins: #c5d86d;
-  --c-food: #f05d23;
-  --c-ritual: #e69e19;
-  --c-hunt: #f7f7f2;
-  --c-bond: #cc6666;
-  --c-breed: #bda075;
-  --c-law: #64db57;
-  --accent: #f58a5e;
-  --tint-chip: 14%;
-  color-scheme: dark;
 }
