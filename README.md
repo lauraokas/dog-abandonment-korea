@@ -29,7 +29,7 @@ On each timeline, rows are roles, dots are dated events or finds, and bars are r
 ## Look and feel
 
 - Roboto for all text.
-- No borders: elements are separated by background tones.
+- Crisp rules and borders where they help (chart rows, controls, the reading panel), and a country is told apart by its label colour and marker shape as well as its position.
 - The palette is yellow (accent), vintage grape, ivory, fiery terracotta and gunmetal. Surfaces are light violet tints, and each category has its own vivid colour, the same on every chart.
 - Light mode only.
 - Accessible contrast (WCAG AA): text is at least 4.5:1 and dots and bars at least 3:1 against what is behind them.

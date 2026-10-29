@@ -6,95 +6,115 @@
 <title>Dog Timeline</title>
 <link rel="stylesheet" href="theme.css">
 <style>
-/* One timeline for every country: rows are categories, each with one row per country, on a shared year axis.
-   Data comes from data/*.js. Colours and fonts come from theme.css. */
-:root { --lw: 118px; }
+/* One timeline for every country: a block per category, a row per country inside it, one shared year axis.
+   Data comes from data/*.js. Colours, rules and fonts come from theme.css. */
+:root { --lw: 124px; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
-.page { max-width: 1480px; margin: 0 auto; padding-block: 28px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 4vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
-.sub { color: var(--ink2); margin: 6px 0 0; max-width: 70ch; }
+.page { max-width: 1480px; margin: 0 auto; padding-block: 22px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 button { font-family: var(--f-body); }
 button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
-.controls { display: flex; flex-wrap: wrap; gap: 12px 26px; align-items: center; margin: 18px 0 16px; }
-.ctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.ctl .gl { font: 600 11.5px var(--f-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink2); margin-right: 2px; }
-.ctl button { font: 500 12.5px var(--f-body); color: var(--ink); background: var(--band); border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
-.ctl .tog:hover { background: var(--line); }
-.ctl .tog[aria-pressed="true"] { background: var(--highlight); font-weight: 600; }
-.ctl .jump button:hover { background: var(--highlight); }
+.back { font-size: 12.5px; font-weight: 500; color: var(--ink2); text-decoration: none; }
+.back:hover { color: var(--ink); text-decoration: underline; }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4vw, 42px); line-height: 1.1; margin: 10px 0 0; text-wrap: balance; }
+.sub { color: var(--ink2); margin: 8px 0 0; max-width: 72ch; }
 
-.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: start; }
+/* controls */
+.toolbar { display: flex; flex-wrap: wrap; gap: 14px 30px; align-items: flex-end; margin: 22px 0 14px; padding-top: 16px; border-top: 2px solid var(--ink); }
+.tgroup { display: flex; flex-direction: column; gap: 5px; }
+.tgroup .gl { font: 600 11px var(--f-body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink2); }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--edge); border-radius: 6px; overflow: hidden; background: var(--card); }
+.seg button { display: inline-flex; align-items: center; gap: 7px; font: 500 12.5px var(--f-body); color: var(--ink); background: transparent; border: 0; padding: 6px 13px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--edge); }
+.seg button:hover { background: color-mix(in srgb, var(--band) 70%, transparent); }
+.seg button[aria-pressed="true"] { background: var(--highlight); font-weight: 600; }
+.seg .glyph { font-size: 11px; line-height: 1; }
+.jumpset { display: flex; flex-wrap: wrap; gap: 6px; }
+.jumpset button { font: 500 12.5px var(--f-body); color: var(--ink); background: var(--card); border: 1px solid var(--edge); border-radius: 6px; padding: 5px 11px; cursor: pointer; }
+.jumpset button:hover { background: var(--highlight); }
+.key { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin: 0 0 10px; font-size: 12px; color: var(--ink2); }
+.key b { font-weight: 600; color: var(--ink); }
+.key i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--lc); margin-right: 6px; vertical-align: -1px; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
 @media (min-width: 1100px) {
-  .layout { grid-template-columns: minmax(0, 1fr) 430px; }
+  .layout { grid-template-columns: minmax(0, 1fr) 420px; }
   .panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; }
 }
-.tl { overflow-x: auto; border-radius: 6px; background: var(--panel); }
+
+/* the chart */
+.tl { position: relative; overflow: auto; background: var(--card); border: 1px solid var(--edge); border-radius: 8px; }
+@media (min-width: 900px) { .tl { max-height: calc(100vh - 200px); min-height: 380px; } }
 .canvas { position: relative; width: calc(var(--lw) + var(--tw)); }
 .row { display: flex; }
-.lbl { position: sticky; left: 0; z-index: 4; flex: none; width: var(--lw); background: var(--panel); padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
-.lbl .cy { font-size: 12.5px; font-weight: 600; line-height: 1.25; }
-.cap { position: sticky; left: 0; z-index: 4; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding: 10px 12px 2px; max-width: min(640px, calc(100vw - 56px)); }
-.cap .cn { font-size: 13.5px; font-weight: 600; line-height: 1.25; }
-.cap .cn::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--lc); margin-right: 7px; }
-.cap .ds { font-size: 11.5px; color: var(--ink2); line-height: 1.3; }
-.lbl .ct { align-self: flex-start; font-size: 11.5px; font-weight: 600; color: var(--ink); background: var(--band); border-radius: 999px; padding: 1px 9px; }
-.crow .lbl { padding: 14px 8px 8px; }
+.lbl { position: sticky; left: 0; z-index: 4; flex: none; width: var(--lw); background: var(--card); padding: 12px 8px; border-right: 1px solid var(--rule-strong); }
+.tl.scrolled .lbl:not(.capl) { box-shadow: 6px 0 8px -6px rgba(57, 62, 65, 0.3); }
 .track { position: relative; flex: none; width: var(--tw); z-index: 2; }
 
-.eras .lbl, .axis .lbl { padding-block: 6px; }
-.eras { height: 30px; }
-.era { position: absolute; top: 0; bottom: 0; background: var(--band); font: 600 11.5px var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; padding: 7px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.era.alt { background: var(--note-bg); }
-.axis { height: 30px; }
-.tick { position: absolute; top: 0; transform: translateX(-50%); padding-top: 11px; font-size: 11px; line-height: 1; color: var(--ink2); white-space: nowrap; }
-.tick::before { content: ""; position: absolute; left: 50%; top: 0; width: 2px; height: 7px; margin-left: -1px; background: var(--line); }
+.ct { display: inline-flex; align-items: center; gap: 6px; font: 600 11.5px/1.2 var(--f-body); color: var(--on-bar); background: var(--cc); border-radius: 4px; padding: 3px 8px; white-space: nowrap; }
+.ct .glyph { font-size: 9px; line-height: 1; }
+
+.head { position: sticky; top: 0; z-index: 6; background: var(--card); }
+.head .lbl { z-index: 7; }
+.eras { height: 34px; }
+.eras .lbl, .axis .lbl { padding-block: 5px; display: flex; align-items: center; }
+.era { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--cc) 11%, var(--card)); border-top: 3px solid var(--cc); color: var(--ink); font: 600 11px var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.era.alt { background: color-mix(in srgb, var(--cc) 21%, var(--card)); }
+.axis { height: 30px; background: var(--ink); }
+.axis .lbl { background: var(--ink); border-right-color: rgba(246, 247, 235, 0.25); color: var(--on-bar); font: 600 11px var(--f-body); letter-spacing: 0.09em; text-transform: uppercase; }
+.tick { position: absolute; top: 0; transform: translateX(-50%); padding-top: 12px; font-size: 11px; line-height: 1; font-weight: 500; color: var(--on-bar); white-space: nowrap; }
+.tick::before { content: ""; position: absolute; left: 50%; top: 0; width: 1px; height: 8px; background: rgba(246, 247, 235, 0.75); }
 
 .lanes { position: relative; }
-.bands { position: absolute; left: var(--lw); top: 0; bottom: 0; width: var(--tw); z-index: 1; pointer-events: none; }
-.band { position: absolute; top: 0; bottom: 0; }
-.band.t { background: color-mix(in srgb, var(--band) 40%, transparent); }
-.cat { --rowbg: var(--panel); }
-.cat.blk1 { --rowbg: var(--note-bg); }
-.cat.alt { --rowbg: color-mix(in srgb, var(--band) 40%, var(--panel)); }
-.cat.blk1.alt { --rowbg: color-mix(in srgb, var(--band) 40%, var(--note-bg)); }
-.cat, .cat .lbl { background: var(--rowbg); }
-.empty { position: sticky; left: calc(var(--lw) + 10px); display: inline-block; margin: 12px 0 0 10px; font-size: 11.5px; color: var(--ink2); }
+.grid { position: absolute; left: var(--lw); top: 0; bottom: 0; width: var(--tw); z-index: 1; pointer-events: none; }
+.gline { position: absolute; top: 0; bottom: 0; width: 1px; background: repeating-linear-gradient(to bottom, var(--rule-strong) 0 3px, transparent 3px 8px); opacity: 0.6; }
+.caprow { margin-top: 16px; border-bottom: 3px solid var(--lc); }
+.caprow.first { margin-top: 0; }
+.lbl.capl { width: max-content; max-width: min(680px, calc(100vw - 60px)); display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding: 10px 14px 7px 12px; border-right: 0; }
+.capl .cn { font-size: 15px; font-weight: 600; line-height: 1.25; }
+.capl .cn::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--lc); margin-right: 8px; }
+.capl .ds { font-size: 12px; color: var(--ink2); line-height: 1.3; }
+.crow { border-bottom: 1px solid var(--rule); }
+.empty { position: sticky; left: calc(var(--lw) + 12px); display: inline-block; margin: 18px 0 0 12px; font-size: 12px; font-style: italic; color: var(--ink2); }
 
-.rail { position: absolute; height: 3px; border-radius: 2px; background: var(--line); }
-.ext { position: absolute; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--lc) 28%, transparent); }
-.node, .range { position: absolute; margin: 0; cursor: pointer; z-index: 2; }
-.range { height: 26px; border: 0; border-radius: 13px; background: var(--lc); color: var(--on-bar); font-size: 11.5px; font-weight: 500; text-align: left; padding: 0 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rail { position: absolute; height: 2px; background: var(--rule-strong); }
+.ext { position: absolute; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--lc) 26%, transparent); }
+.node, .range { position: absolute; margin: 0; cursor: pointer; z-index: 2; scroll-margin: 96px 48px; }
+.range { height: 24px; border: 0; border-radius: 5px; background: var(--lc); color: var(--on-bar); font: 500 11.5px var(--f-body); text-align: left; padding: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .range:hover { background: color-mix(in srgb, var(--lc) 82%, var(--ink)); }
-.node { width: 22px; height: 22px; border: 0; border-radius: 50%; background: var(--lc); padding: 0; z-index: 3; }
-.node:hover { transform: scale(1.18); }
+.node { z-index: 3; border: 0; padding: 0; background: var(--lc); box-shadow: 0 0 0 2px var(--card); transform: rotate(var(--rot, 0deg)) scale(var(--sc, 1)); }
+.node.circle { width: 20px; height: 20px; border-radius: 50%; }
+.node.diamond { width: 15px; height: 15px; border-radius: 2px; --rot: 45deg; }
+.node.square { width: 17px; height: 17px; border-radius: 3px; }
+.node:hover { --sc: 1.18; }
+.node[aria-pressed="true"] { --sc: 1.25; box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--ink); }
+.range[aria-pressed="true"] { background: color-mix(in srgb, var(--lc) 65%, var(--ink)); box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--ink); }
 .nlabel { position: absolute; width: 84px; text-align: center; font-size: 11px; line-height: 1.22; color: var(--ink2); pointer-events: none; }
-.node[aria-pressed="true"] { transform: scale(1.3); box-shadow: 0 0 0 6px color-mix(in srgb, var(--lc) 28%, transparent); }
-.range[aria-pressed="true"] { background: color-mix(in srgb, var(--lc) 65%, var(--ink)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--lc) 28%, transparent); }
 .nlabel.on { color: var(--ink); font-weight: 600; background: var(--highlight); border-radius: 4px; padding: 1px 3px; }
-.hint { font-size: 12px; color: var(--ink2); margin: 8px 2px 0; }
+.hint { font-size: 12px; color: var(--ink2); margin: 8px 2px 0; max-width: 90ch; }
 
-.panel { background: var(--panel); border-radius: 6px; padding: 20px 22px 18px; }
-.panel h2 { font-family: var(--f-display); font-weight: 600; font-size: 22px; line-height: 1.2; margin: 10px 0 8px; text-wrap: balance; }
-.panel h3 { font: 600 11.5px var(--f-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink2); margin: 18px 0 8px; }
+/* reading panel */
+.panel { background: var(--card); border: 1px solid var(--edge); border-top: 5px solid var(--lc, var(--ink)); border-radius: 8px; padding: 18px 22px 18px; }
+.panel h2 { font-family: var(--f-display); font-weight: 600; font-size: 22px; line-height: 1.2; margin: 12px 0 8px; text-wrap: balance; }
+.panel h3 { font: 600 11.5px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); margin: 18px 0 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
 .meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 12px; }
-.chip { display: inline-flex; align-items: center; gap: 6px; background: color-mix(in srgb, var(--lc) var(--tint-chip), var(--panel)); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 500; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: color-mix(in srgb, var(--lc) var(--tint-chip), var(--card)); border: 1px solid var(--lc); border-radius: 4px; padding: 1px 9px; font-size: 12px; font-weight: 600; }
 .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lc); }
 .era-tag { color: var(--ink2); }
 .lead { margin: 0; font-size: 15.5px; }
 .panel ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
-.care { background: var(--note-bg); border-radius: 6px; padding: 10px 12px; font-size: 13.5px; margin: 0; }
-.team { background: var(--band); border-radius: 6px; padding: 10px 12px; font-size: 13.5px; margin: 0; }
+.care { background: var(--note-bg); border-left: 4px solid var(--ink2); border-radius: 0 6px 6px 0; padding: 10px 12px; font-size: 13.5px; margin: 0; }
+.team { background: color-mix(in srgb, var(--highlight) 30%, var(--card)); border-left: 4px solid var(--ink); border-radius: 0 6px 6px 0; padding: 10px 12px; font-size: 13.5px; margin: 0; }
 .team a { font-weight: 500; }
 .srcs { list-style: none; padding: 0; gap: 12px; }
 .srcs li { display: block; }
 .srcs a { color: var(--ink); font-weight: 500; text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; }
 .srcs a:hover { text-decoration-thickness: 2px; }
-.stype { display: inline-block; margin-left: 6px; font: 500 10.5px var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink2); background: var(--band); border-radius: 4px; padding: 1px 6px; vertical-align: 1px; white-space: nowrap; }
+.stype { display: inline-block; margin-left: 6px; font: 500 10.5px var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink2); border: 1px solid var(--rule-strong); border-radius: 3px; padding: 0 5px; vertical-align: 1px; white-space: nowrap; }
 .why { display: block; color: var(--ink2); font-size: 13px; margin-top: 2px; }
-.nav { display: flex; gap: 8px; align-items: center; margin-top: 24px; }
-.nav button, .start { font: 500 13px var(--f-body); color: var(--ink); background: var(--band); border: 0; border-radius: 6px; padding: 7px 12px; cursor: pointer; }
+.nav { display: flex; gap: 8px; align-items: center; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.nav button, .start { font: 500 13px var(--f-body); color: var(--ink); background: var(--card); border: 1px solid var(--edge); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
 .nav button:hover, .start:hover { background: var(--highlight); }
 .nav button:disabled { opacity: 0.4; cursor: default; }
 .nav .pos { margin-left: auto; font: 400 12px var(--f-body); color: var(--ink2); }
@@ -103,31 +123,34 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .legend i { flex: none; width: 13px; height: 13px; border-radius: 50%; background: var(--lc); position: relative; top: 1px; }
 .legend b { font-weight: 600; }
 .legend span { color: var(--ink2); }
-.legend .ex { display: inline-block; vertical-align: -3px; }
+.shapes { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; list-style: none; font-size: 13.5px; }
 
 @media (max-width: 640px) {
-  :root { --lw: 94px; }
-  .panel { padding: 16px 16px 14px; }
+  :root { --lw: 100px; }
+  .panel { padding: 14px 16px 14px; }
+  .tl { border-radius: 6px; }
 }
-@media (prefers-reduced-motion: reduce) { .node:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .node:hover { --sc: 1; } }
 </style>
 </head>
 <body>
 <div class="page">
   <header>
+    <a class="back" href="index.html">&larr; All charts</a>
     <h1><span class="mark">Dog Timeline</span></h1>
     <p class="sub">How dogs have been used, viewed and lived with, country by country. Korea is the main timeline; switch on other countries to compare. Select any marker or bar for the detail and the sources behind it.</p>
   </header>
 
-  <div class="controls">
-    <div class="ctl" role="group" aria-label="Countries" id="countries"><span class="gl">Countries</span></div>
-    <div class="ctl" role="group" aria-label="Time scale" id="scale"><span class="gl">Time scale</span></div>
-    <div class="ctl" role="group" aria-label="Jump to period" id="jump"><span class="gl">Jump to</span></div>
+  <div class="toolbar">
+    <div class="tgroup"><span class="gl" id="gl-c">Countries</span><div class="seg" role="group" aria-labelledby="gl-c" id="countries"></div></div>
+    <div class="tgroup"><span class="gl" id="gl-s">Time scale</span><div class="seg" role="group" aria-labelledby="gl-s" id="scale"></div></div>
+    <div class="tgroup"><span class="gl" id="gl-j">Jump to</span><div class="jumpset" role="group" aria-labelledby="gl-j" id="jump"></div></div>
   </div>
+  <div class="key" id="key" aria-label="Category colours"></div>
 
   <div class="layout">
     <div>
-      <div class="tl" id="tl" role="region" aria-label="Timeline of dogs, scrolls sideways" tabindex="0"><div class="canvas" id="canvas"></div></div>
+      <div class="tl" id="tl" role="region" aria-label="Timeline of dogs, scrolls sideways and down" tabindex="0"><div class="canvas" id="canvas"></div></div>
       <p class="hint" id="hint"></p>
     </div>
     <aside class="panel" id="panel" aria-live="polite"><noscript>This timeline needs JavaScript to draw.</noscript></aside>
@@ -150,10 +173,13 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
   var CATS = D.categories;
   // The main country always comes first, so it sits on top inside every category.
   var COUNTRIES = D.countries.slice().sort(function (a, b) { return (b.main ? 1 : 0) - (a.main ? 1 : 0); });
+  // Each country gets its own marker shape and identity colour, so a country is clear at a glance.
+  var SHAPES = ["circle", "diamond", "square"], GLYPHS = ["●", "◆", "■"], SIZE = { circle: 20, diamond: 15, square: 17 };
   var on = {};
   var byId = {};
-  COUNTRIES.forEach(function (c) {
+  COUNTRIES.forEach(function (c, i) {
     on[c.id] = true;
+    c.shape = SHAPES[i % SHAPES.length]; c.glyph = GLYPHS[i % GLYPHS.length]; c.col = "var(--ctry-" + (i % 4) + ")";
     c.events.forEach(function (e) { e.country = c; byId[e.id] = e; });
   });
 
@@ -167,7 +193,7 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
     even: [-6000, -5000, -4000, -3000, -2000, -1000, 0, 500, 1000, 1500, 2000]
   };
   var PAD = 56, EVEN_K = 0.45;
-  var BAR_H = 38, DOT_H = 70, ROW_PAD = 6, LAB = 42; // LAB = half the width of a dot label
+  var BAR_H = 36, DOT_H = 68, ROW_PAD = 8, LAB = 42; // LAB = half the width of a dot label
   var mode = "compressed";
 
   function x(y) {
@@ -193,6 +219,13 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
   }
   function catColour(k) { return "var(--c-" + k + ")"; }
   function visible() { return COUNTRIES.filter(function (c) { return on[c.id]; }); }
+  function ctag(c) {
+    var s = el("span", "ct");
+    s.style.setProperty("--cc", c.col);
+    s.appendChild(el("span", "glyph", c.glyph));
+    s.appendChild(document.createTextNode(c.name));
+    return s;
+  }
 
   // ---- layout of one row (one country inside one category) ----
   function pack(list) {
@@ -210,7 +243,7 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
     events.forEach(function (e) {
       var x1 = x(e.start), x2 = e.end != null ? x(e.end) : x1;
       if (e.bar && e.end != null) {
-        var w = Math.max(x2 - x1, 64);
+        var w = Math.max(x2 - x1, 72);
         bars.push({ e: e, left: x1, width: w, lo: x1 - 4, hi: x1 + w + 4 });
       } else {
         var mid = e.end != null ? (e.start + e.end) / 2 : e.start;
@@ -238,21 +271,21 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
     b.style.setProperty("--lc", catColour(e.cat));
     if (isBar) {
       b.className = "range";
-      b.textContent = e.bar;
+      b.textContent = e.country.glyph + "  " + e.bar;
       b.style.left = item.left + "px"; b.style.width = item.width + "px";
-      b.style.top = (y0 + item.lvl * BAR_H + 5) + "px";
+      b.style.top = (y0 + item.lvl * BAR_H + 6) + "px";
     } else {
-      var top = y0 + item.lvl * DOT_H;
+      var top = y0 + item.lvl * DOT_H, cy = top + 19, s = SIZE[e.country.shape];
       if (item.ext) {
         var ex = el("div", "ext");
         ex.style.setProperty("--lc", catColour(e.cat));
-        ex.style.left = item.ext.left + "px"; ex.style.width = item.ext.width + "px"; ex.style.top = (top + 8 + 11 - 4) + "px";
+        ex.style.left = item.ext.left + "px"; ex.style.width = item.ext.width + "px"; ex.style.top = (cy - 4) + "px";
         tr.appendChild(ex);
       }
-      b.className = "node";
-      b.style.left = (item.cx - 11) + "px"; b.style.top = (top + 8) + "px";
+      b.className = "node " + e.country.shape;
+      b.style.left = (item.cx - s / 2) + "px"; b.style.top = (cy - s / 2) + "px";
       var lab = el("div", "nlabel", e.tag);
-      lab.style.left = (item.cx - LAB) + "px"; lab.style.top = (top + 34) + "px";
+      lab.style.left = (item.cx - LAB) + "px"; lab.style.top = (cy + 15) + "px";
       tr.appendChild(lab);
       labels[e.id] = lab;
     }
@@ -268,11 +301,13 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
     canvas.style.setProperty("--tw", tw + "px");
     buttons = {}; labels = {};
 
-    // period ribbons, one per country, then the year axis
+    // sticky header: one period ribbon per country, then the year axis
+    var head = el("div", "head");
     shown.forEach(function (c) {
       var row = el("div", "row eras");
+      row.style.setProperty("--cc", c.col);
       var lbl = el("div", "lbl");
-      lbl.appendChild(el("span", "cy", c.name));
+      lbl.appendChild(ctag(c));
       row.appendChild(lbl);
       var tr = el("div", "track");
       (c.eras || []).forEach(function (er, i) {
@@ -282,44 +317,42 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
         tr.appendChild(d);
       });
       row.appendChild(tr);
-      canvas.appendChild(row);
+      head.appendChild(row);
     });
     var axis = el("div", "row axis");
-    axis.appendChild(el("div", "lbl"));
+    axis.appendChild(el("div", "lbl", "Year"));
     var at = el("div", "track");
     TICKS[mode].forEach(function (y) { var t = el("div", "tick", fmtYear(y)); t.style.left = x(y) + "px"; at.appendChild(t); });
     axis.appendChild(at);
-    canvas.appendChild(axis);
+    head.appendChild(axis);
+    canvas.appendChild(head);
 
-    // category blocks
+    // category blocks: a caption row, then one labelled row per country
     var lanes = el("div", "lanes");
-    var bands = el("div", "bands");
-    for (var i = 0; i < BREAKS.length - 1; i++) {
-      var bd = el("div", "band" + (i % 2 ? " t" : ""));
-      bd.style.left = x(BREAKS[i]) + "px"; bd.style.width = (x(BREAKS[i + 1]) - x(BREAKS[i])) + "px";
-      bands.appendChild(bd);
-    }
-    bands.firstChild.style.left = "0px"; bands.firstChild.style.width = x(BREAKS[1]) + "px";
-    lanes.appendChild(bands);
+    var grid = el("div", "grid");
+    TICKS[mode].forEach(function (y) { var g = el("div", "gline"); g.style.left = x(y) + "px"; grid.appendChild(g); });
+    lanes.appendChild(grid);
 
     CATS.forEach(function (cat, ci) {
-      var head = el("div", "row cat chead blk" + (ci % 2));
-      head.style.setProperty("--lc", catColour(cat.k));
-      var cap = el("div", "cap");
-      cap.appendChild(el("span", "cn", cat.n));
-      cap.appendChild(el("span", "ds", cat.d));
-      head.appendChild(cap);
-      lanes.appendChild(head);
-      shown.forEach(function (c, k) {
+      var caprow = el("div", "row caprow" + (ci === 0 ? " first" : ""));
+      caprow.style.setProperty("--lc", catColour(cat.k));
+      var capl = el("div", "lbl capl");
+      capl.appendChild(el("span", "cn", cat.n));
+      capl.appendChild(el("span", "ds", cat.d));
+      caprow.appendChild(capl);
+      lanes.appendChild(caprow);
+
+      shown.forEach(function (c) {
         var evs = c.events.filter(function (e) { return e.cat === cat.k; })
           .sort(function (a, b) { return a.start - b.start || a.seq - b.seq; });
         var lay = layoutRow(evs);
         var y0 = ROW_PAD;
-        var h = evs.length ? ROW_PAD * 2 + lay.nb * BAR_H + lay.nd * DOT_H : 50;
-        var row = el("div", "row cat crow blk" + (ci % 2) + (k % 2 ? " alt" : ""));
+        var h = evs.length ? ROW_PAD * 2 + lay.nb * BAR_H + lay.nd * DOT_H : 54;
+        var row = el("div", "row crow");
         row.style.setProperty("--lc", catColour(cat.k));
+        row.style.setProperty("--cc", c.col);
         var lbl = el("div", "lbl");
-        lbl.appendChild(el("span", "ct", c.name));
+        lbl.appendChild(ctag(c));
         row.appendChild(lbl);
         var tr = el("div", "track");
         tr.style.height = h + "px";
@@ -327,7 +360,7 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
           tr.appendChild(el("span", "empty", "No entries yet"));
         } else {
           var dotTop = y0 + lay.nb * BAR_H;
-          // one rail per level, running from its first dot to its last
+          // one rail per level, running from its first marker to its last
           for (var l = 0; l < lay.nd; l++) {
             var from = Infinity, to = -Infinity;
             lay.dots.forEach(function (it) {
@@ -338,7 +371,7 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
             if (to > from) {
               var rail = el("div", "rail");
               rail.style.left = from + "px"; rail.style.width = (to - from) + "px";
-              rail.style.top = (dotTop + l * DOT_H + 8 + 11 - 1) + "px";
+              rail.style.top = (dotTop + l * DOT_H + 18) + "px";
               tr.appendChild(rail);
             }
           }
@@ -356,11 +389,13 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
     order.sort(function (a, b) { return a.start - b.start || COUNTRIES.indexOf(a.country) - COUNTRIES.indexOf(b.country) || a.seq - b.seq; });
     order.forEach(function (e, i) { e.i = i; });
 
-    hint.textContent = "Each category has one row per country, and each row is labelled with its country on the left; position is the year. " +
+    hint.textContent = "Each category has one row per country, and a country is also told apart by its marker shape (" +
+      COUNTRIES.map(function (c) { return c.glyph + " " + c.name; }).join(", ") + "). Position is the year. " +
       (mode === "compressed"
         ? "On the compressed scale the busy recent centuries get more room than the long early ones, so distances are not to scale. "
         : "On the even scale distance is time, so recent years are crowded. ") +
-      "A faint bar behind a dot means the date is only known as a rough range. Scroll sideways, or use the jump buttons. Arrow keys step through entries.";
+      "A faint bar behind a marker means the date is only known as a rough range. Scroll sideways, or use the jump buttons. Arrow keys step through entries.";
+    tl.classList.toggle("scrolled", tl.scrollLeft > 2);
 
     if (current && byId[current] && on[byId[current].country.id]) {
       buttons[current].setAttribute("aria-pressed", "true");
@@ -371,11 +406,14 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
       intro();
     }
   }
+  tl.addEventListener("scroll", function () { tl.classList.toggle("scrolled", tl.scrollLeft > 2); }, { passive: true });
 
   // ---- controls ----
-  function toggleButton(group, text, pressed, onClick) {
-    var b = el("button", "tog", text);
+  function toggleButton(group, text, pressed, onClick, glyph) {
+    var b = el("button");
     b.type = "button";
+    if (glyph) b.appendChild(el("span", "glyph", glyph));
+    b.appendChild(document.createTextNode(text));
     b.setAttribute("aria-pressed", pressed ? "true" : "false");
     b.addEventListener("click", function () { onClick(b); });
     group.appendChild(b);
@@ -389,7 +427,7 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
       on[c.id] = turnOn;
       b.setAttribute("aria-pressed", turnOn ? "true" : "false");
       build();
-    });
+    }, c.glyph);
   });
   var sg = document.getElementById("scale");
   var sbtn = {};
@@ -412,14 +450,32 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
     });
     jg.appendChild(b);
   });
+  var key = document.getElementById("key");
+  CATS.forEach(function (c) {
+    var s = el("span");
+    s.style.setProperty("--lc", catColour(c.k));
+    s.appendChild(el("i"));
+    s.appendChild(el("b", null, c.n));
+    key.appendChild(s);
+  });
 
   // ---- reading panel ----
   function intro() {
     panel.textContent = "";
+    panel.style.setProperty("--lc", "var(--ink)");
     var h = el("h2", null, "How to read this");
     h.style.marginTop = "0";
     panel.appendChild(h);
-    panel.appendChild(el("p", "lead", "Each block is a category, with one row for each country you switch on. Each dot is a dated event or find; each bar is something that lasted across a long span. Select one to see what the sources say and where to read them."));
+    panel.appendChild(el("p", "lead", "Each block is a category, with one row for each country you switch on. Each marker is a dated event or find; each bar is something that lasted across a long span. Select one to see what the sources say and where to read them."));
+    panel.appendChild(el("h3", null, "Countries"));
+    var sh = el("ul", "shapes");
+    COUNTRIES.forEach(function (c) {
+      var li = el("li");
+      li.appendChild(ctag(c));
+      if (c.main) li.appendChild(document.createTextNode(" main timeline"));
+      sh.appendChild(li);
+    });
+    panel.appendChild(sh);
     panel.appendChild(el("h3", null, "Categories"));
     var ul = el("ul", "legend");
     CATS.forEach(function (c) {
@@ -464,14 +520,15 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
     var c = e.country;
     var cat = CATS.filter(function (k) { return k.k === e.cat; })[0];
     panel.textContent = "";
+    panel.style.setProperty("--lc", catColour(e.cat));
     var meta = el("div", "meta");
-    var dt = el("span", "date", e.date);
-    meta.appendChild(dt);
+    meta.appendChild(el("span", "date", e.date));
     var chip = el("span", "chip", cat ? cat.n : e.cat);
     chip.style.setProperty("--lc", catColour(e.cat));
     meta.appendChild(chip);
+    meta.appendChild(ctag(c));
     var era = eraOf(c, e.start);
-    meta.appendChild(el("span", "era-tag", c.name + (era ? ", " + era : "")));
+    if (era) meta.appendChild(el("span", "era-tag", era));
     if (e.approx) meta.appendChild(el("span", "era-tag", "Date is approximate"));
     panel.appendChild(meta);
     panel.appendChild(el("h2", null, e.title));
