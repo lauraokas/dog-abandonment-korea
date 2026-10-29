@@ -63,3 +63,18 @@
   --f-body: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
+
+/* Highlighter marker: yellow sits behind the lower part of the text and runs under it,
+   like a real highlighter stroke. Use <span class="mark"> around any text to highlight.
+   Dark text on yellow is 9.9:1. */
+.mark, .date, .tag {
+  --from: 46%;
+  --to: 95%;
+  background: linear-gradient(to bottom, transparent var(--from), var(--highlight) var(--from), var(--highlight) var(--to), transparent var(--to));
+  padding: 0 0.14em;
+  margin: 0 -0.14em;
+  border-radius: 0.2em 0.55em 0.25em 0.6em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.date, .tag { --from: 36%; padding: 0 0.5em; margin: 0; }
