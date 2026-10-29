@@ -1,40 +1,50 @@
 /* Shared theme for every page in this project.
    Change colours and fonts here and all charts follow.
-   Page-specific layout styles stay in each page. */
+   Page-specific layout styles stay in each page.
+
+   Accessibility (WCAG AA), checked for light and dark mode:
+   - text on every surface is at least 4.5:1
+   - dots and bars are at least 3:1 against the surfaces behind them
+   - text on bars (--on-bar) is at least 4.5:1 on every category colour,
+     including the hover and selected shades */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400..700&display=swap");
 
 :root {
   /* Project palette */
-  --carbon: #191716;   /* Carbon Black */
-  --gold: #e6af2e;     /* Sunflower Gold */
-  --linen: #e0e2db;    /* Soft Linen */
-  --indigo: #3d348b;   /* Indigo Velvet */
-  --khaki: #beb7a4;    /* Khaki Beige */
-  /* Extra category colours blended from the palette */
-  --violet: #9a91dc;   /* indigo + linen */
-  --bronze: #9e7a26;   /* gold + carbon */
-  --stone: #a39b84;    /* khaki + carbon */
-  --mauve: #70596f;    /* indigo + gold */
+  --cobalt: #1446a0;     /* Cobalt Blue */
+  --razz: #db3069;       /* Razzmatazz */
+  --gold: #f5d547;       /* Royal Gold: too light to read on beige, so see --ochre */
+  --beige: #ebebd3;      /* Beige */
+  --gunmetal: #3c3c3b;   /* Gunmetal */
+  /* Darker or blended shades so every category is readable on light surfaces */
+  --ochre: #8c7000;      /* gold darkened */
+  --crimson: #c42a5f;    /* razzmatazz darkened */
+  --purple: #7a3a8c;     /* cobalt + razzmatazz */
+  --green: #3f7a5f;      /* cobalt + gold */
+  --rust: #b4561f;       /* razzmatazz + gold */
 
-  /* Surfaces and text, built from linen, khaki and carbon */
-  --bg: #e0e2db;
-  --panel: #f2f3ef;
-  --ink: #191716;
-  --ink2: #5b574e;
-  --line: #bfbba9;
-  --grid: #d2d1c5;
-  --band: #d2d1c5;
-  --note-bg: #eaece5;
+  /* Surfaces and text */
+  --bg: #ebebd3;
+  --panel: #f7f7ec;
+  --note-bg: #f1f1de;
+  --band: #dcdcc0;
+  --line: #c9c9a8;
+  --grid: #dcdcc0;
+  --ink: #3c3c3b;
+  --ink2: #55554f;
+  --on-bar: #fbfbf3;     /* text colour on top of a solid category colour */
 
   /* One colour per category, the same on every chart */
-  --c-origins: var(--indigo);
-  --c-food: var(--gold);
-  --c-ritual: var(--violet);
-  --c-hunt: var(--carbon);
-  --c-bond: var(--bronze);
-  --c-breed: var(--stone);
-  --c-law: var(--mauve);
-  --accent: var(--indigo);
+  --c-origins: var(--cobalt);
+  --c-food: var(--ochre);
+  --c-ritual: var(--purple);
+  --c-hunt: var(--gunmetal);
+  --c-bond: var(--crimson);
+  --c-breed: var(--green);
+  --c-law: var(--rust);
+  --accent: var(--cobalt);
+
+  --tint-chip: 20%;      /* how much category colour goes into a chip */
 
   --f-display: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-body: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -42,40 +52,46 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #100e0d;
-    --panel: #191716;
-    --ink: #e0e2db;
-    --ink2: #a8a595;
-    --line: #433e36;
-    --grid: #2d2924;
-    --band: #2d2924;
-    --note-bg: #221f1c;
-    /* carbon, indigo and the darker blends are too dark on a dark background, so they get lighter */
-    --c-origins: #8077d6;
-    --c-ritual: #c4beee;
-    --c-hunt: #e0e2db;
-    --c-bond: #c79b3b;
-    --c-breed: #beb7a4;
-    --c-law: #b08aae;
-    --accent: #9087e0;
+    --bg: #1a1a19;
+    --panel: #232322;
+    --note-bg: #2b2b29;
+    --band: #3c3c3b;
+    --line: #4d4d4a;
+    --grid: #3c3c3b;
+    --ink: #ebebd3;
+    --ink2: #b8b8a3;
+    --on-bar: #1a1a19;
+    /* lighter versions of every category colour for dark surfaces */
+    --c-origins: #7fa6e8;
+    --c-food: #f5d547;
+    --c-ritual: #c993d8;
+    --c-hunt: #ebebd3;
+    --c-bond: #f0678f;
+    --c-breed: #86c4a4;
+    --c-law: #f09a62;
+    --accent: #8fb2ee;
+    --tint-chip: 14%;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #100e0d;
-  --panel: #191716;
-  --ink: #e0e2db;
-  --ink2: #a8a595;
-  --line: #433e36;
-  --grid: #2d2924;
-  --band: #2d2924;
-  --note-bg: #221f1c;
-  --c-origins: #8077d6;
-  --c-ritual: #c4beee;
-  --c-hunt: #e0e2db;
-  --c-bond: #c79b3b;
-  --c-breed: #beb7a4;
-  --c-law: #b08aae;
-  --accent: #9087e0;
+  --bg: #1a1a19;
+  --panel: #232322;
+  --note-bg: #2b2b29;
+  --band: #3c3c3b;
+  --line: #4d4d4a;
+  --grid: #3c3c3b;
+  --ink: #ebebd3;
+  --ink2: #b8b8a3;
+  --on-bar: #1a1a19;
+  --c-origins: #7fa6e8;
+  --c-food: #f5d547;
+  --c-ritual: #c993d8;
+  --c-hunt: #ebebd3;
+  --c-bond: #f0678f;
+  --c-breed: #86c4a4;
+  --c-law: #f09a62;
+  --accent: #8fb2ee;
+  --tint-chip: 14%;
   color-scheme: dark;
 }
