@@ -16,7 +16,7 @@ https://lauraokas.github.io/dog-abandonment-korea/
 - Never use colour alone to tell categories apart: always add a label or legend. Pollen yellow and turquoise are light on a white background.
 - In dark mode, indigo and magenta are lightened automatically in `theme.css`, so keep using the variables.
 - To change the look of the whole site, edit `theme.css`. Layout styles that only one chart uses stay in that chart's file.
-- New charts: self-contained HTML, lowercase hyphenated filename (`topic-name.html`), relative paths only (for example `data/results.csv`), no spaces in filenames. Match the existing timelines: IBM Plex fonts, light and dark mode, readable on a phone.
+- New charts: self-contained HTML, lowercase hyphenated filename (`topic-name.html`), relative paths only (for example `data/results.csv`), no spaces in filenames. Match the existing timelines: Roboto (sans serif only, no serif fonts), light and dark mode, readable on a phone.
 
 ## Publishing
 - Pushing to `main` updates the live site within a minute or two.

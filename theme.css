@@ -1,7 +1,7 @@
 /* Shared theme for every page in this project.
    Change colours and fonts here and all charts follow.
    Page-specific layout styles stay in each page. */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400..700&display=swap");
 
 :root {
   /* Project palette */
@@ -34,9 +34,9 @@
   --c-law: var(--orange);
   --accent: var(--indigo);
 
-  --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
-  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-display: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
