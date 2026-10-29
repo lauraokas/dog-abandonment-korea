@@ -21,14 +21,16 @@
   --terra: #e94f37;      /* Fiery Terracotta */
   --gunmetal: #393e41;   /* Gunmetal */
   /* Category colours. Yellow is never used for these: it stays the bright accent.
-     They are spread across the colour wheel on purpose, so even a small dot can be
-     told apart from the others (the least similar pair differs by 42 on the CIELAB scale). */
-  --brick: #c23a24;      /* terracotta darkened so it can carry light text */
-  --violet: #962ab2;     /* grape, brighter */
-  --blue: #2a74b2;
-  --raspberry: #b22a67;
-  --green: #1b742d;
-  --navy: #181b67;
+     They are vivid and spread across the colour wheel on purpose, so even a small dot can be
+     told apart from the others (the least similar pair differs by 33 on the CIELAB scale).
+     Each is as saturated as it can be while still carrying light text on a bar (4.5:1). */
+  --vermilion: #c24700;
+  --magenta: #ca16be;
+  --azure: #145bff;
+  --teal: #00807b;
+  --rose: #d9264a;
+  --emerald: #008512;
+  --indigo: #081591;
 
   /* Surfaces and text: a light ivory is the page; cards, rows and buttons are light violet tints
      (blue-violet, hue about 256, so they read purple but not pink or khaki) */
@@ -43,13 +45,13 @@
   --on-bar: #fcfcf6;     /* text colour on top of a solid category colour */
 
   /* One colour per category, the same on every chart */
-  --c-origins: var(--violet);
-  --c-food: var(--brick);
-  --c-ritual: var(--blue);
-  --c-hunt: var(--gunmetal);
-  --c-bond: var(--raspberry);
-  --c-breed: var(--green);
-  --c-law: var(--navy);
+  --c-origins: var(--magenta);
+  --c-food: var(--vermilion);
+  --c-ritual: var(--azure);
+  --c-hunt: var(--teal);
+  --c-bond: var(--rose);
+  --c-breed: var(--emerald);
+  --c-law: var(--indigo);
   --accent: var(--grape);
   /* Yellow is the accent colour. It is too bright to read on ivory, so it is only
      used as a fill behind dark text (--ink on yellow is 9:1) */
