@@ -5,33 +5,35 @@
 
 :root {
   /* Project palette */
-  --indigo: #540d6e;
-  --watermelon: #ee4266;
-  --pollen: #ffd23f;
-  --turquoise: #3bceac;
-  --jungle: #0ead69;
-  /* Two extra category colours blended from the palette */
-  --magenta: #a1286a;   /* indigo + watermelon */
-  --orange: #f68a53;    /* watermelon + pollen */
+  --carbon: #191716;   /* Carbon Black */
+  --gold: #e6af2e;     /* Sunflower Gold */
+  --linen: #e0e2db;    /* Soft Linen */
+  --indigo: #3d348b;   /* Indigo Velvet */
+  --khaki: #beb7a4;    /* Khaki Beige */
+  /* Extra category colours blended from the palette */
+  --violet: #9a91dc;   /* indigo + linen */
+  --bronze: #9e7a26;   /* gold + carbon */
+  --stone: #a39b84;    /* khaki + carbon */
+  --mauve: #70596f;    /* indigo + gold */
 
-  /* Surfaces and text, tinted toward indigo */
-  --bg: #eee8f1;
-  --panel: #fcfbfd;
-  --ink: #1d1022;
-  --ink2: #5f5266;
-  --line: #d9cddf;
-  --grid: #ebe4ef;
-  --band: #e6dcec;
-  --note-bg: #f5f0f8;
+  /* Surfaces and text, built from linen, khaki and carbon */
+  --bg: #e0e2db;
+  --panel: #f2f3ef;
+  --ink: #191716;
+  --ink2: #5b574e;
+  --line: #bfbba9;
+  --grid: #d2d1c5;
+  --band: #d2d1c5;
+  --note-bg: #eaece5;
 
   /* One colour per category, the same on every chart */
   --c-origins: var(--indigo);
-  --c-food: var(--pollen);
-  --c-ritual: var(--magenta);
-  --c-hunt: var(--jungle);
-  --c-bond: var(--watermelon);
-  --c-breed: var(--turquoise);
-  --c-law: var(--orange);
+  --c-food: var(--gold);
+  --c-ritual: var(--violet);
+  --c-hunt: var(--carbon);
+  --c-bond: var(--bronze);
+  --c-breed: var(--stone);
+  --c-law: var(--mauve);
   --accent: var(--indigo);
 
   --f-display: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -40,32 +42,40 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e0711;
-    --panel: #1c1121;
-    --ink: #f0e9f3;
-    --ink2: #b3a5ba;
-    --line: #3b2a44;
-    --grid: #271a2d;
-    --band: #2d1e35;
-    --note-bg: #241730;
-    /* indigo and magenta are too dark on a dark background, so they get lighter */
-    --c-origins: #b67fd3;
-    --c-ritual: #e06aa6;
-    --accent: #b67fd3;
+    --bg: #100e0d;
+    --panel: #191716;
+    --ink: #e0e2db;
+    --ink2: #a8a595;
+    --line: #433e36;
+    --grid: #2d2924;
+    --band: #2d2924;
+    --note-bg: #221f1c;
+    /* carbon, indigo and the darker blends are too dark on a dark background, so they get lighter */
+    --c-origins: #8077d6;
+    --c-ritual: #c4beee;
+    --c-hunt: #e0e2db;
+    --c-bond: #c79b3b;
+    --c-breed: #beb7a4;
+    --c-law: #b08aae;
+    --accent: #9087e0;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e0711;
-  --panel: #1c1121;
-  --ink: #f0e9f3;
-  --ink2: #b3a5ba;
-  --line: #3b2a44;
-  --grid: #271a2d;
-  --band: #2d1e35;
-  --note-bg: #241730;
-  --c-origins: #b67fd3;
-  --c-ritual: #e06aa6;
-  --accent: #b67fd3;
+  --bg: #100e0d;
+  --panel: #191716;
+  --ink: #e0e2db;
+  --ink2: #a8a595;
+  --line: #433e36;
+  --grid: #2d2924;
+  --band: #2d2924;
+  --note-bg: #221f1c;
+  --c-origins: #8077d6;
+  --c-ritual: #c4beee;
+  --c-hunt: #e0e2db;
+  --c-bond: #c79b3b;
+  --c-breed: #beb7a4;
+  --c-law: #b08aae;
+  --accent: #9087e0;
   color-scheme: dark;
 }
