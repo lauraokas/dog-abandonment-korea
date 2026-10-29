@@ -15,14 +15,14 @@
   --orange: #f68a53;    /* watermelon + pollen */
 
   /* Surfaces and text, tinted toward indigo */
-  --bg: #f7f4f8;
+  --bg: #eee8f1;
   --panel: #fcfbfd;
   --ink: #1d1022;
   --ink2: #5f5266;
-  --line: #ddd3e2;
+  --line: #d9cddf;
   --grid: #ebe4ef;
-  --band: #eee7f1;
-  --note-bg: #f1ebf4;
+  --band: #e6dcec;
+  --note-bg: #f5f0f8;
 
   /* One colour per category, the same on every chart */
   --c-origins: var(--indigo);
@@ -40,14 +40,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #130a17;
+    --bg: #0e0711;
     --panel: #1c1121;
     --ink: #f0e9f3;
     --ink2: #b3a5ba;
-    --line: #35263c;
+    --line: #3b2a44;
     --grid: #271a2d;
-    --band: #271a2d;
-    --note-bg: #271a2d;
+    --band: #2d1e35;
+    --note-bg: #241730;
     /* indigo and magenta are too dark on a dark background, so they get lighter */
     --c-origins: #b67fd3;
     --c-ritual: #e06aa6;
@@ -56,14 +56,14 @@
   }
 }
 :root[data-theme="dark"] {
-  --bg: #130a17;
+  --bg: #0e0711;
   --panel: #1c1121;
   --ink: #f0e9f3;
   --ink2: #b3a5ba;
-  --line: #35263c;
+  --line: #3b2a44;
   --grid: #271a2d;
-  --band: #271a2d;
-  --note-bg: #271a2d;
+  --band: #2d1e35;
+  --note-bg: #241730;
   --c-origins: #b67fd3;
   --c-ritual: #e06aa6;
   --accent: #b67fd3;

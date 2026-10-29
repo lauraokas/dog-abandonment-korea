@@ -15,6 +15,7 @@ https://lauraokas.github.io/dog-abandonment-korea/
 - Category colours are fixed across all charts: origins `--c-origins` (indigo), food `--c-food` (pollen), ritual `--c-ritual` (magenta), hunting `--c-hunt` (jungle), bond `--c-bond` (watermelon), breeds `--c-breed` (turquoise), law `--c-law` (orange). Reuse the same colour for the same category on every chart.
 - Never use colour alone to tell categories apart: always add a label or legend. Pollen yellow and turquoise are light on a white background.
 - In dark mode, indigo and magenta are lightened automatically in `theme.css`, so keep using the variables.
+- No borders on elements (the user's rule). Separate things with background tones instead: `--bg` (page), `--panel`, `--note-bg`, `--band`, `--line` (the deepest tone, for hover states and thin rails), and tints of the category colours. Use `color-mix` for tints. Selected states use a bigger size or a soft tinted halo, not an outline. The only outline allowed is the keyboard focus ring.
 - To change the look of the whole site, edit `theme.css`. Layout styles that only one chart uses stay in that chart's file.
 - New charts: self-contained HTML, lowercase hyphenated filename (`topic-name.html`), relative paths only (for example `data/results.csv`), no spaces in filenames. Match the existing timelines: Roboto (sans serif only, no serif fonts), light and dark mode, readable on a phone.
 
