@@ -8,7 +8,7 @@ https://lauraokas.github.io/dog-abandonment-korea/
 - `dutch-dog-timeline.html`, `korean-dog-timeline.html`: the timelines.
 - `theme.css`: shared colours and fonts (light only). All pages link to it.
 - `data/`: one data file per country (`korea.js`, `netherlands.js`) plus `categories.js`, all in the same format. Read `data/README.md` before changing them. Korea is the main country. Run `python3 tools/check-data.py` after every edit to the data.
-- The plan is one combined, comparable timeline page that reads these files (countries as rows inside each category, one shared time axis). The two old pages stay until it replaces them.
+- `timeline.html` is the combined timeline: one block per category, one row per country inside it (Korea first), one shared year axis, a compressed or even time scale, and a reading panel. It reads `data/*.js` through script tags, so a new country is one data file plus one `<script>` line. The two old pages (`korean-dog-timeline.html`, `dutch-dog-timeline.html`) are earlier versions that stay until the user says to remove them.
 
 ## Keeping the style consistent
 - Every page must include `<link rel="stylesheet" href="theme.css">`.

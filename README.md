@@ -8,8 +8,9 @@ Research and graph work in progress for a school project. The charts are plain H
 
 | Chart | What it shows | Link |
 |---|---|---|
-| Korean Dog Timeline | The roles dogs have played on the Korean peninsula, from the Neolithic to 2026, with the sources behind each entry | [open](https://lauraokas.github.io/dog-abandonment-korea/korean-dog-timeline.html) |
-| Dutch Dog Timeline | How dogs were kept in the Netherlands and how the rules around owning them developed, from the 16th century to 2026 | [open](https://lauraokas.github.io/dog-abandonment-korea/dutch-dog-timeline.html) |
+| Dog Timeline (Korea and the Netherlands) | How dogs have been used, viewed and lived with, with one row per country inside six shared categories on one year axis. Korea is the main timeline. A switch changes between a compressed and an even time scale | [open](https://lauraokas.github.io/dog-abandonment-korea/timeline.html) |
+| Korean Dog Timeline (earlier version) | The roles dogs have played on the Korean peninsula, from the Neolithic to 2026, with the sources behind each entry | [open](https://lauraokas.github.io/dog-abandonment-korea/korean-dog-timeline.html) |
+| Dutch Dog Timeline (earlier version) | How dogs were kept in the Netherlands and how the rules around owning them developed, from the 16th century to 2026 | [open](https://lauraokas.github.io/dog-abandonment-korea/dutch-dog-timeline.html) |
 
 On each timeline, rows are roles, dots are dated events or finds, and bars are roles that lasted a long time. Select a dot or bar to read what the sources say. Arrow keys step through the entries.
 
@@ -18,8 +19,10 @@ On each timeline, rows are roles, dots are dated events or finds, and bars are r
 | File | Purpose |
 |---|---|
 | `index.html` | Landing page with links to every chart |
-| `korean-dog-timeline.html` | Korean timeline |
-| `dutch-dog-timeline.html` | Dutch timeline |
+| `timeline.html` | The combined timeline. It reads every country file in `data/` |
+| `data/` | One data file per country (`korea.js`, `netherlands.js`), the shared categories, and `data/README.md` explaining the format |
+| `tools/check-data.py` | Checks the data files for mistakes before publishing |
+| `korean-dog-timeline.html`, `dutch-dog-timeline.html` | The two earlier single-country timelines. They stay until the combined one replaces them |
 | `theme.css` | Shared colours and fonts. Every page links to it, so changing a value there changes the whole site |
 | `CLAUDE.md` | Style rules for working on the charts with Claude |
 
@@ -32,6 +35,10 @@ On each timeline, rows are roles, dots are dated events or finds, and bars are r
 - Accessible contrast (WCAG AA): text is at least 4.5:1 and dots and bars at least 3:1 against what is behind them.
 
 ## Adding a chart
+
+**A new country on the timeline:** copy `data/netherlands.js` to a new file, replace its content, run `python3 tools/check-data.py`, and add one `<script src="data/your-country.js"></script>` line next to the others in `timeline.html`.
+
+**A new, separate chart:**
 
 1. Make a self-contained HTML file with a lowercase, hyphenated name, for example `topic-name.html`.
 2. Add `<link rel="stylesheet" href="theme.css">` to it and use the colour and font variables from `theme.css` instead of typing colours.

@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dog Timeline</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+/* One timeline for every country: rows are categories, each with one row per country, on a shared year axis.
+   Data comes from data/*.js. Colours and fonts come from theme.css. */
+:root { --lw: 150px; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.page { max-width: 1480px; margin: 0 auto; padding-block: 28px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 4vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.sub { color: var(--ink2); margin: 6px 0 0; max-width: 70ch; }
+button { font-family: var(--f-body); }
+button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 12px 26px; align-items: center; margin: 18px 0 16px; }
+.ctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ctl .gl { font: 600 11.5px var(--f-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink2); margin-right: 2px; }
+.ctl button { font: 500 12.5px var(--f-body); color: var(--ink); background: var(--band); border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.ctl .tog:hover { background: var(--line); }
+.ctl .tog[aria-pressed="true"] { background: var(--highlight); font-weight: 600; }
+.ctl .jump button:hover { background: var(--highlight); }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (min-width: 1100px) {
+  .layout { grid-template-columns: minmax(0, 1fr) 430px; }
+  .panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; }
+}
+.tl { overflow-x: auto; border-radius: 6px; background: var(--panel); }
+.canvas { position: relative; width: calc(var(--lw) + var(--tw)); }
+.row { display: flex; }
+.lbl { position: sticky; left: 0; z-index: 4; flex: none; width: var(--lw); background: var(--panel); padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+.lbl .cn { font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+.lbl .cn::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--lc); margin-right: 6px; }
+.lbl .cy { font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+.lbl .ds { font-size: 11px; color: var(--ink2); line-height: 1.3; }
+.lbl .ct { align-self: flex-start; font-size: 11.5px; font-weight: 600; color: var(--ink); background: var(--band); border-radius: 999px; padding: 1px 9px; margin-top: 3px; }
+.track { position: relative; flex: none; width: var(--tw); z-index: 2; }
+
+.eras .lbl, .axis .lbl { padding-block: 6px; }
+.eras { height: 30px; }
+.era { position: absolute; top: 0; bottom: 0; background: var(--band); font: 600 11.5px var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; padding: 7px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.era.alt { background: var(--note-bg); }
+.axis { height: 30px; }
+.tick { position: absolute; top: 0; transform: translateX(-50%); padding-top: 11px; font-size: 11px; line-height: 1; color: var(--ink2); white-space: nowrap; }
+.tick::before { content: ""; position: absolute; left: 50%; top: 0; width: 2px; height: 7px; margin-left: -1px; background: var(--line); }
+
+.lanes { position: relative; }
+.bands { position: absolute; left: var(--lw); top: 0; bottom: 0; width: var(--tw); z-index: 1; pointer-events: none; }
+.band { position: absolute; top: 0; bottom: 0; }
+.band.t { background: color-mix(in srgb, var(--band) 40%, transparent); }
+.blk1, .blk1 .lbl { background: var(--note-bg); }
+.empty { position: sticky; left: calc(var(--lw) + 10px); display: inline-block; margin: 12px 0 0 10px; font-size: 11.5px; color: var(--ink2); }
+
+.rail { position: absolute; height: 3px; border-radius: 2px; background: var(--line); }
+.ext { position: absolute; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--lc) 28%, transparent); }
+.node, .range { position: absolute; margin: 0; cursor: pointer; z-index: 2; }
+.range { height: 26px; border: 0; border-radius: 13px; background: var(--lc); color: var(--on-bar); font-size: 11.5px; font-weight: 500; text-align: left; padding: 0 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.range:hover { background: color-mix(in srgb, var(--lc) 82%, var(--ink)); }
+.node { width: 22px; height: 22px; border: 0; border-radius: 50%; background: var(--lc); padding: 0; z-index: 3; }
+.node:hover { transform: scale(1.18); }
+.nlabel { position: absolute; width: 84px; text-align: center; font-size: 11px; line-height: 1.22; color: var(--ink2); pointer-events: none; }
+.node[aria-pressed="true"] { transform: scale(1.3); box-shadow: 0 0 0 6px color-mix(in srgb, var(--lc) 28%, transparent); }
+.range[aria-pressed="true"] { background: color-mix(in srgb, var(--lc) 65%, var(--ink)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--lc) 28%, transparent); }
+.nlabel.on { color: var(--ink); font-weight: 600; background: var(--highlight); border-radius: 4px; padding: 1px 3px; }
+.hint { font-size: 12px; color: var(--ink2); margin: 8px 2px 0; }
+
+.panel { background: var(--panel); border-radius: 6px; padding: 20px 22px 18px; }
+.panel h2 { font-family: var(--f-display); font-weight: 600; font-size: 22px; line-height: 1.2; margin: 10px 0 8px; text-wrap: balance; }
+.panel h3 { font: 600 11.5px var(--f-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink2); margin: 18px 0 8px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: color-mix(in srgb, var(--lc) var(--tint-chip), var(--panel)); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 500; }
+.chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lc); }
+.era-tag { color: var(--ink2); }
+.lead { margin: 0; font-size: 15.5px; }
+.panel ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.care { background: var(--note-bg); border-radius: 6px; padding: 10px 12px; font-size: 13.5px; margin: 0; }
+.team { background: var(--band); border-radius: 6px; padding: 10px 12px; font-size: 13.5px; margin: 0; }
+.team a { font-weight: 500; }
+.srcs { list-style: none; padding: 0; gap: 12px; }
+.srcs li { display: block; }
+.srcs a { color: var(--ink); font-weight: 500; text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.srcs a:hover { text-decoration-thickness: 2px; }
+.stype { display: inline-block; margin-left: 6px; font: 500 10.5px var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink2); background: var(--band); border-radius: 4px; padding: 1px 6px; vertical-align: 1px; white-space: nowrap; }
+.why { display: block; color: var(--ink2); font-size: 13px; margin-top: 2px; }
+.nav { display: flex; gap: 8px; align-items: center; margin-top: 24px; }
+.nav button, .start { font: 500 13px var(--f-body); color: var(--ink); background: var(--band); border: 0; border-radius: 6px; padding: 7px 12px; cursor: pointer; }
+.nav button:hover, .start:hover { background: var(--highlight); }
+.nav button:disabled { opacity: 0.4; cursor: default; }
+.nav .pos { margin-left: auto; font: 400 12px var(--f-body); color: var(--ink2); }
+.legend { list-style: none; padding: 0; gap: 8px; }
+.legend li { display: flex; gap: 10px; align-items: baseline; }
+.legend i { flex: none; width: 13px; height: 13px; border-radius: 50%; background: var(--lc); position: relative; top: 1px; }
+.legend b { font-weight: 600; }
+.legend span { color: var(--ink2); }
+.legend .ex { display: inline-block; vertical-align: -3px; }
+
+@media (max-width: 640px) {
+  :root { --lw: 104px; }
+  .lbl .ds { display: none; }
+  .panel { padding: 16px 16px 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .node:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1><span class="mark">Dog Timeline</span></h1>
+    <p class="sub">How dogs have been used, viewed and lived with, country by country. Korea is the main timeline; switch on other countries to compare. Select any marker or bar for the detail and the sources behind it.</p>
+  </header>
+
+  <div class="controls">
+    <div class="ctl" role="group" aria-label="Countries" id="countries"><span class="gl">Countries</span></div>
+    <div class="ctl" role="group" aria-label="Time scale" id="scale"><span class="gl">Time scale</span></div>
+    <div class="ctl" role="group" aria-label="Jump to period" id="jump"><span class="gl">Jump to</span></div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="tl" id="tl" role="region" aria-label="Timeline of dogs, scrolls sideways" tabindex="0"><div class="canvas" id="canvas"></div></div>
+      <p class="hint" id="hint"></p>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"><noscript>This timeline needs JavaScript to draw.</noscript></aside>
+  </div>
+</div>
+
+<script src="data/categories.js"></script>
+<script src="data/korea.js"></script>
+<script src="data/netherlands.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.DOGTL;
+  var panel = document.getElementById("panel");
+  if (!D || !D.categories || !D.countries || !D.countries.length) {
+    panel.textContent = "The timeline data did not load.";
+    return;
+  }
+
+  var CATS = D.categories;
+  // The main country always comes first, so it sits on top inside every category.
+  var COUNTRIES = D.countries.slice().sort(function (a, b) { return (b.main ? 1 : 0) - (a.main ? 1 : 0); });
+  var on = {};
+  var byId = {};
+  COUNTRIES.forEach(function (c) {
+    on[c.id] = true;
+    c.events.forEach(function (e) { e.country = c; byId[e.id] = e; });
+  });
+
+  // Compressed scale: each period gets a fixed width, so the sparse early centuries take less room
+  // than the busy recent ones. Even scale: one fixed number of pixels per year.
+  var BREAKS = [-6000, -300, 700, 1500, 1800, 1945, 2000, 2027];
+  var WIDTHS = [120, 430, 160, 300, 340, 480, 900];
+  var BAND_NAMES = ["Before 300 BCE", "300 BCE to 700 CE", "700 to 1500", "1500 to 1800", "1800 to 1945", "1945 to 2000", "2000 to today"];
+  var TICKS = {
+    compressed: [-6000, -300, 0, 500, 700, 1000, 1500, 1800, 1900, 1945, 1970, 2000, 2010, 2020, 2026],
+    even: [-6000, -5000, -4000, -3000, -2000, -1000, 0, 500, 1000, 1500, 2000]
+  };
+  var PAD = 56, EVEN_K = 0.45;
+  var BAR_H = 38, DOT_H = 70, ROW_PAD = 6, LAB = 42; // LAB = half the width of a dot label
+  var mode = "compressed";
+
+  function x(y) {
+    if (mode === "even") return PAD + (y - BREAKS[0]) * EVEN_K;
+    var acc = 0, last = WIDTHS.length - 1;
+    if (y <= BREAKS[0]) return PAD + (y - BREAKS[0]) * WIDTHS[0] / (BREAKS[1] - BREAKS[0]);
+    for (var i = 0; i <= last; i++) {
+      var a = BREAKS[i], b = BREAKS[i + 1];
+      if (y <= b || i === last) return PAD + acc + (y - a) * WIDTHS[i] / (b - a);
+      acc += WIDTHS[i];
+    }
+  }
+  function trackWidth() { return Math.ceil(x(BREAKS[BREAKS.length - 1]) + PAD); }
+  function fmtYear(y) { return y < 0 ? (-y) + " BCE" : (y > 0 && y < 1000 ? y + " CE" : (y === 0 ? "1 CE" : String(y))); }
+
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function reduce() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
+  function eraOf(c, y) {
+    var eras = c.eras || [];
+    for (var i = 0; i < eras.length; i++) { if (y >= eras[i].from && y < eras[i].to) return eras[i].n; }
+    if (eras.length && y === eras[eras.length - 1].to) return eras[eras.length - 1].n;
+    return "";
+  }
+  function catColour(k) { return "var(--c-" + k + ")"; }
+  function visible() { return COUNTRIES.filter(function (c) { return on[c.id]; }); }
+
+  // ---- layout of one row (one country inside one category) ----
+  function pack(list) {
+    list.sort(function (a, b) { return a.lo - b.lo; });
+    var ends = [];
+    list.forEach(function (it) {
+      var l = 0;
+      while (l < ends.length && ends[l] > it.lo - 4) l++;
+      ends[l] = it.hi; it.lvl = l;
+    });
+    return ends.length;
+  }
+  function layoutRow(events) {
+    var bars = [], dots = [];
+    events.forEach(function (e) {
+      var x1 = x(e.start), x2 = e.end != null ? x(e.end) : x1;
+      if (e.bar && e.end != null) {
+        var w = Math.max(x2 - x1, 64);
+        bars.push({ e: e, left: x1, width: w, lo: x1 - 4, hi: x1 + w + 4 });
+      } else {
+        var mid = e.end != null ? (e.start + e.end) / 2 : e.start;
+        var cx = x(mid), lo = cx - LAB, hi = cx + LAB, ext = null;
+        if (e.end != null && x2 - x1 > 24) { ext = { left: x1, width: x2 - x1 }; lo = Math.min(lo, x1); hi = Math.max(hi, x2); }
+        dots.push({ e: e, cx: cx, ext: ext, lo: lo, hi: hi });
+      }
+    });
+    return { bars: bars, dots: dots, nb: pack(bars), nd: pack(dots) };
+  }
+
+  // ---- drawing ----
+  var canvas = document.getElementById("canvas");
+  var tl = document.getElementById("tl");
+  var hint = document.getElementById("hint");
+  var buttons = {}, labels = {}, order = [], current = null;
+
+  function mkEvent(e, tr, y0, item, isBar) {
+    var b = el("button");
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    var what = e.country.name + ", " + e.date + ": " + e.title;
+    b.setAttribute("aria-label", what);
+    b.title = what;
+    b.style.setProperty("--lc", catColour(e.cat));
+    if (isBar) {
+      b.className = "range";
+      b.textContent = e.bar;
+      b.style.left = item.left + "px"; b.style.width = item.width + "px";
+      b.style.top = (y0 + item.lvl * BAR_H + 5) + "px";
+    } else {
+      var top = y0 + item.lvl * DOT_H;
+      if (item.ext) {
+        var ex = el("div", "ext");
+        ex.style.setProperty("--lc", catColour(e.cat));
+        ex.style.left = item.ext.left + "px"; ex.style.width = item.ext.width + "px"; ex.style.top = (top + 8 + 11 - 4) + "px";
+        tr.appendChild(ex);
+      }
+      b.className = "node";
+      b.style.left = (item.cx - 11) + "px"; b.style.top = (top + 8) + "px";
+      var lab = el("div", "nlabel", e.tag);
+      lab.style.left = (item.cx - LAB) + "px"; lab.style.top = (top + 34) + "px";
+      tr.appendChild(lab);
+      labels[e.id] = lab;
+    }
+    b.addEventListener("click", function () { select(e.id, true); });
+    tr.appendChild(b);
+    buttons[e.id] = b;
+  }
+
+  function build() {
+    var shown = visible();
+    var tw = trackWidth();
+    canvas.textContent = "";
+    canvas.style.setProperty("--tw", tw + "px");
+    buttons = {}; labels = {};
+
+    // period ribbons, one per country, then the year axis
+    shown.forEach(function (c) {
+      var row = el("div", "row eras");
+      var lbl = el("div", "lbl");
+      lbl.appendChild(el("span", "cy", c.name));
+      row.appendChild(lbl);
+      var tr = el("div", "track");
+      (c.eras || []).forEach(function (er, i) {
+        var d = el("div", "era" + (i % 2 ? " alt" : ""), er.n);
+        d.style.left = x(er.from) + "px";
+        d.style.width = Math.max(x(er.to) - x(er.from) - 2, 4) + "px";
+        tr.appendChild(d);
+      });
+      row.appendChild(tr);
+      canvas.appendChild(row);
+    });
+    var axis = el("div", "row axis");
+    axis.appendChild(el("div", "lbl"));
+    var at = el("div", "track");
+    TICKS[mode].forEach(function (y) { var t = el("div", "tick", fmtYear(y)); t.style.left = x(y) + "px"; at.appendChild(t); });
+    axis.appendChild(at);
+    canvas.appendChild(axis);
+
+    // category blocks
+    var lanes = el("div", "lanes");
+    var bands = el("div", "bands");
+    for (var i = 0; i < BREAKS.length - 1; i++) {
+      var bd = el("div", "band" + (i % 2 ? " t" : ""));
+      bd.style.left = x(BREAKS[i]) + "px"; bd.style.width = (x(BREAKS[i + 1]) - x(BREAKS[i])) + "px";
+      bands.appendChild(bd);
+    }
+    bands.firstChild.style.left = "0px"; bands.firstChild.style.width = x(BREAKS[1]) + "px";
+    lanes.appendChild(bands);
+
+    CATS.forEach(function (cat, ci) {
+      shown.forEach(function (c, k) {
+        var evs = c.events.filter(function (e) { return e.cat === cat.k; })
+          .sort(function (a, b) { return a.start - b.start || a.seq - b.seq; });
+        var lay = layoutRow(evs);
+        var y0 = ROW_PAD;
+        var h = evs.length ? ROW_PAD * 2 + lay.nb * BAR_H + lay.nd * DOT_H : 46;
+        var row = el("div", "row blk" + (ci % 2));
+        row.style.setProperty("--lc", catColour(cat.k));
+        var lbl = el("div", "lbl");
+        if (k === 0) {
+          lbl.appendChild(el("span", "cn", cat.n));
+          lbl.appendChild(el("span", "ds", cat.d));
+        }
+        if (shown.length > 1) lbl.appendChild(el("span", "ct", c.name));
+        row.appendChild(lbl);
+        var tr = el("div", "track");
+        tr.style.height = h + "px";
+        if (!evs.length) {
+          tr.appendChild(el("span", "empty", "No entries yet"));
+        } else {
+          var dotTop = y0 + lay.nb * BAR_H;
+          // one rail per level, running from its first dot to its last
+          for (var l = 0; l < lay.nd; l++) {
+            var from = Infinity, to = -Infinity;
+            lay.dots.forEach(function (it) {
+              if (it.lvl !== l) return;
+              from = Math.min(from, it.ext ? it.ext.left : it.cx);
+              to = Math.max(to, it.ext ? it.ext.left + it.ext.width : it.cx);
+            });
+            if (to > from) {
+              var rail = el("div", "rail");
+              rail.style.left = from + "px"; rail.style.width = (to - from) + "px";
+              rail.style.top = (dotTop + l * DOT_H + 8 + 11 - 1) + "px";
+              tr.appendChild(rail);
+            }
+          }
+          lay.bars.forEach(function (it) { mkEvent(it.e, tr, y0, it, true); });
+          lay.dots.forEach(function (it) { mkEvent(it.e, tr, dotTop, it, false); });
+        }
+        row.appendChild(tr);
+        lanes.appendChild(row);
+      });
+    });
+    canvas.appendChild(lanes);
+
+    order = [];
+    shown.forEach(function (c) { order = order.concat(c.events); });
+    order.sort(function (a, b) { return a.start - b.start || COUNTRIES.indexOf(a.country) - COUNTRIES.indexOf(b.country) || a.seq - b.seq; });
+    order.forEach(function (e, i) { e.i = i; });
+
+    hint.textContent = "Rows are categories, with one row per country; position is the year. " +
+      (mode === "compressed"
+        ? "On the compressed scale the busy recent centuries get more room than the long early ones, so distances are not to scale. "
+        : "On the even scale distance is time, so recent years are crowded. ") +
+      "A faint bar behind a dot means the date is only known as a rough range. Scroll sideways, or use the jump buttons. Arrow keys step through entries.";
+
+    if (current && byId[current] && on[byId[current].country.id]) {
+      buttons[current].setAttribute("aria-pressed", "true");
+      if (labels[current]) labels[current].classList.add("on");
+      render(byId[current]);
+    } else {
+      current = null;
+      intro();
+    }
+  }
+
+  // ---- controls ----
+  function toggleButton(group, text, pressed, onClick) {
+    var b = el("button", "tog", text);
+    b.type = "button";
+    b.setAttribute("aria-pressed", pressed ? "true" : "false");
+    b.addEventListener("click", function () { onClick(b); });
+    group.appendChild(b);
+    return b;
+  }
+  var cg = document.getElementById("countries");
+  COUNTRIES.forEach(function (c) {
+    toggleButton(cg, c.name + (c.main ? " (main)" : ""), true, function (b) {
+      var turnOn = !on[c.id];
+      if (!turnOn && visible().length === 1) return; // always keep one country on screen
+      on[c.id] = turnOn;
+      b.setAttribute("aria-pressed", turnOn ? "true" : "false");
+      build();
+    });
+  });
+  var sg = document.getElementById("scale");
+  var sbtn = {};
+  [["compressed", "Compressed"], ["even", "Even time"]].forEach(function (m) {
+    sbtn[m[0]] = toggleButton(sg, m[1], m[0] === mode, function () {
+      if (mode === m[0]) return;
+      mode = m[0];
+      Object.keys(sbtn).forEach(function (k) { sbtn[k].setAttribute("aria-pressed", k === mode ? "true" : "false"); });
+      build();
+      if (current && buttons[current]) { try { buttons[current].scrollIntoView({ inline: "center", block: "nearest", behavior: "auto" }); } catch (e) {} }
+      else tl.scrollLeft = 0;
+    });
+  });
+  var jg = document.getElementById("jump");
+  BAND_NAMES.forEach(function (name, i) {
+    var b = el("button", null, name);
+    b.type = "button";
+    b.addEventListener("click", function () {
+      tl.scrollTo({ left: Math.max(x(BREAKS[i]) - 12 - (i === 0 ? PAD : 0), 0), behavior: reduce() ? "auto" : "smooth" });
+    });
+    jg.appendChild(b);
+  });
+
+  // ---- reading panel ----
+  function intro() {
+    panel.textContent = "";
+    var h = el("h2", null, "How to read this");
+    h.style.marginTop = "0";
+    panel.appendChild(h);
+    panel.appendChild(el("p", "lead", "Each block is a category, with one row for each country you switch on. Each dot is a dated event or find; each bar is something that lasted across a long span. Select one to see what the sources say and where to read them."));
+    panel.appendChild(el("h3", null, "Categories"));
+    var ul = el("ul", "legend");
+    CATS.forEach(function (c) {
+      var li = el("li");
+      li.style.setProperty("--lc", catColour(c.k));
+      li.appendChild(el("i"));
+      var t = el("div");
+      t.appendChild(el("b", null, c.n + ". "));
+      t.appendChild(el("span", null, c.d + "."));
+      li.appendChild(t); ul.appendChild(li);
+    });
+    panel.appendChild(ul);
+    panel.appendChild(el("h3", null, "Reading the evidence"));
+    panel.appendChild(el("p", "care", "Every entry has a ‘Read with care’ note that says how the claim is sourced: for example, a date that rests on one scholar’s post, or a text read only through Wikipedia. Source types are labelled so you can see what kind of document each link is."));
+    var nav = el("div", "nav");
+    var st = el("button", "start", "Start at the beginning");
+    st.type = "button";
+    st.addEventListener("click", function () { if (order.length) select(order[0].id, true); });
+    nav.appendChild(st);
+    panel.appendChild(nav);
+  }
+
+  function select(id, scroll) {
+    var e = byId[id];
+    if (!e || !buttons[id]) return;
+    if (current && buttons[current]) {
+      buttons[current].setAttribute("aria-pressed", "false");
+      if (labels[current]) labels[current].classList.remove("on");
+    }
+    current = id;
+    buttons[id].setAttribute("aria-pressed", "true");
+    if (labels[id]) labels[id].classList.add("on");
+    try { history.replaceState(null, "", "#" + id); } catch (x) {}
+    render(e);
+    if (scroll) {
+      try { buttons[id].scrollIntoView({ inline: "center", block: "nearest", behavior: reduce() ? "auto" : "smooth" }); } catch (x) {}
+      if (window.innerWidth < 1100) { try { panel.scrollIntoView({ block: "nearest", behavior: reduce() ? "auto" : "smooth" }); } catch (x) {} }
+    }
+  }
+
+  function render(e) {
+    var c = e.country;
+    var cat = CATS.filter(function (k) { return k.k === e.cat; })[0];
+    panel.textContent = "";
+    var meta = el("div", "meta");
+    var dt = el("span", "date", e.date);
+    meta.appendChild(dt);
+    var chip = el("span", "chip", cat ? cat.n : e.cat);
+    chip.style.setProperty("--lc", catColour(e.cat));
+    meta.appendChild(chip);
+    var era = eraOf(c, e.start);
+    meta.appendChild(el("span", "era-tag", c.name + (era ? ", " + era : "")));
+    if (e.approx) meta.appendChild(el("span", "era-tag", "Date is approximate"));
+    panel.appendChild(meta);
+    panel.appendChild(el("h2", null, e.title));
+    panel.appendChild(el("p", "lead", e.sum));
+    panel.appendChild(el("h3", null, "What the sources say"));
+    var ul = el("ul");
+    e.pts.forEach(function (p) { ul.appendChild(el("li", null, p)); });
+    panel.appendChild(ul);
+    if (e.care) {
+      panel.appendChild(el("h3", null, "Read with care"));
+      panel.appendChild(el("p", "care", e.care));
+    }
+    panel.appendChild(el("h3", null, "Sources"));
+    var sl = el("ul", "srcs");
+    e.src.forEach(function (s) {
+      var d = c.sources[s.s];
+      var li = el("li");
+      var a = el("a", null, d.t);
+      a.href = d.u; a.target = "_blank"; a.rel = "noopener noreferrer";
+      li.appendChild(a);
+      li.appendChild(el("span", "stype", d.k));
+      li.appendChild(el("span", "why", "Why it matters: " + s.why));
+      sl.appendChild(li);
+    });
+    panel.appendChild(sl);
+    if (e.team && c.teamDoc) {
+      panel.appendChild(el("h3", null, "Link to your team research"));
+      var tp = el("p", "team");
+      var ta = el("a", null, e.team.t);
+      ta.href = c.teamDoc; ta.target = "_blank"; ta.rel = "noopener noreferrer";
+      tp.appendChild(ta);
+      tp.appendChild(document.createTextNode(". " + e.team.n));
+      panel.appendChild(tp);
+    }
+    var nav = el("div", "nav");
+    var prev = el("button", null, "← Previous"); prev.type = "button";
+    var next = el("button", null, "Next →"); next.type = "button";
+    prev.disabled = e.i === 0; next.disabled = e.i === order.length - 1;
+    prev.addEventListener("click", function () { step(-1); });
+    next.addEventListener("click", function () { step(1); });
+    nav.appendChild(prev); nav.appendChild(next);
+    nav.appendChild(el("span", "pos", (e.i + 1) + " of " + order.length));
+    panel.appendChild(nav);
+    panel.scrollTop = 0;
+  }
+
+  function step(d) {
+    if (!current) return;
+    var n = byId[current].i + d;
+    if (n >= 0 && n < order.length) select(order[n].id, true);
+  }
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+    var t = ev.target && ev.target.tagName;
+    if (t === "INPUT" || t === "TEXTAREA" || t === "SELECT") return;
+    if (!current) return;
+    ev.preventDefault();
+    step(ev.key === "ArrowRight" ? 1 : -1);
+  });
+
+  var h = (location.hash || "").replace("#", "");
+  if (h && byId[h]) current = h;
+  build();
+  if (current) { try { buttons[current].scrollIntoView({ inline: "center", block: "nearest", behavior: "auto" }); } catch (e) {} }
+})();
+</script>
+</body>
+</html>
