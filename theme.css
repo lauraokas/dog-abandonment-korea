@@ -15,39 +15,38 @@
   color-scheme: light;
 
   /* Project palette */
-  --black: #0f0a0a;      /* Pitch Black */
-  --parchment: #f5efed;  /* Parchment (the main background) */
-  --cyan: #2292a4;       /* Pacific Cyan */
-  --glow: #bdbf09;       /* Golden Glow */
-  --choc: #d96c06;       /* Chocolate */
+  --yellow: #fffc31;     /* Yellow */
+  --grape: #5c415d;      /* Vintage Grape */
+  --ivory: #f6f7eb;      /* Ivory (the main background) */
+  --terra: #e94f37;      /* Fiery Terracotta */
+  --gunmetal: #393e41;   /* Gunmetal */
   /* Darker shades and blends so every category is readable on the surfaces */
-  --teal: #167080;       /* cyan darkened */
-  --burnt: #b04e00;      /* chocolate darkened */
-  --olive: #6b6e00;      /* golden glow darkened */
-  --clay: #883e3a;       /* chocolate + black */
-  --green: #066b06;      /* cyan + golden glow, darkened */
-  --navy: #06336b;       /* cyan + black */
+  --brick: #c23a24;      /* terracotta darkened */
+  --ochre: #8a6a00;      /* yellow darkened */
+  --plum: #79065b;       /* grape + terracotta */
+  --olive: #546336;      /* yellow + gunmetal */
+  --wine: #66191f;       /* terracotta + gunmetal */
 
-  /* Surfaces and text: parchment is the page, cards and rows are slightly deeper tones */
-  --bg: #f5efed;
-  --panel: #ece5e2;
-  --note-bg: #e4dcd9;
-  --band: #d9cfcb;
-  --line: #c9bdb8;
-  --grid: #d9cfcb;
-  --ink: #0f0a0a;
-  --ink2: #574d4b;
-  --on-bar: #f5efed;     /* text colour on top of a solid category colour */
+  /* Surfaces and text: ivory is the page, cards and rows are slightly deeper tones */
+  --bg: #f6f7eb;
+  --panel: #ebece0;
+  --note-bg: #e3e4d5;
+  --band: #d8d9c6;
+  --line: #c8c9b3;
+  --grid: #d8d9c6;
+  --ink: #393e41;
+  --ink2: #4f5558;
+  --on-bar: #f6f7eb;     /* text colour on top of a solid category colour */
 
   /* One colour per category, the same on every chart */
-  --c-origins: var(--teal);
-  --c-food: var(--burnt);
-  --c-ritual: var(--olive);
-  --c-hunt: var(--black);
-  --c-bond: var(--clay);
-  --c-breed: var(--green);
-  --c-law: var(--navy);
-  --accent: #125f6d;     /* cyan darkened until it reads as text */
+  --c-origins: var(--grape);
+  --c-food: var(--brick);
+  --c-ritual: var(--ochre);
+  --c-hunt: var(--gunmetal);
+  --c-bond: var(--plum);
+  --c-breed: var(--olive);
+  --c-law: var(--wine);
+  --accent: var(--grape);
 
   --tint-chip: 20%;      /* how much category colour goes into a chip */
 
