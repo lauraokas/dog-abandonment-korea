@@ -52,6 +52,12 @@
   --c-bond: var(--rose);
   --c-breed: var(--emerald);
   --c-law: var(--indigo);
+  /* The combined timeline uses six shared categories (Origins, Role, Meaning, Ownership, Law, Breed).
+     origins, law and breed keep the colours above; these three reuse existing colours.
+     The older names above (food, ritual, hunt, bond) go away when the two old pages are replaced. */
+  --c-role: var(--teal);
+  --c-meaning: var(--rose);
+  --c-ownership: var(--vermilion);
   --accent: var(--grape);
   /* Yellow is the accent colour. It is too bright to read on ivory, so it is only
      used as a fill behind dark text (--ink on yellow is 9:1) */
