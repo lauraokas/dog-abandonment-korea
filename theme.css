@@ -11,38 +11,39 @@
 
 :root {
   /* Project palette */
-  --cobalt: #1446a0;     /* Cobalt Blue */
-  --razz: #db3069;       /* Razzmatazz */
-  --gold: #f5d547;       /* Royal Gold: too light to read on beige, so see --ochre */
-  --beige: #ebebd3;      /* Beige */
-  --gunmetal: #3c3c3b;   /* Gunmetal */
-  /* Darker or blended shades so every category is readable on light surfaces */
-  --ochre: #8c7000;      /* gold darkened */
-  --crimson: #c42a5f;    /* razzmatazz darkened */
-  --purple: #7a3a8c;     /* cobalt + razzmatazz */
-  --green: #3f7a5f;      /* cobalt + gold */
-  --rust: #b4561f;       /* razzmatazz + gold */
+  --lime: #c5d86d;       /* Lime Cream */
+  --coffee: #261c15;     /* Coffee Bean */
+  --porcelain: #f7f7f2;  /* Porcelain */
+  --beige: #e4e6c3;      /* Beige */
+  --flame: #f05d23;      /* Tiger Flame */
+  /* Darker shades and blends so every category is readable on light surfaces */
+  --green: #2b7e1b;      /* lime darkened */
+  --burnt: #c9400f;      /* flame darkened */
+  --amber: #a36029;      /* flame + lime, darkened */
+  --oxblood: #611705;    /* flame + coffee */
+  --olive: #686c13;      /* lime + coffee */
+  --forest: #25471f;     /* lime + coffee, darker */
 
   /* Surfaces and text */
-  --bg: #ebebd3;
-  --panel: #f7f7ec;
-  --note-bg: #f1f1de;
-  --band: #dcdcc0;
-  --line: #c9c9a8;
-  --grid: #dcdcc0;
-  --ink: #3c3c3b;
-  --ink2: #55554f;
-  --on-bar: #fbfbf3;     /* text colour on top of a solid category colour */
+  --bg: #e4e6c3;
+  --panel: #f7f7f2;
+  --note-bg: #eff0e0;
+  --band: #d4d7ab;
+  --line: #c3c795;
+  --grid: #d4d7ab;
+  --ink: #261c15;
+  --ink2: #5a4e44;
+  --on-bar: #fbfbf7;     /* text colour on top of a solid category colour */
 
   /* One colour per category, the same on every chart */
-  --c-origins: var(--cobalt);
-  --c-food: var(--ochre);
-  --c-ritual: var(--purple);
-  --c-hunt: var(--gunmetal);
-  --c-bond: var(--crimson);
-  --c-breed: var(--green);
-  --c-law: var(--rust);
-  --accent: var(--cobalt);
+  --c-origins: var(--green);
+  --c-food: var(--burnt);
+  --c-ritual: var(--amber);
+  --c-hunt: var(--coffee);
+  --c-bond: var(--oxblood);
+  --c-breed: var(--olive);
+  --c-law: var(--forest);
+  --accent: #9a2f08;     /* flame darkened until it reads as text */
 
   --tint-chip: 20%;      /* how much category colour goes into a chip */
 
@@ -52,46 +53,46 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #1a1a19;
-    --panel: #232322;
-    --note-bg: #2b2b29;
-    --band: #3c3c3b;
-    --line: #4d4d4a;
-    --grid: #3c3c3b;
-    --ink: #ebebd3;
-    --ink2: #b8b8a3;
-    --on-bar: #1a1a19;
+    --bg: #1b1410;
+    --panel: #261c15;
+    --note-bg: #30251d;
+    --band: #40322a;
+    --line: #594839;
+    --grid: #40322a;
+    --ink: #f7f7f2;
+    --ink2: #c8c2b0;
+    --on-bar: #1b1410;
     /* lighter versions of every category colour for dark surfaces */
-    --c-origins: #7fa6e8;
-    --c-food: #f5d547;
-    --c-ritual: #c993d8;
-    --c-hunt: #ebebd3;
-    --c-bond: #f0678f;
-    --c-breed: #86c4a4;
-    --c-law: #f09a62;
-    --accent: #8fb2ee;
+    --c-origins: #c5d86d;
+    --c-food: #f05d23;
+    --c-ritual: #e69e19;
+    --c-hunt: #f7f7f2;
+    --c-bond: #cc6666;
+    --c-breed: #bda075;
+    --c-law: #64db57;
+    --accent: #f58a5e;
     --tint-chip: 14%;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #1a1a19;
-  --panel: #232322;
-  --note-bg: #2b2b29;
-  --band: #3c3c3b;
-  --line: #4d4d4a;
-  --grid: #3c3c3b;
-  --ink: #ebebd3;
-  --ink2: #b8b8a3;
-  --on-bar: #1a1a19;
-  --c-origins: #7fa6e8;
-  --c-food: #f5d547;
-  --c-ritual: #c993d8;
-  --c-hunt: #ebebd3;
-  --c-bond: #f0678f;
-  --c-breed: #86c4a4;
-  --c-law: #f09a62;
-  --accent: #8fb2ee;
+  --bg: #1b1410;
+  --panel: #261c15;
+  --note-bg: #30251d;
+  --band: #40322a;
+  --line: #594839;
+  --grid: #40322a;
+  --ink: #f7f7f2;
+  --ink2: #c8c2b0;
+  --on-bar: #1b1410;
+  --c-origins: #c5d86d;
+  --c-food: #f05d23;
+  --c-ritual: #e69e19;
+  --c-hunt: #f7f7f2;
+  --c-bond: #cc6666;
+  --c-breed: #bda075;
+  --c-law: #64db57;
+  --accent: #f58a5e;
   --tint-chip: 14%;
   color-scheme: dark;
 }
