@@ -67,8 +67,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 .jumpset button { min-height: 30px; font: 500 13px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 6px; padding: 5px 10px; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; text-decoration-color: var(--rule-strong); }
 .jumpset button::after { content: " →"; content: " →" / ""; }
 .jumpset button:hover { background: var(--highlight); text-decoration-color: var(--ink); }
-.helpbtn { margin-left: auto; min-height: 34px; font: 600 13px var(--f-body); color: var(--ink); background: var(--band); border: 0; border-radius: 8px; padding: 5px 14px; cursor: pointer; }
-.helpbtn:hover { background: var(--highlight); }
 /* country identity: shape icon + label style, never colour alone */
 .ico { flex: none; display: inline-block; vertical-align: -3px; }
 .ico .fill { fill: currentColor; }
@@ -133,6 +131,15 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 .nlabel { position: absolute; width: 90px; text-align: center; font-size: 12px; line-height: 1.2; color: var(--ink2); pointer-events: none; }
 .nlabel.on { color: var(--ink); font-weight: 600; background: var(--highlight); border-radius: 4px; padding: 1px 3px; }
 
+/* "How to read this": the very last item on the page, set as a disclaimer */
+.about { position: sticky; left: 0; box-sizing: border-box; width: min(calc(100vw - 8px), 1120px); margin-top: 28px; padding: 34px 20px 48px; color: var(--ink2); background: var(--card); }
+.about h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; line-height: 1.2; color: var(--ink); margin: 0 0 8px; }
+.about .ablurb { margin: 0 0 24px; max-width: 80ch; font-size: 14px; }
+.aboutgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 26px 36px; }
+.about h3 { font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); margin: 0 0 9px; }
+.about p { margin: 0 0 8px; font-size: 14px; }
+.about ul { margin: 0; padding: 0; }
+
 /* details: a modal dialog that opens when a marker or bar is selected */
 .modal { padding: 0; border: 0; border-top: 8px solid var(--lc, var(--ink)); border-radius: 14px; background: var(--panel); color: var(--ink); width: min(700px, calc(100vw - 20px)); max-height: min(90vh, 940px); overflow: hidden; box-shadow: 0 28px 70px rgba(33, 28, 50, 0.4); }
 .modal[open] { display: flex; }
@@ -172,7 +179,8 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 .legend b { font-weight: 600; }
 .legend span { color: var(--ink2); }
 .shapes { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 14px; }
-.shapes li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.shapes li { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.shaperow { display: flex; align-items: center; gap: 12px; }
 .sample { display: inline-block; width: 64px; height: 22px; border-radius: 5px; background-color: var(--ink); }
 .sample.p1 { background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0 5px, transparent 5px 11px); }
 .sample.p2 { background-image: radial-gradient(rgba(255, 255, 255, 0.5) 1.6px, transparent 1.9px); background-size: 9px 9px; }
@@ -188,7 +196,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
   .ctl:not([data-open]) .toolbar { display: none; }
   .ctl[data-open] .toolbar { margin-top: 10px; }
   .tgroup { flex-wrap: wrap; }
-  .helpbtn { margin-left: 0; }
   .mtop { padding: 12px 12px 0 16px; }
   .mbody { padding-inline: 16px; }
   .mfoot { padding-inline: 16px; }
@@ -213,13 +220,12 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
       <div class="toolbar" id="ctlbody">
         <div class="tgroup" role="group" aria-labelledby="gl-c"><span class="gl" id="gl-c">Show countries</span><div class="chips" id="countries"></div></div>
         <div class="tgroup" role="radiogroup" aria-labelledby="gl-s"><span class="gl" id="gl-s">Time scale</span><div class="segr" id="scale"></div></div>
-        <button type="button" class="helpbtn" id="help">How to read this</button>
         <nav class="tgroup" id="g-jump" aria-labelledby="gl-j"><span class="gl" id="gl-j">Jump to</span><div class="jumpset" id="jump"></div></nav>
       </div>
     </div>
   </header>
   <main id="main">
-    <div class="tl" id="tl" role="region" aria-label="Timeline of dogs, scrolls sideways and down" tabindex="0"><div class="canvas" id="canvas"></div></div>
+    <div class="tl" id="tl" role="region" aria-label="Timeline of dogs, scrolls sideways and down" tabindex="0"><div class="canvas" id="canvas"></div><section class="about" id="about" aria-labelledby="about-h"></section></div>
   </main>
 </div>
 <dialog class="modal" id="dlg" aria-labelledby="mtitle"><div class="mpanel" id="panel"><noscript>This timeline needs JavaScript to draw.</noscript></div></dialog>
@@ -493,8 +499,9 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
       if (dlg.open) render(byId[current]);
     } else {
       current = null;
-      if (dlg.open) intro();
+      if (dlg.open) closeDlg();
     }
+    buildAbout();
   }
   function scaleNote() {
     return "Each category has one row per country, labelled on the left. Countries are also told apart by marker and bar style: " +
@@ -571,7 +578,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
     if (open) ctl.setAttribute("data-open", ""); else ctl.removeAttribute("data-open");
     ctlBtn.setAttribute("aria-expanded", open ? "true" : "false");
   });
-  document.getElementById("help").addEventListener("click", function () { opener = this; intro(); openDlg(); status.textContent = "How to read this is open."; });
 
   // ---- details: a modal dialog ----
   function openDlg() { if (!dlg.open) dlg.showModal(); }
@@ -593,31 +599,39 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
   dlg.addEventListener("click", function (ev) { if (ev.target === dlg) closeDlg(); });
   dlg.addEventListener("close", afterClose); // also runs when Escape closes the dialog
 
-  function intro() {
-    panel.textContent = "";
-    dlg.style.setProperty("--lc", "var(--ink)");
-    var top = el("div", "mtop");
-    top.appendChild(el("div", "meta"));
-    top.appendChild(closeButton());
-    panel.appendChild(top);
-    var body = el("div", "mbody");
-    var h = el("h2", null, "How to read this");
-    h.id = "mtitle"; h.style.marginTop = "0";
-    body.appendChild(h);
-    body.appendChild(el("p", "lead", "How dogs have been used, viewed and lived with, country by country. Korea is the main timeline; switch on other countries to compare. Each block is a category, with one row for each country. Each marker is a dated event or find; each bar is something that lasted across a long span. Select one to see what the sources say and where to read them."));
-    body.appendChild(el("h3", null, "Countries"));
+  // ---- "How to read this", the last item on the page ----
+  function buildAbout() {
+    var a = document.getElementById("about");
+    a.textContent = "";
+    a.appendChild(Object.assign(el("h2", null, "How to read this"), { id: "about-h" }));
+    a.appendChild(el("p", "ablurb", "Disclaimer: this is research in progress, not a complete history. It shows what the team has found and sourced so far, and every entry says how solid its claim is under ‘Read with care’. Dates marked approximate are the team’s best reading of vague sources."));
+    var grid = el("div", "aboutgrid");
+
+    var c1 = el("div");
+    c1.appendChild(el("h3", null, "Reading the chart"));
+    c1.appendChild(el("p", null, "How dogs have been used, viewed and lived with, country by country. Korea is the main timeline; switch on other countries to compare. Each block is a category, with one row for each country. Each marker is a dated event or find; each bar is something that lasted across a long span. Select one to open what the sources say and where to read them. While it is open, the arrow keys move to the previous and next entry."));
+    c1.appendChild(el("p", null, scaleNote()));
+    grid.appendChild(c1);
+
+    var c2 = el("div");
+    c2.appendChild(el("h3", null, "Countries"));
     var sh = el("ul", "shapes");
     COUNTRIES.forEach(function (c) {
       var li = el("li");
-      li.appendChild(ctag(c));
-      li.appendChild(el("span", null, c.shapeName + " markers, " + c.patternName));
+      var line = el("div", "shaperow");
+      line.appendChild(ctag(c));
       var smp = el("span", "sample p" + c.i);
       smp.setAttribute("aria-hidden", "true");
-      li.appendChild(smp);
+      line.appendChild(smp);
+      li.appendChild(line);
+      li.appendChild(el("span", null, c.shapeName + " markers, " + c.patternName));
       sh.appendChild(li);
     });
-    body.appendChild(sh);
-    body.appendChild(el("h3", null, "Categories"));
+    c2.appendChild(sh);
+    grid.appendChild(c2);
+
+    var c3 = el("div");
+    c3.appendChild(el("h3", null, "Categories"));
     var ul = el("ul", "legend");
     CATS.forEach(function (c) {
       var li = el("li");
@@ -628,20 +642,14 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
       t.appendChild(el("span", null, c.d + "."));
       li.appendChild(t); ul.appendChild(li);
     });
-    body.appendChild(ul);
-    body.appendChild(el("h3", null, "Time and position"));
-    body.appendChild(el("p", "lead", scaleNote() + " Scroll the chart sideways and down, or use the jump links. Inside a pop-up, the arrow keys move to the previous and next entry."));
-    body.appendChild(el("h3", null, "Reading the evidence"));
-    body.appendChild(el("p", "care", "Every entry has a ‘Read with care’ note that says how the claim is sourced: for example, a date that rests on one scholar’s post, or a text read only through Wikipedia. Source types are labelled so you can see what kind of document each link is."));
-    panel.appendChild(body);
-    var foot = el("div", "mfoot");
-    var nav = el("div", "nav");
-    var st = el("button", "start", "Start at the beginning");
-    st.type = "button";
-    st.addEventListener("click", function () { if (order.length) select(order[0].id, true); });
-    nav.appendChild(st);
-    foot.appendChild(nav);
-    panel.appendChild(foot);
+    c3.appendChild(ul);
+    grid.appendChild(c3);
+
+    var c4 = el("div");
+    c4.appendChild(el("h3", null, "Reading the evidence"));
+    c4.appendChild(el("p", null, "Every entry has a ‘Read with care’ note that says how the claim is sourced: for example, a date that rests on one scholar’s post, or a text read only through Wikipedia. Source types are labelled so you can see what kind of document each link is."));
+    grid.appendChild(c4);
+    a.appendChild(grid);
   }
 
   function select(id, scroll) {
