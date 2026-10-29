@@ -11,7 +11,10 @@ https://lauraokas.github.io/dog-abandonment-korea/
 ## Keeping the style consistent
 - Every page must include `<link rel="stylesheet" href="theme.css">`.
 - Use the CSS variables from `theme.css` (`--bg`, `--panel`, `--ink`, `--ink2`, `--line`, `--accent`, `--f-display`, `--f-body`, `--f-mono`). Do not hardcode colours or font names.
-- Category colours are fixed across all charts: origins `--c-origins`, food `--c-food`, ritual `--c-ritual`, hunting `--c-hunt`, bond `--c-bond`, breeds `--c-breed`, law `--c-law`. Reuse the same colour for the same category on every chart.
+- The project palette is Indigo `#540d6e`, Watermelon `#ee4266`, Golden Pollen `#ffd23f`, Turquoise `#3bceac`, Jungle Green `#0ead69` (the user's own choice; defined as `--indigo`, `--watermelon`, `--pollen`, `--turquoise`, `--jungle` in `theme.css`). Stay inside it. `--magenta` and `--orange` are blends of palette colours, used only when a chart needs a 6th or 7th category.
+- Category colours are fixed across all charts: origins `--c-origins` (indigo), food `--c-food` (pollen), ritual `--c-ritual` (magenta), hunting `--c-hunt` (jungle), bond `--c-bond` (watermelon), breeds `--c-breed` (turquoise), law `--c-law` (orange). Reuse the same colour for the same category on every chart.
+- Never use colour alone to tell categories apart: always add a label or legend. Pollen yellow and turquoise are light on a white background.
+- In dark mode, indigo and magenta are lightened automatically in `theme.css`, so keep using the variables.
 - To change the look of the whole site, edit `theme.css`. Layout styles that only one chart uses stay in that chart's file.
 - New charts: self-contained HTML, lowercase hyphenated filename (`topic-name.html`), relative paths only (for example `data/results.csv`), no spaces in filenames. Match the existing timelines: IBM Plex fonts, light and dark mode, readable on a phone.
 
