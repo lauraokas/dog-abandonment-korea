@@ -1,68 +1,12 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Korean Dog Timeline</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<link rel="stylesheet" href="theme.css">
 <style>
 /* Layout: swimlane timeline (rows = roles, columns = ordered moments) with a sticky reading panel beside it. */
 :root {
-  --bg: #f2f5f4;
-  --panel: #fbfcfb;
-  --ink: #17211d;
-  --ink2: #52605a;
-  --line: #d3dbd8;
-  --grid: #e4eae7;
-  --band: #e8eeeb;
-  --note-bg: #eef2f0;
-  --c-origins: #3b5f94;
-  --c-food: #a4640c;
-  --c-ritual: #7b4a9c;
-  --c-hunt: #2c7a4b;
-  --c-bond: #b03a68;
-  --c-breed: #1d7c84;
-  --c-law: #b3402e;
-  --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
-  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --sw: 92px;
   --lw: 124px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #101614;
-    --panel: #172019;
-    --ink: #e8efec;
-    --ink2: #a0aea8;
-    --line: #2b3832;
-    --grid: #202c26;
-    --band: #1d2822;
-    --note-bg: #1d2822;
-    --c-origins: #8fb2e6;
-    --c-food: #e3ab52;
-    --c-ritual: #c79de6;
-    --c-hunt: #7fcb9d;
-    --c-bond: #ec92b4;
-    --c-breed: #70c8cf;
-    --c-law: #f29585;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #101614;
-  --panel: #172019;
-  --ink: #e8efec;
-  --ink2: #a0aea8;
-  --line: #2b3832;
-  --grid: #202c26;
-  --band: #1d2822;
-  --note-bg: #1d2822;
-  --c-origins: #8fb2e6;
-  --c-food: #e3ab52;
-  --c-ritual: #c79de6;
-  --c-hunt: #7fcb9d;
-  --c-bond: #ec92b4;
-  --c-breed: #70c8cf;
-  --c-law: #f29585;
-  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
