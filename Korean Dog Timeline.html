@@ -1,0 +1,667 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Korean Dog Timeline</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+/* Layout: swimlane timeline (rows = roles, columns = ordered moments) with a sticky reading panel beside it. */
+:root {
+  --bg: #f2f5f4;
+  --panel: #fbfcfb;
+  --ink: #17211d;
+  --ink2: #52605a;
+  --line: #d3dbd8;
+  --grid: #e4eae7;
+  --band: #e8eeeb;
+  --note-bg: #eef2f0;
+  --c-origins: #3b5f94;
+  --c-food: #a4640c;
+  --c-ritual: #7b4a9c;
+  --c-hunt: #2c7a4b;
+  --c-bond: #b03a68;
+  --c-breed: #1d7c84;
+  --c-law: #b3402e;
+  --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --sw: 92px;
+  --lw: 124px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101614;
+    --panel: #172019;
+    --ink: #e8efec;
+    --ink2: #a0aea8;
+    --line: #2b3832;
+    --grid: #202c26;
+    --band: #1d2822;
+    --note-bg: #1d2822;
+    --c-origins: #8fb2e6;
+    --c-food: #e3ab52;
+    --c-ritual: #c79de6;
+    --c-hunt: #7fcb9d;
+    --c-bond: #ec92b4;
+    --c-breed: #70c8cf;
+    --c-law: #f29585;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101614;
+  --panel: #172019;
+  --ink: #e8efec;
+  --ink2: #a0aea8;
+  --line: #2b3832;
+  --grid: #202c26;
+  --band: #1d2822;
+  --note-bg: #1d2822;
+  --c-origins: #8fb2e6;
+  --c-food: #e3ab52;
+  --c-ritual: #c79de6;
+  --c-hunt: #7fcb9d;
+  --c-bond: #ec92b4;
+  --c-breed: #70c8cf;
+  --c-law: #f29585;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.page { max-width: 1480px; margin: 0 auto; padding-block: 28px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.top { display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: end; justify-content: space-between; margin-bottom: 18px; }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 4vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.sub { color: var(--ink2); margin: 6px 0 0; max-width: 62ch; }
+.jump { display: flex; flex-wrap: wrap; gap: 6px; }
+.jump button { font: 500 12.5px var(--f-body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.jump button:hover { border-color: var(--ink2); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (min-width: 1100px) {
+  .layout { grid-template-columns: minmax(0, 1fr) 430px; }
+  .panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; }
+}
+.tl { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+.canvas { position: relative; width: calc(var(--lw) + var(--n) * var(--sw)); }
+.row { display: flex; }
+.lbl { position: sticky; left: 0; z-index: 4; flex: none; width: var(--lw); background: var(--panel); border-right: 1px solid var(--line); padding: 10px 10px; }
+.lbl b { display: block; font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+.lbl span { display: block; font-size: 11px; color: var(--ink2); line-height: 1.3; margin-top: 3px; }
+.lane .lbl b::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--lc); margin-right: 6px; }
+.track { position: relative; flex: none; width: calc(var(--n) * var(--sw)); background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px); background-size: var(--sw) 100%; }
+.eras .track, .slots .track { background-image: none; }
+.eras { height: 30px; border-bottom: 1px solid var(--line); }
+.eras .lbl, .slots .lbl { padding-block: 6px; }
+.era { position: absolute; top: 0; bottom: 0; left: calc(var(--a) * var(--sw)); width: calc((var(--b) - var(--a) + 1) * var(--sw)); border-right: 1px solid var(--line); background: var(--band); font: 600 11.5px var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; padding: 7px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.era:nth-child(even) { background: transparent; }
+.slots { height: 38px; border-bottom: 1px solid var(--line); }
+.slot { position: absolute; top: 0; bottom: 0; left: calc(var(--s) * var(--sw)); width: var(--sw); display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 4px; font: 400 11px/1.25 var(--f-mono); color: var(--ink2); }
+.lane { height: 106px; border-bottom: 1px solid var(--line); --lc: var(--ink2); }
+.lane:last-child { border-bottom: 0; }
+.lane .track::before { content: ""; position: absolute; left: 0; right: 0; top: 62px; height: 1px; background: var(--line); }
+.lane .lbl { background: var(--panel); }
+.range, .node { position: absolute; margin: 0; cursor: pointer; font-family: var(--f-body); }
+.range { top: 10px; height: 26px; left: calc(var(--a) * var(--sw) + 4px); width: calc((var(--b) - var(--a) + 1) * var(--sw) - 8px); border: 1.5px solid var(--lc); border-radius: 13px; background: color-mix(in srgb, var(--lc) 14%, var(--panel)); color: var(--ink); font-size: 11.5px; font-weight: 500; text-align: left; padding: 0 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 1; }
+.range:hover { background: color-mix(in srgb, var(--lc) 26%, var(--panel)); }
+.node { top: 51px; left: calc(var(--s) * var(--sw) + var(--sw) / 2 - 11px); width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--panel); background: var(--lc); padding: 0; z-index: 2; box-shadow: 0 0 0 1px var(--lc); }
+.node:hover { transform: scale(1.18); }
+.nlabel { position: absolute; top: 78px; left: calc(var(--s) * var(--sw) + 3px); width: calc(var(--sw) - 6px); text-align: center; font-size: 11px; line-height: 1.22; color: var(--ink2); pointer-events: none; }
+.node[aria-pressed="true"] { box-shadow: 0 0 0 1px var(--lc), 0 0 0 4px var(--panel), 0 0 0 6px var(--ink); }
+.range[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px var(--ink); }
+.nlabel.on { color: var(--ink); font-weight: 600; }
+button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.hint { font-size: 12px; color: var(--ink2); margin: 8px 2px 0; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px 18px; }
+.panel h2 { font-family: var(--f-display); font-weight: 600; font-size: 22px; line-height: 1.2; margin: 10px 0 8px; text-wrap: balance; }
+.panel h3 { font: 600 11.5px var(--f-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink2); margin: 18px 0 8px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 12px; }
+.date { font: 500 12.5px var(--f-mono); }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--lc); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 500; }
+.chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lc); }
+.era-tag { color: var(--ink2); }
+.lead { margin: 0; font-size: 15.5px; }
+.panel ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.care { background: var(--note-bg); border-radius: 6px; padding: 10px 12px; font-size: 13.5px; margin: 0; }
+.team { border: 1px dashed var(--line); border-radius: 6px; padding: 10px 12px; font-size: 13.5px; margin: 0; }
+.team a { font-weight: 500; }
+.srcs { list-style: none; padding: 0; gap: 12px; }
+.srcs li { display: block; }
+.srcs a { color: var(--ink); font-weight: 500; text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.srcs a:hover { text-decoration-thickness: 2px; }
+.stype { display: inline-block; margin-left: 6px; font: 500 10.5px var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink2); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; vertical-align: 1px; white-space: nowrap; }
+.why { display: block; color: var(--ink2); font-size: 13px; margin-top: 2px; }
+.nav { display: flex; gap: 8px; align-items: center; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line); }
+.nav button, .start { font: 500 13px var(--f-body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 7px 12px; cursor: pointer; }
+.nav button:hover, .start:hover { border-color: var(--ink2); }
+.nav button:disabled { opacity: 0.4; cursor: default; }
+.nav .pos { margin-left: auto; font: 400 12px var(--f-mono); color: var(--ink2); }
+.legend { list-style: none; padding: 0; gap: 8px; }
+.legend li { display: flex; gap: 10px; align-items: baseline; }
+.legend i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--lc); position: relative; top: 1px; }
+.legend b { font-weight: 600; }
+.legend span { color: var(--ink2); }
+.origins { --lc: var(--c-origins); } .food { --lc: var(--c-food); } .ritual { --lc: var(--c-ritual); }
+.hunt { --lc: var(--c-hunt); } .bond { --lc: var(--c-bond); } .breed { --lc: var(--c-breed); } .law { --lc: var(--c-law); }
+@media (max-width: 640px) {
+  :root { --lw: 92px; --sw: 84px; }
+  .lbl span { display: none; }
+  .panel { padding: 16px 16px 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .node:hover { transform: none; } }
+</style>
+
+<div class="page">
+  <header class="top">
+    <div>
+      <h1>Korean Dog Timeline</h1>
+      <p class="sub">What dogs were kept for on the Korean peninsula, from the Neolithic to 2026. Select any marker or bar for the detail and the sources behind it.</p>
+    </div>
+    <div class="jump" id="jump" role="group" aria-label="Jump to period"></div>
+  </header>
+  <div class="layout">
+    <div>
+      <div class="tl" id="tl" role="region" aria-label="Timeline of dogs in Korea, scrolls sideways" tabindex="0"><div class="canvas" id="canvas"></div></div>
+      <p class="hint">Rows are roles; columns are moments in order, not an even time scale. Scroll sideways, or use the period buttons above. Arrow keys step through entries.</p>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var LANES = [
+    { k: "origins", n: "Origins & science", d: "Archaeology and genetics" },
+    { k: "food", n: "Food", d: "Dog as meat, and views of it" },
+    { k: "ritual", n: "Ritual", d: "Sacrifice and ceremony" },
+    { k: "hunt", n: "Hunting & status", d: "Working dogs, titles, gifts" },
+    { k: "bond", n: "Companion & bond", d: "Close ties between people and dogs" },
+    { k: "breed", n: "Breeds & heritage", d: "Native breeds and their protection" },
+    { k: "law", n: "Law & policy", d: "Rules, pressure and bans" }
+  ];
+  var SLOTS = ["Early Neolithic", "3rd c. BCE to early CE", "3rd c. CE", "4th c. CE", "5th–6th c.", "7th c.", "Silla–Goryeo", "Goryeo", "16th c.", "Mid-Joseon", "1783", "c. 1816", "1849", "1910–45", "1938", "1962", "1978", "1985", "1988", "1991", "2007 / 2011", "2012", "2018", "2023", "9 Jan 2024", "Dec 2024", "May 2026", "Feb 2027"];
+  var ERAS = [
+    ["Prehistory", 0, 0],
+    ["Early states and Three Kingdoms", 1, 4],
+    ["Unified Silla and Goryeo", 5, 7],
+    ["Joseon", 8, 12],
+    ["Colonial era", 13, 14],
+    ["Modern Korea", 15, 27]
+  ];
+  var TEAMDOC = "https://docs.google.com/document/d/19Hi8dxO-eTzSFt1fi5tv5RR4zIk3ii065Z6KhVJPNDA/edit";
+
+  var S = {
+    lee2013: { t: "Lee, J. J. (2013). Interpreting roles of domestic dogs in the Neolithic to the Three Kingdoms periods in Korea. Journal of Korean Ancient History, 81, 5–33.", u: "https://scholar.kyobobook.co.kr/article/detail/4010023997841", k: "Journal article (abstract)" },
+    kim2026: { t: "Kim, H., et al. (2026). Ancient East Asian dog lineage is revealed by genome of ancient Korean dogs. PLOS One, 21(5), e0346864.", u: "https://pmc.ncbi.nlm.nih.gov/articles/PMC13148662/", k: "Journal article" },
+    archmag: { t: "Archaeology Magazine (8 May 2026). Study suggests Korea’s ancient dogs differed from other East Asian canines.", u: "https://archaeology.org/news/2026/05/08/study-suggests-koreas-ancient-dogs-differed-from-other-east-asian-canines/", k: "News report" },
+    jda2026: { t: "Korea JoongAng Daily (2026). Korea-Japan research team completes first full genome sequencing of ancient dogs from Korean Peninsula.", u: "https://www.koreajoongangdaily.com/lifestyle/korea-japan-research-team-completes-first-full-genome-sequencing-of-ancient-dogs-from-korean-peninsula/12516448", k: "News report" },
+    ahn2023: { t: "Ahn, B., et al. (2023). Origin and population structure of native dog breeds in the Korean peninsula and East Asia. iScience, 26(6), 106982.", u: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10291505", k: "Journal article" },
+    leeyoo: { t: "Lee, C. G., & Yoo, G. H. (1988). Jindo dogs – Korean native dogs: A historical review. Korean Journal of Veterinary Research, 28(2), 405–408.", u: "https://agris.fao.org/search/en/records/6471c7b377fd37171a6f3425", k: "Journal article (abstract)" },
+    buyeo: { t: "Buyeo (Wikipedia), summarising the Sanguozhi, ch. 30, ‘Dongyi’.", u: "https://en.wikipedia.org/wiki/Buyeo", k: "Reference site" },
+    koh2016: { t: "Koh, K.-H. (2016). Food culture of Tomb of An-Ak No. 3 in Koguryo Dynasty. Journal of the Korean Society of Food Culture, 31(1), 51–63.", u: "https://www.koreascience.or.kr/article/JAKO201609562999514.page?lang=ko", k: "Journal article (abstract)" },
+    kstudies: { t: "Korean Studies list (May 2013). Beginning of dog-meat consumption.", u: "https://koreanstudies.com/pipermail/koreanstudies_koreanstudies.com/2013-May/010315.html", k: "Scholars’ mailing-list thread" },
+    wikidm: { t: "Dog meat consumption in South Korea (Wikipedia).", u: "https://en.wikipedia.org/wiki/Dog_meat_consumption_in_South_Korea", k: "Reference site" },
+    jindocty: { t: "Jindo County. History of the Jindo dog.", u: "https://jindo.go.kr/eng/sub.cs?m=46", k: "Local government site" },
+    wikijindo: { t: "Korean Jindo (Wikipedia).", u: "https://en.wikipedia.org/wiki/Korean_Jindo", k: "Reference site" },
+    jda2012: { t: "Korea JoongAng Daily (8 April 2012). Dog of Silla royalty gets heritage designation.", u: "https://www.koreajoongangdaily.com/korea/dog-of-silla-royalty-gets-heritage-designation/10149140", k: "News report" },
+    yiam: { t: "‘Dogs and puppies in Korean culture’ (April 2024), on Yi Am’s painting, tagged to the National Museum of Korea collection.", u: "https://historylibrary.net/m/entry/Dogs-and-puppies-in-Korean-culture", k: "Museum item (repost)" },
+    oh2012: { t: "Oh, S.-D. (2012). A literature review on the types and cooking methods of soondae during the Joseon Dynasty. Journal of the Korean Society of Food Culture, 27(4), 340–345.", u: "https://www.koreascience.or.kr/article/JAKO201225150622890.page?&lang=ko", k: "Journal article (abstract)" },
+    ahn1999: { t: "Ahn, Y.-G. (1999). Dog meat eating history and culture in Korea. The Korean Journal of Food and Nutrition, 12(4), 387–396.", u: "https://koreascience.or.kr/article/JAKO199911920137949.page", k: "Journal article (abstract)" },
+    gwangju: { t: "Cho, N. (10 July 2017). The dog days in Korea: an attempt to get the facts right about ‘bosin-tang’. Gwangju News.", u: "https://gwangjunewsgic.com/food-drink/korean-food/bosin-tang/", k: "Magazine column" },
+    kh2018: { t: "Kim, M. (2018). Sapsaree feature. The Korea Herald.", u: "https://www.koreaherald.com/article/1543838", k: "News report" },
+    kh2026: { t: "Kang, H. (30 June 2026). Visual History of Korea. The Korea Herald.", u: "https://www.koreaherald.com/article/10793384", k: "News report" },
+    kt2024: { t: "The Korea Times (9 January 2024). Korea bans age-old tradition of dog meat consumption.", u: "https://www.koreatimes.co.kr/southkorea/politics/20240109/korea-bans-age-old-tradition-of-dog-meat-consumption", k: "News report" },
+    iaka: { t: "International Aid for Korean Animals. South Korea’s animal protection laws (last modified 4 Oct 2025).", u: "https://koreananimals.org/south-koreas-animal-protection-laws/", k: "NGO page" },
+    penn: { t: "Pennington, R. (13 January 2024). Kanine kuisine in Korea.", u: "https://richardpennington.com/2024/01/13/kanine-kuisine-in-korea/", k: "Blog" },
+    dugn: { t: "Dugnoille, J. (2018). Food, Culture and Society. Article on the South Korean dog-meat trade and the pet/food boundary.", u: "https://ore.exeter.ac.uk/repository/handle/10871/27435", k: "Journal article (abstract)" },
+    kbpet: { t: "The Korea Times (30 June 2025). Pet ownership in Korea hits 15 million.", u: "https://www.koreatimes.co.kr/amp/economy/others/20250630/pet-ownership-in-korea-hits-15-million", k: "News report" },
+    mafra: { t: "Ministry of Agriculture, Food and Rural Affairs (15 May 2026). Early closure of remaining dog meat farms, 82% closed.", u: "https://www.mafra.go.kr/bbs/english/25/577928/artclView.do", k: "Government statement" },
+    bbc: { t: "Butler, G., & Kim, H. (25 June 2025). South Korea banned dog meat. So what happens to the dogs? BBC News.", u: "https://www.bbc.com/news/articles/c20r7lkel68o", k: "News report" },
+    jda2026b: { t: "Seo, J., & Paik, J. (18 August 2026). As dog meat ban nears in Korea, canines still require rescue. Korea JoongAng Daily.", u: "https://www.koreajoongangdaily.com/korea/as-dog-meat-ban-nears-in-korea-canines-still-require-rescue/12816395", k: "News report" }
+  };
+
+  var E = [
+    { id: "e01", a: 0, lane: "origins", date: "Early Neolithic", tag: "First domestic dogs",
+      title: "The earliest domestic dogs",
+      sum: "Dog remains from early Neolithic sites are the oldest evidence of domestic dogs on the peninsula.",
+      pts: ["Lee’s review pulls together dog remains from 61 archaeological sites, from the Neolithic to Unified Silla.", "The earliest domestic dogs come from early Neolithic sites such as Bibong-ri, Yeondae-do, Daeyeonpyeong-do and Dongsam-dong.", "The 2026 genome paper also states that dog remains have been excavated from Korean sites dating back to the Neolithic."],
+      care: "The abstract names the sites but gives no calendar years. The absolute dates are in the full paper.",
+      src: [["lee2013", "The only systematic survey of dog remains across Korean prehistory. It underpins every early entry on this page."], ["kim2026", "Confirms the Neolithic starting point in a recent peer-reviewed paper."]] },
+
+    { id: "e02", a: 0, b: 5, lane: "food", date: "Neolithic to Unified Silla (to 935 CE)", tag: "Eaten in small amounts", bar: "Dogs eaten, in small amounts",
+      title: "Dogs eaten, but not often",
+      sum: "Evidence that dogs were eaten runs through the whole period, but the quantities are small. Dogs were probably not a common food.",
+      pts: ["The evidence comes mainly from shell middens.", "Lee examined layers, butchery marks, cooking marks and associated finds at about 30 sites with clear context.", "North of the peninsula, Mark Byington cites dog and chicken bones in a settlement at Dahaimeng (central Jilin, early Puyo, latter half of the 3rd century BCE) as likely food waste."],
+      care: "Byington also points out that acidic soil on the peninsula probably destroyed organic remains, so small numbers may understate real use. That is his opinion in a mailing-list post, not a finding.",
+      src: [["lee2013", "Gives the main conclusion: consumption existed, but was marginal."], ["kstudies", "Adds the preservation caveat and the Dahaimeng example from named specialists."]] },
+
+    { id: "e03", a: 0, b: 5, lane: "ritual", date: "Neolithic to Unified Silla (to 935 CE)", tag: "Ritual sacrifice", bar: "Ritual sacrifice",
+      title: "Dogs as ritual offerings",
+      sum: "Dogs were sacrificed in rituals for thousands of years, from the Neolithic to Unified Silla.",
+      pts: ["The best-known case is a young dog, about 5–6 months old, wrapped in a mesh bag and placed in a ritual pit at the Gangmun-dong wetland site.", "After the Three Kingdoms period, dogs were buried under building foundation stones and sacrificed in well rituals."],
+      care: "Both points come from one author’s review, read here through its abstract.",
+      src: [["lee2013", "The only source in this set that documents ritual use, which most popular accounts skip."]] },
+
+    { id: "e04", a: 0, b: 3, lane: "bond", date: "Neolithic to Three Kingdoms", tag: "Deliberate burial", bar: "Deliberate burial near people",
+      title: "Dogs buried with care",
+      sum: "Dogs were deliberately buried after natural death. At Neuk-do, some lay beside human graves and others in a separate dog cemetery.",
+      pts: ["Burials appear at Daeyeonpyeong-do Kkachisan shell midden, Gwangyang Osari Dontak shell midden and Sacheon Neuk-do.", "At Neuk-do, adult male dogs were buried near human graves, which Lee reads as a special role. Other dogs, including puppies, went into a separate dog cemetery.", "In the Three Kingdoms period dogs sometimes accompanied the dead, far less often than horses or cattle."],
+      care: "Lee’s abstract does not use the word companion. Calling this a close bond is our reading of the burial pattern.",
+      src: [["lee2013", "The strongest evidence we have that some dogs held a social place in the community."]] },
+
+    { id: "e05", a: 1, lane: "origins", date: "3rd c. BCE to early CE", tag: "Neuk-do dog",
+      title: "A dog from Neuk-do, Sacheon",
+      sum: "One of four dogs in the 2026 genome study came from this small island site off the southern coast.",
+      pts: ["Dog remains came from C District. The site runs from the 3rd century BCE into the early Common Era.", "Neuk-do has shell middens, burials, dwellings and artifacts showing contact with China and Japan. The paper calls it an exchange hub.", "The dog was small to medium in size by its bones."],
+      care: "Individual radiocarbon dates are in the paper’s Supplementary Table S3, which was not opened here.",
+      src: [["kim2026", "Primary source for the site, the dating and the genome result."], ["jda2026", "Names the two sites and the four institutions behind the study."]] },
+
+    { id: "e06", a: 2, lane: "hunt", date: "3rd c. CE", tag: "Dog ‘ka’ in Buyeo",
+      title: "The dog ‘ka’ of Buyeo",
+      sum: "A Chinese record of the 3rd century says Buyeo’s ruling lords held titles named for animals, and one of them was the dog.",
+      pts: ["The Records of the Three Kingdoms (Sanguozhi), chapter 30, describes the lords as ka, told apart by animal names.", "Four ka are listed: horse, cow, pig and dog.", "Goguryeo adopted a similar ka system."],
+      care: "Read here through Wikipedia’s summary, not the Chinese text. What the dog title meant in practice is not explained in what was read.",
+      src: [["buyeo", "A dated written source that puts the dog inside the political vocabulary of an early Korean state."]] },
+
+    { id: "e07", a: 3, lane: "food", date: "4th c. CE (357 CE per one scholar)", tag: "Anak Tomb No. 3 mural",
+      title: "Anak Tomb No. 3: dog in the meat store",
+      sum: "A Goguryeo tomb mural shows whole carcasses of roe deer, dog and pig in a meat storage space.",
+      pts: ["Koh (2016) studies the mural’s grain yard, well, kitchen and meat store, and compares them with Chinese tomb murals from before the 4th century.", "In the Anak mural whole carcasses are hung. In Chinese murals large animals were cut into parts.", "Youngsook Pak (in the Korean Studies thread) calls it the earliest evident depiction of dog as meat, dated 357, and says dog was then regarded more like other meat.", "Wikipedia also cites a 4th-century Goguryeo tomb painting of a slaughtered dog."],
+      care: "Koh’s abstract confirms the dog but gives no year. The 357 date comes from a scholar’s post, and the Wikipedia claim rests on a 2008 newspaper column.",
+      src: [["koh2016", "Peer-reviewed confirmation that the mural includes a dog among the carcasses."], ["kstudies", "Source of the 357 date and the reading of dog as ordinary meat."], ["wikidm", "Shows how the mural is usually cited."]] },
+
+    { id: "e08", a: 3, lane: "origins", date: "4th–6th c. CE", tag: "Bonghwang-dong dog",
+      title: "A dog from Bonghwang-dong, Gimhae",
+      sum: "The second archaeological source of the 2026 genome study is a major Geumgwan Gaya centre.",
+      pts: ["Bonghwang-dong was a large residential and ceremonial centre of the Geumgwan Gaya polity.", "One dog bone was sampled from the upper (northern) district.", "The bone was small to medium in size."],
+      care: "The paper says nothing about how this dog was used or why it was buried.",
+      src: [["kim2026", "Primary source for the site and the dating."]] },
+
+    { id: "e09", a: 4, lane: "hunt", date: "Early 5th c. CE", tag: "Hunting dogs to Japan",
+      title: "Korean hunting dogs reach Japan",
+      sum: "Two sources agree that Korean hunting dogs were sent to Japan in the early 5th century.",
+      pts: ["Lee & Yoo (1988) say their review of Japanese history found Korean hunting dogs sent to Japan in the early 5th century. Blood-serum and molecular work they cite suggests Korean dogs reached Japan 1,300–2,500 years ago.", "Jindo County’s history page says dogs across the country were mainly hunting dogs in the 5th–6th centuries and mentions a Baekje hunting dog and a hawk being brought to Japan in the early 5th century."],
+      care: "The county page names a text I could not match to a standard source. It also repeats local rumours (a sunken Song ship, Mongol soldiers) and a 15,000-year claim that conflicts with the 1,300–2,500-year estimate. Lee & Yoo is read through its abstract only.",
+      src: [["leeyoo", "Peer-reviewed support for hunting dogs as an early export."], ["jindocty", "The only source found that calls hunting the main role of dogs in this period."]] },
+
+    { id: "e10", a: 5, lane: "hunt", date: "679 and 685 CE", tag: "Silla gifts to Japan",
+      title: "Silla gives dogs to Japan",
+      sum: "The Jindo County page says horses, mules and dogs were given from Silla to Japan in 679 and 685.",
+      pts: ["The gifts are placed in the reign of the Chunmu emperor.", "If accurate, they show dogs circulating as valued goods between courts."],
+      care: "The page does not name the text behind these dates, so treat this as a lead to check against the Japanese chronicles.",
+      src: [["jindocty", "Only source found for this item."]] },
+
+    { id: "e11", a: 5, lane: "breed", date: "7th c. CE (Silla)", tag: "Sapsaree in Silla art",
+      title: "Sapsaree in early art and documents",
+      sum: "A newspaper feature says Sapsarees appear in paintings and documents from as early as the 7th century, tied to Silla.",
+      pts: ["The Sapsaree is a long-haired native breed.", "Genome work links it mainly to West Eurasian ancestry, which fits the idea of very old contact with dogs from the west."],
+      care: "The 7th-century claim is a single statement in a news feature with no artwork or document named.",
+      src: [["kh2018", "The only source here that dates the Sapsaree to Silla."], ["ahn2023", "Gives the genetic background for the breed."]] },
+
+    { id: "e12", a: 6, lane: "food", date: "Silla and Goryeo (to 1392)", tag: "Buddhism limits meat",
+      title: "Buddhism discourages meat",
+      sum: "Dog meat was uncommon under Silla and Goryeo, when Buddhism was the state religion and meat eating was generally discouraged.",
+      pts: ["Wikipedia attributes this to the Jogye Order’s history of Korean Buddhism.", "Pennington gives the same reading, and adds that the prohibition on eating dogs relaxed under Neo-Confucian Joseon."],
+      care: "This is a general rule about meat, not direct evidence about dogs. Neither source cites a text for the dog case.",
+      src: [["wikidm", "Summarises the claim and its cited source."], ["penn", "Shows how the same story is repeated in popular accounts."]] },
+
+    { id: "e13", a: 7, lane: "hunt", date: "Goryeo period", tag: "Donggyeong dog",
+      title: "The Donggyeong dog in records and clay",
+      sum: "The Gyeongju hunting breed appears in a Goryeo-era chronicle and on Silla earthenware.",
+      pts: ["The Chronicles of the Three Kingdoms, written in the Goryeo period, has a chapter about the dog.", "Donggyeong-like dogs appear on Silla earthenware depicting daily life.", "Choi Seok-gyu, who heads the preservation association, believes it was the dog of the Silla royalty.", "The breed has a bobtail or no tail, which separates it from the longer-tailed Jindo."],
+      care: "The royal-dog idea is one person’s interpretation of the earthenware, not an established fact.",
+      src: [["jda2012", "Brings together the written and visual traces of this breed."]] },
+
+    { id: "e14", a: 8, lane: "bond", date: "16th c. (Joseon)", tag: "Yi Am’s puppies",
+      title: "Yi Am, ‘Dog and Puppies’",
+      sum: "A Joseon painting shows a mother dog with her puppies under a tree.",
+      pts: ["Yi Am was born in 1499.", "The image is in the National Museum of Korea’s collection."],
+      care: "The page I could open is a repost and gives no year for the painting. Check the museum’s own catalogue entry before citing.",
+      src: [["yiam", "A visual record of affection toward dogs in the Joseon period."]] },
+
+    { id: "e14b", a: 8, b: 12, lane: "bond", date: "Joseon (1392–1897), undated", tag: "Dogs as companions", bar: "Officials: dogs are companions",
+      title: "Some Joseon officials call dogs companions",
+      sum: "Some Joseon officials argued that dogs were companions of people and called for dog meat to be banned.",
+      pts: ["Dog meat was still seen as a delicacy for special days: hot summer days, funerals and 60th birthdays (hwangap).", "Wikipedia cites this to Dugnoille (2021), p. 22."],
+      care: "I could not open the 2021 source. The Dugnoille article I could check is from 2018 and covers the present day, not Joseon.",
+      src: [["wikidm", "Where the claim appears, with its cited source."], ["ahn1999", "Confirms the same occasions for eating dog, in Chungnam, from a peer-reviewed article."]] },
+
+    { id: "e15", a: 9, lane: "food", date: "Mid-Joseon", tag: "Dog soondae recipe",
+      title: "Dog meat in a Joseon recipe, and then gone",
+      sum: "Across 12 Joseon cookbooks, dog meat appears in one of 15 soondae types, only in the middle period.",
+      pts: ["That is 6.7% of the recorded soondae types, the least common ingredient.", "The late-Joseon list has beef, lamb, fish and pork, and no dog."],
+      care: "This tells us about one dish, not about how much dog was eaten overall. The abstract does not name the cookbook.",
+      src: [["oh2012", "Rare quantitative evidence from Joseon texts."]] },
+
+    { id: "e16", a: 10, lane: "food", date: "1783", tag: "Dog eaters shunned",
+      title: "Dog eaters kept from ginseng farms",
+      sum: "Yu Deuk-gong’s Goundangpilgi (1783) says people who ate dog were seen as irreverent and barred from ginseng farms.",
+      pts: ["It suggests that some people regarded dog meat as unclean."],
+      care: "Read through Wikipedia’s summary, which cites the Korean Classics database. The original text was not opened.",
+      src: [["wikidm", "Where the passage is summarised and sourced."]] },
+
+    { id: "e17", a: 11, lane: "food", date: "c. 1816", tag: "Poem: boiled dog",
+      title: "A poem of boiled dog for the in-laws",
+      sum: "A poem by a son of the scholar Chŏng Yagyong describes a woman serving boiled dog meat to her parents-in-law.",
+      pts: ["It shows dog meat as something served at home in the early 19th century."],
+      care: "Wikipedia cites Ahn (2000) and Seo (2002) without page numbers and says so. Verify in the originals.",
+      src: [["wikidm", "Only source found for the poem."]] },
+
+    { id: "e18", a: 12, lane: "food", date: "1849", tag: "Bosintang recipe",
+      title: "Dongguk Sesigi records bosintang",
+      sum: "A Joseon calendar of customs contains a recipe for bosintang, the dog-meat soup, and is often cited as an early recipe.",
+      pts: ["Ahn (1999) says dog is traditionally eaten on Boknal, the hottest days of summer, and in some Chungnam communities at funerals and 60th birthdays.", "A 2017 column gives two folk explanations for the summer link: cows and pigs were worth more as farm animals, and a five-elements idea that fire (dog) defeats metal (summer)."],
+      care: "The 1849 date and the recipe come from Wikipedia, which cites a 2008 newspaper column. The column about origins is not scholarly.",
+      src: [["wikidm", "Where the 1849 recipe is dated."], ["ahn1999", "Peer-reviewed overview of the eating customs."], ["gwangju", "Useful for the folk reasoning, not as evidence."]] },
+
+    { id: "e19", a: 13, lane: "breed", date: "1910–45 (colonial era)", tag: "Dogs killed for fur",
+      title: "Long-haired dogs killed for fur",
+      sum: "State archives are said to record long-haired dogs killed in large numbers to make winter coats for Japanese soldiers.",
+      pts: ["War and poverty after the occupation then brought the Sapsaree close to extinction."],
+      care: "From a single news feature that refers to the archives without naming a document.",
+      src: [["kh2018", "The only source found on the fur requisition."]] },
+
+    { id: "e20", a: 14, lane: "breed", date: "1938", tag: "Jindo registered",
+      title: "The Jindo becomes a Natural Treasure",
+      sum: "The colonial government registered the Jindo as its 53rd Natural Treasure in May 1938.",
+      pts: ["Professor Tamezo Mori surveyed the breed in February 1937.", "Jindo islanders traditionally used the dogs to hunt water deer and wild boar.", "A 2026 article describes Pungsan, Jindo, Sapsal, Donggyeongi and Jeju dogs as landraces shaped by environment and by generations of hunters and farmers."],
+      care: "The details come from Wikipedia. The county page confirms 1938 but not the month or Mori.",
+      src: [["wikijindo", "Gives the designation history and hunting use."], ["jindocty", "Local confirmation of the 1938 protection."], ["kh2026", "Frames the native breeds as working landraces."]] },
+
+    { id: "e21", a: 15, lane: "breed", date: "1962", tag: "Jindo re-designated",
+      title: "Jindo re-designated by the Korean state",
+      sum: "South Korea designated the Jindo as Natural Monument No. 53 in 1962 and placed it under the Cultural Heritage Protection Act.",
+      pts: ["From here the dog is treated as national heritage as well as an animal."],
+      care: "The county page does not mention 1962. This date rests on Wikipedia’s citation of the Cultural Heritage Administration.",
+      src: [["wikijindo", "Source for the 1962 designation."]] },
+
+    { id: "e22", a: 16, lane: "law", date: "1978", tag: "Dogs leave livestock list",
+      title: "Dogs removed from the livestock list",
+      sum: "A Food Sanitation Act revision in 1978 took dogs off the livestock list, leaving dog meat in a legal gray area for 46 years.",
+      pts: ["Dog farming remained legal under the Livestock Industry Act.", "No clear rules covered butchering or retailing dog meat."],
+      care: "Taken from one news report. Check the date and wording in a legal source before citing it.",
+      src: [["kt2024", "Gives the legal history behind the 2024 ban."]] },
+
+    { id: "e23", a: 17, lane: "breed", date: "1985", tag: "Sapsaree rescued",
+      title: "Eight Sapsarees found in a kennel",
+      sum: "Dr Ha Ji-hong, back from genetics studies in the US, found eight Sapsarees in his father’s kennel, the start of the breed’s recovery.",
+      pts: ["The Sapsaree, Jindo and Donggyeongi were later named national treasures, with government help for breeding.", "A 2023 genome paper notes all three breeds were restored from a limited number of individuals."],
+      care: "The feature gives no date for the designations.",
+      src: [["kh2018", "Source for the 1985 episode."], ["ahn2023", "Confirms the small founding populations."]] },
+
+    { id: "e24", a: 18, lane: "law", date: "1988", tag: "Olympics pressure",
+      title: "Foreign criticism around the Seoul Olympics",
+      sum: "Dog meat drew foreign criticism during the 1988 Seoul Olympics, and again in 2002 and 2018.",
+      pts: ["Pennington reports that the pressure led to a ban on selling or eating dog meat inside Seoul’s four main gates.", "Dugnoille’s ethnography finds that the public line between pets and food seems designed to deflect foreign criticism, yet often breaks down in practice. Dog meat’s symbolic value (medicinal belief, Korean identity) can override moral doubts."],
+      care: "The four-gates ban comes from a blog with no citation. The foreign-criticism point is in the Korea Times.",
+      src: [["kt2024", "Names the three events that drew criticism."], ["penn", "Source for the four-gates claim, unverified."], ["dugn", "Explains why the ‘pet versus food’ line is contested."]] },
+
+    { id: "e25", a: 18, lane: "origins", date: "1988", tag: "Jindo origin debate",
+      title: "Are Jindos native? A 1988 review",
+      sum: "Lee and Yoo concluded that Jindos are native Korean dogs, not descendants of Song dynasty or Mongolian dogs.",
+      pts: ["They say the dogs appear to descend from Stone Age dogs, kept pure on Jindo island.", "Popular accounts had given them a Chinese or Mongol origin."],
+      care: "Read through the abstract record only. Later genome work (2023, 2026) gives a more detailed picture.",
+      src: [["leeyoo", "An early scholarly argument for native origin."]] },
+
+    { id: "e26", a: 19, lane: "law", date: "1991", tag: "Animal Protection Act",
+      title: "First Animal Protection Act",
+      sum: "South Korea adopted its first Animal Protection Law, with caretaker duties and bans on cruelty, but minimal penalties.",
+      pts: ["It also covers abandoned animals and inhumane slaughter.", "Weak penalties made it largely hard to enforce."],
+      care: "From an advocacy group’s summary of the law.",
+      src: [["iaka", "A timeline of the law’s amendments from 1991 to 2024."]],
+      team: { t: "DR07 · Animal Protection Act", n: "Your team’s entry covers the law today. This node gives its starting date." } },
+
+    { id: "e27", a: 20, lane: "law", date: "2007 and 2011", tag: "Penalties raised",
+      title: "Amendments raise penalties and owner duties",
+      sum: "The 2007 amendment raised abuse penalties and added pet-owner responsibilities. The 2011 amendment added committees and reporting.",
+      pts: ["2007: clearer definitions of care and cruelty, and rules for retailers, abandoned animals and shelters.", "2011: a national animal welfare committee, shelter committees and annual welfare reports."],
+      care: "From the same advocacy summary as the 1991 entry.",
+      src: [["iaka", "Source for both amendments."]],
+      team: { t: "DR07 · Animal Protection Act", n: "These are the steps that added owner duties, relevant to your owner-responsibility theme." } },
+
+    { id: "e28", a: 21, lane: "breed", date: "April–May 2012", tag: "Donggyeong monument",
+      title: "Donggyeong dog designated a natural monument",
+      sum: "In April 2012 the Cultural Heritage Administration announced it would designate the Donggyeong as a natural monument, with registration expected in May.",
+      pts: ["The breed had been nearly endangered. A preservation effort began in 2006 and about 306 dogs were officially recognised."],
+      care: "The article reports a plan and an expected date, not the final registration.",
+      src: [["jda2012", "Source for the announcement and population figures."]] },
+
+    { id: "e29", a: 22, lane: "law", date: "2018", tag: "Moran Market closes",
+      title: "Moran Market closes",
+      sum: "The largest dog-meat market, at Seongnam, closed in 2018 as sales declined, the year of the PyeongChang Winter Olympics.",
+      pts: ["Pennington also says the Taepyeong-dong slaughterhouse was forced out by Seongnam’s mayor, without a date."],
+      care: "Both claims come from a blog with no citations.",
+      src: [["penn", "Only source found for the closure."], ["kt2024", "Lists 2018 among the moments of foreign criticism."]] },
+
+    { id: "e30", a: 23, lane: "origins", date: "2023", tag: "Native-breed genomes",
+      title: "Two ancestries behind Korea’s native breeds",
+      sum: "A 2023 genome study found Korean native breeds fall into two ancestral groups.",
+      pts: ["Sapsaree links mainly to West Eurasian ancestry. Jindo and Donggyeongi link mainly to Southeast and East Asian ancestry.", "Jindo and Donggyeongi show gene flow from the New Guinea singing dog lineage.", "East Asian dog populations are estimated to have diverged roughly 2,000 to 11,000 years ago.", "The three breeds are kept as natural monuments and were restored from small numbers."],
+      care: "The paper reports 205 canids; the Korea Herald says 211. The Pungsan was not analysed. The paper does not discuss historical uses.",
+      src: [["ahn2023", "Primary source for the genetics of today’s native breeds."], ["kh2026", "Reports the study for a general audience."]] },
+
+    { id: "e31", a: 24, lane: "law", date: "9 January 2024", tag: "Dog meat ban passes",
+      title: "National Assembly passes the dog-meat ban",
+      sum: "The Assembly passed the special act 208–0 with two abstentions. It takes effect in 2027.",
+      pts: ["Raising or butchering dogs for food: up to three years in prison or a 30 million won fine. Distributing or selling: up to two years or 20 million won.", "A government study counted 1,156 dog farms with over 520,000 dogs, and 1,666 restaurants selling over 388,000 dogs a year. Industry puts the number of farmers at about 3,500.", "A survey found 93.4% of Koreans do not intend to eat dog meat in future and 82.3% support the ban."],
+      care: "Eating dog meat itself carries no penalty. Survey wording and sample are not given in the article.",
+      src: [["kt2024", "Main source for the vote, penalties and numbers."], ["iaka", "Confirms the three-year phase-out."]],
+      team: { t: "DR09 · Ban on Dog Meat", n: "Your entry follows what happened to farms and dogs after the ban." } },
+
+    { id: "e32", a: 25, lane: "bond", date: "December 2024", tag: "Pet ownership ~27%",
+      title: "Pet ownership reaches about 27% of households",
+      sum: "A KB Financial Group report counts 15.46 million pet owners (29.9% of people) and 5.91 million pet households (26.7%).",
+      pts: ["Pet households rose by about 60,000 from 2023.", "This is the companion-animal end of the timeline, set against the earlier food and working uses."],
+      care: "The count covers all pets. The article gives no breakdown for dogs.",
+      src: [["kbpet", "Source for the figures and the report."]],
+      team: { t: "DR15 · Companion dogs raised as family members", n: "Your entry on dogs as family sits at this end of the timeline." } },
+
+    { id: "e33", a: 26, lane: "origins", date: "6 May 2026", tag: "Ancient genomes",
+      title: "First full genomes of ancient Korean dogs",
+      sum: "Four dogs about 2,000 years old, from Neuk-do and Bonghwang-dong, form a lineage separate from other East Asian dog populations.",
+      pts: ["They resembled the Australian dingo and the New Guinea singing dog.", "They carried DNA from European dogs, suggesting contact with western dogs over thousands of years.", "Dogs and wolves kept interbreeding after domestication, mostly with the extinct Japanese wolf.", "The work came from the Gaya National Research Institute of Cultural Heritage, NRICH, the Seokdang Museum of Dong-A University and Japan’s Sokendai."],
+      care: "The coverage says nothing about how the four dogs were used.",
+      src: [["kim2026", "The primary paper."], ["archmag", "Short summary of the findings."], ["jda2026", "Names the sites and institutions."]] },
+
+    { id: "e34", a: 27, lane: "law", date: "February 2027 (scheduled)", tag: "Farm closure deadline",
+      title: "Deadline for closing dog-meat farms",
+      sum: "Farm owners have until February 2027 to close and sell off remaining animals.",
+      pts: ["By May 2026, 82% of farms had closed.", "About 97% of the dogs on closed farms were shipped out for slaughter or distribution, and only 623 were adopted."],
+      care: "These figures are as recorded in your team’s DR09 entry. The three linked pages were not reopened for this timeline.",
+      src: [["mafra", "Official source for the closure figures."], ["bbc", "Background on what happens to the dogs."], ["jda2026b", "Recent report on rescue capacity."]],
+      team: { t: "DR09 · Ban on Dog Meat", n: "This node mirrors the facts in your entry." } }
+  ];
+
+  var laneIdx = {};
+  LANES.forEach(function (l, i) { laneIdx[l.k] = i; });
+  var order = E.slice().sort(function (x, y) { return x.a - y.a || laneIdx[x.lane] - laneIdx[y.lane] || (x.b ? 0 : 1) - (y.b ? 0 : 1); });
+  var byId = {};
+  order.forEach(function (e, i) { e.i = i; byId[e.id] = e; });
+
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function eraOf(a) { for (var i = 0; i < ERAS.length; i++) { if (a >= ERAS[i][1] && a <= ERAS[i][2]) return ERAS[i][0]; } return ""; }
+
+  var canvas = document.getElementById("canvas");
+  var tl = document.getElementById("tl");
+  var panel = document.getElementById("panel");
+  canvas.style.setProperty("--n", SLOTS.length);
+
+  var erasRow = el("div", "row eras");
+  erasRow.appendChild(el("div", "lbl"));
+  var eT = el("div", "track");
+  ERAS.forEach(function (er) {
+    var d = el("div", "era", er[0]);
+    d.style.setProperty("--a", er[1]); d.style.setProperty("--b", er[2]);
+    eT.appendChild(d);
+  });
+  erasRow.appendChild(eT);
+  canvas.appendChild(erasRow);
+
+  var slotRow = el("div", "row slots");
+  slotRow.appendChild(el("div", "lbl"));
+  var sT = el("div", "track");
+  SLOTS.forEach(function (s, i) { var d = el("div", "slot", s); d.style.setProperty("--s", i); sT.appendChild(d); });
+  slotRow.appendChild(sT);
+  canvas.appendChild(slotRow);
+
+  var buttons = {}, labels = {};
+  LANES.forEach(function (l) {
+    var row = el("div", "row lane " + l.k);
+    var lbl = el("div", "lbl");
+    lbl.appendChild(el("b", null, l.n));
+    lbl.appendChild(el("span", null, l.d));
+    row.appendChild(lbl);
+    var tr = el("div", "track");
+    order.filter(function (e) { return e.lane === l.k; }).forEach(function (e) {
+      var b = el("button");
+      b.type = "button";
+      b.setAttribute("aria-pressed", "false");
+      b.setAttribute("aria-label", e.date + ": " + e.title);
+      b.title = e.date + ": " + e.title;
+      if (e.b != null) {
+        b.className = "range";
+        b.textContent = e.bar;
+        b.style.setProperty("--a", e.a); b.style.setProperty("--b", e.b);
+      } else {
+        b.className = "node";
+        b.style.setProperty("--s", e.a);
+        var lab = el("div", "nlabel", e.tag);
+        lab.style.setProperty("--s", e.a);
+        tr.appendChild(lab);
+        labels[e.id] = lab;
+      }
+      b.addEventListener("click", function () { select(e.id, true); });
+      tr.appendChild(b);
+      buttons[e.id] = b;
+    });
+    row.appendChild(tr);
+    canvas.appendChild(row);
+  });
+
+  var jump = document.getElementById("jump");
+  ERAS.forEach(function (er) {
+    var b = el("button", null, er[0]);
+    b.type = "button";
+    b.addEventListener("click", function () {
+      var sw = parseFloat(getComputedStyle(canvas).getPropertyValue("--sw")) || 92;
+      tl.scrollTo({ left: er[1] * sw - 8, behavior: reduce() ? "auto" : "smooth" });
+    });
+    jump.appendChild(b);
+  });
+
+  function reduce() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (x) { return false; } }
+
+  function intro() {
+    panel.textContent = "";
+    var h = el("h2", null, "How to read this");
+    h.style.marginTop = "0";
+    panel.appendChild(h);
+    panel.appendChild(el("p", "lead", "Each row is a role dogs played. Each dot is a dated event or find; each bar is a role that lasted across a long span. Select one to see what the sources say and where to read them."));
+    panel.appendChild(el("h3", null, "Roles"));
+    var ul = el("ul", "legend");
+    LANES.forEach(function (l) {
+      var li = el("li"); li.className = l.k;
+      li.appendChild(el("i"));
+      var t = el("div");
+      t.appendChild(el("b", null, l.n + ". "));
+      t.appendChild(el("span", null, l.d + "."));
+      li.appendChild(t); ul.appendChild(li);
+    });
+    panel.appendChild(ul);
+    panel.appendChild(el("h3", null, "Reading the evidence"));
+    panel.appendChild(el("p", "care", "Every entry has a ‘Read with care’ note that says how the claim is sourced: for example, a date that rests on one scholar’s post, or a text read only through Wikipedia. Source types are labelled so you can see what kind of document each link is."));
+    var nav = el("div", "nav");
+    var st = el("button", "start", "Start at the beginning");
+    st.type = "button";
+    st.addEventListener("click", function () { select(order[0].id, true); });
+    nav.appendChild(st);
+    panel.appendChild(nav);
+  }
+
+  var current = null;
+  function select(id, scroll) {
+    var e = byId[id];
+    if (!e) return;
+    if (current) {
+      buttons[current].setAttribute("aria-pressed", "false");
+      if (labels[current]) labels[current].classList.remove("on");
+    }
+    current = id;
+    buttons[id].setAttribute("aria-pressed", "true");
+    if (labels[id]) labels[id].classList.add("on");
+    try { history.replaceState(null, "", "#" + id); } catch (x) {}
+    render(e);
+    if (scroll) {
+      try { buttons[id].scrollIntoView({ inline: "center", block: "nearest", behavior: reduce() ? "auto" : "smooth" }); } catch (x) {}
+      if (window.innerWidth < 1100) { try { panel.scrollIntoView({ block: "nearest", behavior: reduce() ? "auto" : "smooth" }); } catch (x) {} }
+    }
+  }
+
+  function render(e) {
+    var lane = LANES[laneIdx[e.lane]];
+    panel.textContent = "";
+    var meta = el("div", "meta");
+    meta.appendChild(el("span", "date", e.date));
+    var chip = el("span", "chip " + e.lane, lane.n);
+    meta.appendChild(chip);
+    meta.appendChild(el("span", "era-tag", eraOf(e.a)));
+    panel.appendChild(meta);
+    panel.appendChild(el("h2", null, e.title));
+    panel.appendChild(el("p", "lead", e.sum));
+    panel.appendChild(el("h3", null, "What the sources say"));
+    var ul = el("ul");
+    e.pts.forEach(function (p) { ul.appendChild(el("li", null, p)); });
+    panel.appendChild(ul);
+    panel.appendChild(el("h3", null, "Read with care"));
+    panel.appendChild(el("p", "care", e.care));
+    panel.appendChild(el("h3", null, "Sources"));
+    var sl = el("ul", "srcs");
+    e.src.forEach(function (s) {
+      var d = S[s[0]];
+      var li = el("li");
+      var a = el("a", null, d.t);
+      a.href = d.u; a.target = "_blank"; a.rel = "noopener noreferrer";
+      li.appendChild(a);
+      li.appendChild(el("span", "stype", d.k));
+      li.appendChild(el("span", "why", "Why it matters: " + s[1]));
+      sl.appendChild(li);
+    });
+    panel.appendChild(sl);
+    if (e.team) {
+      panel.appendChild(el("h3", null, "Link to your team research"));
+      var tp = el("p", "team");
+      var ta = el("a", null, e.team.t);
+      ta.href = TEAMDOC; ta.target = "_blank"; ta.rel = "noopener noreferrer";
+      tp.appendChild(ta);
+      tp.appendChild(document.createTextNode(". " + e.team.n));
+      panel.appendChild(tp);
+    }
+    var nav = el("div", "nav");
+    var prev = el("button", null, "← Previous"); prev.type = "button";
+    var next = el("button", null, "Next →"); next.type = "button";
+    prev.disabled = e.i === 0; next.disabled = e.i === order.length - 1;
+    prev.addEventListener("click", function () { step(-1); });
+    next.addEventListener("click", function () { step(1); });
+    nav.appendChild(prev); nav.appendChild(next);
+    nav.appendChild(el("span", "pos", (e.i + 1) + " of " + order.length));
+    panel.appendChild(nav);
+    panel.scrollTop = 0;
+  }
+
+  function step(d) {
+    if (!current) return;
+    var n = byId[current].i + d;
+    if (n >= 0 && n < order.length) select(order[n].id, true);
+  }
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+    var t = ev.target && ev.target.tagName;
+    if (t === "INPUT" || t === "TEXTAREA" || t === "SELECT") return;
+    if (!current) return;
+    ev.preventDefault();
+    step(ev.key === "ArrowRight" ? 1 : -1);
+  });
+
+  var h = (location.hash || "").replace("#", "");
+  if (h && byId[h]) select(h, false); else intro();
+})();
+</script>
+
+</body></html>
