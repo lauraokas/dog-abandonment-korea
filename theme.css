@@ -68,13 +68,13 @@
    like a real highlighter stroke. Use <span class="mark"> around any text to highlight.
    Dark text on yellow is 9.9:1. */
 .mark, .date, .tag {
-  --from: 46%;
+  --from: 50%;
   --to: 95%;
   background: linear-gradient(to bottom, transparent var(--from), var(--highlight) var(--from), var(--highlight) var(--to), transparent var(--to));
-  padding: 0 0.14em;
+  padding: 0 0.14em 0.1em;   /* the extra bottom padding lets the stroke sit lower without changing its thickness */
   margin: 0 -0.14em;
   border-radius: 0.2em 0.55em 0.25em 0.6em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
-.date, .tag { --from: 36%; padding: 0 0.5em; margin: 0; }
+.date, .tag { --from: 41%; padding: 0 0.5em 0.1em; margin: 0; }
