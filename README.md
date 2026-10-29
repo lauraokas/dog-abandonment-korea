@@ -12,7 +12,7 @@ Research and graph work in progress for a school project. The charts are plain H
 | Korean Dog Timeline (earlier version) | The roles dogs have played on the Korean peninsula, from the Neolithic to 2026, with the sources behind each entry | [open](https://lauraokas.github.io/dog-abandonment-korea/korean-dog-timeline.html) |
 | Dutch Dog Timeline (earlier version) | How dogs were kept in the Netherlands and how the rules around owning them developed, from the 16th century to 2026 | [open](https://lauraokas.github.io/dog-abandonment-korea/dutch-dog-timeline.html) |
 
-On each timeline, rows are roles, dots are dated events or finds, and bars are roles that lasted a long time. Select a dot or bar to read what the sources say. Arrow keys step through the entries.
+On each timeline, rows are roles, dots are dated events or finds, and bars are roles that lasted a long time. The timeline fills the whole window. Select a dot or bar and the details and sources open in a pop-up; Escape closes it, and the arrow keys move to the previous or next entry while it is open.
 
 ## What is in this repository
 
