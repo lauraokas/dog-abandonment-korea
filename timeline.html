@@ -64,7 +64,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 .sw input:checked + .t { background: var(--ink); color: var(--on-bar); font-weight: 600; }
 .sw input:focus-visible + .t { outline: 3px solid var(--ink); outline-offset: 2px; }
 .jumpset { display: flex; flex-wrap: wrap; gap: 2px 4px; }
-.jumpset button { min-height: 30px; font: 500 13px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 6px; padding: 5px 10px; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; text-decoration-color: var(--rule-strong); }
+.jumpset button { min-height: 30px; font: 500 13px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 6px; padding: 5px 7px; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; text-decoration-color: var(--rule-strong); }
 .jumpset button::after { content: " →"; content: " →" / ""; }
 .jumpset button:hover { background: var(--highlight); text-decoration-color: var(--ink); }
 /* country identity: shape icon + label style, never colour alone */
@@ -87,11 +87,11 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 
 .head { position: sticky; top: 0; z-index: 6; background: var(--card); }
 .head .lbl { z-index: 7; }
-.eras { height: 36px; }
+.eras { height: 30px; }
 .eras .lbl, .axis .lbl { padding-block: 5px; display: flex; align-items: center; }
-.era { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--ink) 8%, var(--card)); color: var(--ink); font: 600 12px var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; padding: 7px 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.era { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--ink) 8%, var(--card)); color: var(--ink); font: 600 12px var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .era.alt { background: color-mix(in srgb, var(--ink) 16%, var(--card)); }
-.axis { height: 32px; background: var(--ink); }
+.axis { height: 30px; background: var(--ink); }
 .axis .lbl { background: var(--ink); color: var(--on-bar); font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; }
 .tick { position: absolute; top: 0; transform: translateX(-50%); padding-top: 13px; font-size: 12px; line-height: 1; font-weight: 500; color: var(--on-bar); white-space: nowrap; }
 .tick::before { content: ""; position: absolute; left: 50%; top: 0; width: 1px; height: 9px; background: rgba(246, 247, 235, 0.75); }
@@ -102,11 +102,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 .crow { --bgc: var(--card); }
 .crow.alt { --bgc: var(--note-bg); background: var(--bgc); }
 .crow .lbl { background: var(--bgc); }
-.keyrow { height: 32px; }
-.keyrow .lbl { padding-block: 5px; display: flex; align-items: center; font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
-.keyitems { position: sticky; left: calc(var(--lw) + 14px); display: flex; align-items: center; gap: 4px 20px; width: max-content; height: 32px; font-size: 13px; color: var(--ink); }
-.keyitems i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--lc); margin-right: 7px; vertical-align: -1px; }
-
 /* a country's line: one rail, markers dodging above and below it, spans on top */
 .rail { position: absolute; left: 0; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 22%, transparent); }
 .ext { position: absolute; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--lc) 26%, transparent); }
@@ -119,7 +114,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 .range.p3 { background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.24) 0 2px, transparent 2px 6px); }
 .range:hover { background-color: color-mix(in srgb, var(--lc) 82%, var(--ink)); }
 .range[aria-pressed="true"] { background-color: color-mix(in srgb, var(--lc) 65%, var(--ink)); box-shadow: 0 0 0 2px var(--bgc, var(--card)), 0 0 0 5px var(--ink); }
-.node { z-index: 3; display: inline-flex; align-items: center; height: 28px; padding: 0 6px 0 0; border: 0; background: transparent; border-radius: 14px; }
+.node { z-index: 3; display: inline-flex; align-items: center; gap: 3px; height: 44px; padding: 0 6px 0 0; border: 0; background: transparent; border-radius: 10px; text-align: left; }
 .node svg { flex: none; display: block; width: 28px; height: 28px; overflow: visible; transform: scale(var(--sc, 1)); }
 .node .fill { fill: var(--lc); stroke: var(--bgc, var(--card)); stroke-width: 3; paint-order: stroke fill; stroke-linejoin: round; }
 .node .open { fill: var(--bgc, var(--card)); stroke: var(--lc); stroke-width: 3.6; stroke-linejoin: round; }
@@ -127,9 +122,12 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 .node:hover { --sc: 1.14; }
 .node[aria-pressed="true"] .ring { opacity: 1; }
 .node[aria-pressed="true"] { --sc: 1.1; }
-.node .tg { margin-left: -2px; padding: 1px 5px; border-radius: 4px; font: 700 12px var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
-.node:hover .tg { background: color-mix(in srgb, var(--ink) 9%, var(--bgc, var(--card))); }
-.node[aria-pressed="true"] .tg { background: var(--highlight); }
+.node .lb { display: block; width: 108px; padding: 2px 4px; border-radius: 4px; line-height: 1.2; }
+.node .tg { display: block; font: 700 12px var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); }
+.node .hd { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font: 12px var(--f-body); color: var(--ink2); }
+.node:hover .lb { background: color-mix(in srgb, var(--ink) 9%, var(--bgc, var(--card))); }
+.node[aria-pressed="true"] .lb { background: var(--highlight); }
+.node[aria-pressed="true"] .hd { color: var(--ink); font-weight: 600; }
 
 /* "How to read this": the very last item on the page, set as a disclaimer */
 .about { position: sticky; left: 0; box-sizing: border-box; width: min(calc(100vw - 8px), 1120px); margin-top: 28px; padding: 34px 20px 48px; color: var(--ink2); background: var(--card); }
@@ -263,14 +261,14 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
   // Compressed scale: each period gets a fixed width, so the sparse early centuries take less room
   // than the busy recent ones. Even scale: one fixed number of pixels per year.
   var BREAKS = [-6000, -300, 700, 1500, 1800, 1945, 2000, 2027];
-  var WIDTHS = [120, 430, 160, 300, 340, 480, 1200];
-  var BAND_NAMES = ["Before 300 BCE", "300 BCE to 700 CE", "700 to 1500", "1500 to 1800", "1800 to 1945", "1945 to 2000", "2000 to today"];
+  var WIDTHS = [120, 600, 160, 300, 700, 700, 1600];
+  var BAND_NAMES = ["To 300 BCE", "300 BCE–700 CE", "700–1500", "1500–1800", "1800–1945", "1945–2000", "2000–today"];
   var TICKS = {
     compressed: [-6000, -300, 0, 500, 700, 1000, 1500, 1800, 1900, 1945, 1970, 2000, 2010, 2020, 2026],
     even: [-6000, -5000, -4000, -3000, -2000, -1000, 0, 500, 1000, 1500, 2000]
   };
   var PAD = 56, EVEN_K = 0.45;
-  var LANE_H = 36, BAR_ROW = 30, TAG_W = 9; // a marker lane is 36px tall; TAG_W = estimated pixels per letter of the category tag
+  var LANE_H = 48, BAR_ROW = 26, LABEL_W = 108; // a marker lane is 48px tall; LABEL_W = width of the tag + heading beside a marker
   var mode = "compressed";
 
   function x(y) {
@@ -342,9 +340,9 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
         bars.push({ e: e, left: x1, width: w, lo: x1 - 4, hi: x1 + w + 4 });
       } else {
         var mid = e.end != null ? (e.start + e.end) / 2 : e.start;
-        var cx = x(mid), tw = catOf(e.cat).n.length * TAG_W + 14;
+        var cx = x(mid);
         var ext = (e.end != null && x2 - x1 > 24) ? { left: x1, width: x2 - x1 } : null;
-        dots.push({ e: e, cx: cx, ext: ext, lo: cx - 16, hi: cx + 16 + tw });
+        dots.push({ e: e, cx: cx, ext: ext, lo: cx - 16, hi: cx + 18 + LABEL_W + 8 });
       }
     });
     var nb = pack(bars), ends = [], up = 0, down = 0;
@@ -398,12 +396,15 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
         tr.appendChild(ex);
       }
       b.className = "node";
-      b.style.left = (item.cx - 14) + "px"; b.style.top = (y - 14) + "px";
+      b.style.left = (item.cx - 14) + "px"; b.style.top = (y - 22) + "px";
       var s = sv("svg", { viewBox: "0 0 28 28", "aria-hidden": "true", focusable: "false" });
       s.appendChild(shapeEl(e.country.shape));
       s.appendChild(sv("circle", { cx: 14, cy: 14, r: 13, "class": "ring" }));
       b.appendChild(s);
-      b.appendChild(el("span", "tg", cat ? cat.n : e.cat));
+      var lb = el("span", "lb");
+      lb.appendChild(el("span", "tg", cat ? cat.n : e.cat));
+      lb.appendChild(el("span", "hd", e.tag));
+      b.appendChild(lb);
     }
     b.addEventListener("click", function () { select(e.id, true); });
     tr.appendChild(b);
@@ -439,19 +440,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
     TICKS[mode].forEach(function (y) { var t = el("div", "tick", fmtYear(y)); t.style.left = x(y) + "px"; at.appendChild(t); });
     axis.appendChild(at);
     head.appendChild(axis);
-    var keyrow = el("div", "row keyrow");
-    keyrow.appendChild(el("div", "lbl", "Key"));
-    var kt = el("div", "track"), ki = el("div", "keyitems");
-    ki.setAttribute("aria-label", "Category colours");
-    CATS.forEach(function (c) {
-      var it = el("span");
-      it.style.setProperty("--lc", catColour(c.k));
-      it.appendChild(el("i"));
-      it.appendChild(document.createTextNode(c.n));
-      ki.appendChild(it);
-    });
-    kt.appendChild(ki); keyrow.appendChild(kt);
-    head.appendChild(keyrow);
     canvas.appendChild(head);
 
     // one line per country
@@ -462,9 +450,9 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
 
     shown.forEach(function (c, ki) {
       var lay = layoutCountry(c);
-      var barsH = lay.nb ? lay.nb * BAR_ROW + 10 : 0;
-      var cy = 12 + barsH + lay.up * LANE_H + 18;
-      var h = cy + 18 + lay.down * LANE_H + 16;
+      var barsH = lay.nb ? lay.nb * BAR_ROW + 8 : 0;
+      var cy = 10 + barsH + lay.up * LANE_H + 22;
+      var h = cy + 22 + lay.down * LANE_H + 10;
       var row = el("div", "row crow" + (ki % 2 ? " alt" : ""));
       var lbl = el("div", "lbl");
       lbl.style.paddingTop = (cy - 12) + "px";
@@ -475,7 +463,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
       var rail = el("div", "rail");
       rail.style.top = (cy - 2) + "px"; rail.style.width = tw + "px";
       tr.appendChild(rail);
-      lay.bars.forEach(function (it) { it.top = 12 + it.lvl * BAR_ROW; mkEvent(it.e, tr, cy, it, true); });
+      lay.bars.forEach(function (it) { it.top = 10 + it.lvl * BAR_ROW; mkEvent(it.e, tr, cy, it, true); });
       lay.dots.forEach(function (it) { mkEvent(it.e, tr, cy, it, false); });
       row.appendChild(tr);
       lanes.appendChild(row);
@@ -499,7 +487,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.2
     buildAbout();
   }
   function scaleNote() {
-    return "Each country has its own line, labelled on the left. A marker’s colour and the small label beside it say which category the event is about; a marker that would land on another is moved up or down, but never sideways, so its position along the line is always its year. Countries are also told apart by marker and bar style: " +
+    return "Each country has its own line, labelled on the left. A marker’s colour and the small label beside it say which category the event is about, with a short heading under it; a marker that would land on another is moved up or down, but never sideways, so its position along the line is always its year. Countries are also told apart by marker and bar style: " +
       COUNTRIES.map(function (c) { return c.name + " is a " + c.shapeName + " and " + c.patternName; }).join("; ") + ". Position is the year. " +
       (mode === "compressed"
         ? "On the compressed scale the busy recent centuries get more room than the long early ones, so distances are not to scale. "
