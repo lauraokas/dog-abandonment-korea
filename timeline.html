@@ -16,7 +16,7 @@
    - Checked filters show a tick in a dark box, and the chosen switch is a dark segment (not only a colour change).
    - Selected marker: a heavy ring and a highlighted label.
    - Yellow is only ever the exact original #fffc31, never tinted, mixed or darkened (tools/check-style.py enforces this).
-   - Every click target is at least 24 px, and a "List" view gives the same events as a plain table. */
+   - Every click target is at least 24 px, and everything works from the keyboard. */
 :root { --lw: 124px; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
@@ -33,7 +33,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
 .sub { color: var(--ink2); margin: 8px 0 0; max-width: 72ch; }
 
 /* controls: three different kinds, so they look and behave differently.
-   Countries = a filter (tick any), View and Time scale = switches (pick one), Jump to = links that move the chart. */
+   Countries = a filter (tick any), Time scale = a switch (pick one), Jump to = links that move the chart. */
 .toolbar { display: flex; flex-wrap: wrap; gap: 16px 34px; align-items: flex-start; margin: 22px 0 14px; }
 .toolbar [hidden] { display: none; }
 .tgroup { display: block; border: 0; margin: 0; padding: 0; min-width: 0; }
@@ -135,22 +135,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
 .nlabel.on { color: var(--ink); font-weight: 600; background: var(--highlight); border-radius: 4px; padding: 1px 3px; }
 .hint { font-size: 13px; color: var(--ink2); margin: 8px 2px 0; max-width: 90ch; }
 
-/* list view: the same events as a plain table */
-.listwrap { border-radius: 10px; background: var(--card); overflow: auto; border: 3px solid var(--rule); }
-@media (min-width: 900px) { .listwrap { max-height: calc(100vh - 200px); } }
-.ltable { width: 100%; border-collapse: collapse; font-size: 14px; }
-.ltable caption { text-align: left; padding: 12px 14px; font-size: 13px; color: var(--ink2); }
-.ltable th { position: sticky; top: 0; z-index: 2; background: var(--ink); color: var(--on-bar); text-align: left; font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 14px; }
-.ltable td { vertical-align: middle; padding: 9px 14px; }
-.ltable tbody tr:nth-child(even) td { background: var(--note-bg); }
-.ltable td.d { white-space: nowrap; color: var(--ink2); font-size: 13px; }
-.ltable .cat { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; font-weight: 500; }
-.ltable .cat::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--lc); }
-.ltable .ev { font: 600 14px var(--f-body); color: var(--ink); background: none; border: 0; padding: 4px 0; text-align: left; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; cursor: pointer; }
-.ltable .ev:hover { background: var(--highlight); }
-.ltable .ev[aria-pressed="true"] { background: var(--highlight); box-shadow: inset 4px 0 0 var(--ink); padding-left: 10px; }
-.ltable tbody tr:has(.ev[aria-pressed="true"]) td { background: color-mix(in srgb, var(--ink) 9%, var(--card)); }
-
 /* reading panel */
 .panel { background: var(--panel); border-top: 6px solid var(--lc, var(--ink)); border-radius: 10px; padding: 18px 22px 20px; }
 .panel h2 { font-family: var(--f-display); font-weight: 600; font-size: 22px; line-height: 1.2; margin: 12px 0 8px; text-wrap: balance; }
@@ -190,9 +174,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
 @media (max-width: 640px) {
   :root { --lw: 108px; }
   .panel { padding: 14px 16px 14px; }
-  .tl, .listwrap { border-radius: 6px; }
-  .ltable th, .ltable td { padding-inline: 10px; }
-  .ltable .hide-s { display: none; }
+  .tl { border-radius: 6px; }
 }
 @media (forced-colors: active) {
   .range { border: 1px solid CanvasText; }
@@ -213,7 +195,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
   <main id="main">
     <div class="toolbar">
       <fieldset class="tgroup" id="g-countries"><legend class="gl">Show countries</legend><div class="chips" id="countries"></div></fieldset>
-      <fieldset class="tgroup" id="g-view"><legend class="gl">View as</legend><div class="segr" id="view"></div></fieldset>
       <fieldset class="tgroup" id="g-scale"><legend class="gl">Time scale</legend><div class="segr" id="scale"></div></fieldset>
       <nav class="tgroup" id="g-jump" aria-labelledby="gl-j"><div class="gl" id="gl-j">Jump to</div><div class="jumpset" id="jump"></div></nav>
     </div>
@@ -222,7 +203,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
     <div class="layout">
       <div>
         <div class="tl" id="tl" role="region" aria-label="Timeline of dogs, scrolls sideways and down" tabindex="0"><div class="canvas" id="canvas"></div></div>
-        <div class="listwrap" id="list" role="region" aria-label="List of events" tabindex="0" hidden></div>
         <p class="hint" id="hint"></p>
       </div>
       <aside class="panel" id="panel" role="region" aria-label="Details" tabindex="-1"><noscript>This timeline needs JavaScript to draw.</noscript></aside>
@@ -270,7 +250,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
   };
   var PAD = 56, EVEN_K = 0.45;
   var BAR_H = 38, DOT_H = 76, ROW_PAD = 8, LAB = 45; // LAB = half the width of a dot label
-  var mode = "compressed", view = "chart";
+  var mode = "compressed";
 
   function x(y) {
     if (mode === "even") return PAD + (y - BREAKS[0]) * EVEN_K;
@@ -349,7 +329,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
   // ---- drawing ----
   var canvas = document.getElementById("canvas");
   var tl = document.getElementById("tl");
-  var listEl = document.getElementById("list");
   var hint = document.getElementById("hint");
   var status = document.getElementById("status");
   var labels = {}, order = [], current = null;
@@ -360,7 +339,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
     for (var i = 0; i < n.length; i++) n[i].setAttribute("aria-pressed", state ? "true" : "false");
     if (labels[id]) labels[id].classList.toggle("on", state);
   }
-  function eventButton(id) { return document.querySelector((view === "list" ? ".ltable " : ".canvas ") + '[data-ev="' + id + '"]'); }
+  function eventButton(id) { return document.querySelector('.canvas [data-ev="' + id + '"]'); }
 
   function mkEvent(e, tr, y0, item, isBar) {
     var b = el("button");
@@ -492,14 +471,13 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
     shown.forEach(function (c) { order = order.concat(c.events); });
     order.sort(function (a, b) { return a.start - b.start || COUNTRIES.indexOf(a.country) - COUNTRIES.indexOf(b.country) || a.seq - b.seq; });
     order.forEach(function (e, i) { e.i = i; });
-    buildList();
 
     hint.textContent = "Each category has one row per country, labelled on the left. Countries are also told apart by marker and bar style: " +
       COUNTRIES.map(function (c) { return c.name + " is a " + c.shapeName + " and " + c.patternName; }).join("; ") + ". Position is the year. " +
       (mode === "compressed"
         ? "On the compressed scale the busy recent centuries get more room than the long early ones, so distances are not to scale. "
         : "On the even scale distance is time, so recent years are crowded. ") +
-      "A faint bar behind a marker means the date is only known as a rough range. Scroll sideways, or use the jump buttons. Arrow keys step through entries. The List view shows the same events as a table.";
+      "A faint bar behind a marker means the date is only known as a rough range. Scroll sideways, or use the jump buttons. Arrow keys step through entries.";
     tl.classList.toggle("scrolled", tl.scrollLeft > 2);
 
     if (current && byId[current] && on[byId[current].country.id]) {
@@ -511,35 +489,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
     }
   }
   tl.addEventListener("scroll", function () { tl.classList.toggle("scrolled", tl.scrollLeft > 2); }, { passive: true });
-
-  // ---- the same events as a plain table ----
-  function buildList() {
-    listEl.textContent = "";
-    var t = el("table", "ltable");
-    t.appendChild(el("caption", null, "All events in date order, for the countries switched on. Select an event to read its sources in the details panel."));
-    var thead = el("thead"), hr = el("tr");
-    [["Date", ""], ["Country", ""], ["Category", "hide-s"], ["Event", ""]].forEach(function (h) {
-      var th = el("th", h[1], h[0]); th.scope = "col"; hr.appendChild(th);
-    });
-    thead.appendChild(hr); t.appendChild(thead);
-    var tb = el("tbody");
-    order.forEach(function (e) {
-      var tr = el("tr");
-      tr.appendChild(el("td", "d", e.date));
-      var tc = el("td"); tc.appendChild(ctag(e.country)); tr.appendChild(tc);
-      var tk = el("td", "hide-s");
-      var cs = el("span", "cat", catOf(e.cat).n); cs.style.setProperty("--lc", catColour(e.cat));
-      tk.appendChild(cs); tr.appendChild(tk);
-      var te = el("td");
-      var b = el("button", "ev", e.title);
-      b.type = "button"; b.setAttribute("aria-pressed", "false"); b.setAttribute("data-ev", e.id);
-      b.addEventListener("click", function () { select(e.id, true); });
-      te.appendChild(b); tr.appendChild(te);
-      tb.appendChild(tr);
-    });
-    t.appendChild(tb);
-    listEl.appendChild(t);
-  }
 
   // ---- controls ----
   // A filter: tick any combination (real checkboxes).
@@ -580,18 +529,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
       build();
     });
   });
-  radios(document.getElementById("view"), "view", [["chart", "Timeline"], ["list", "List"]], view, function (v) {
-    view = v;
-    applyView();
-    showCurrent();
-  });
-  function applyView() {
-    var chart = view === "chart";
-    tl.hidden = !chart; hint.hidden = !chart; listEl.hidden = chart;
-    document.getElementById("g-scale").hidden = !chart;
-    document.getElementById("g-jump").hidden = !chart;
-    document.getElementById("key").hidden = !chart;
-  }
   function showCurrent() {
     if (!current) return;
     var b = eventButton(current);
@@ -627,7 +564,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
     var h = el("h2", null, "How to read this");
     h.style.marginTop = "0";
     panel.appendChild(h);
-    panel.appendChild(el("p", "lead", "Each block is a category, with one row for each country you switch on. Each marker is a dated event or find; each bar is something that lasted across a long span. Select one to see what the sources say and where to read them. Prefer a table? Choose List under View."));
+    panel.appendChild(el("p", "lead", "Each block is a category, with one row for each country you switch on. Each marker is a dated event or find; each bar is something that lasted across a long span. Select one to see what the sources say and where to read them."));
     panel.appendChild(el("h3", null, "Countries"));
     var sh = el("ul", "shapes");
     COUNTRIES.forEach(function (c) {
@@ -754,7 +691,6 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 4.4
 
   var h = (location.hash || "").replace("#", "");
   if (h && byId[h]) current = h;
-  applyView();
   build();
   if (current) showCurrent();
 })();
