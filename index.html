@@ -29,15 +29,20 @@
     font-size: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--ink2);
+    color: var(--ink);
+    display: inline-block;
+    background: var(--highlight);
+    border-radius: 999px;
+    padding: 3px 10px;
   }
   h1 {
     font-family: var(--f-display);
     font-weight: 600;
     font-size: 30px;
     line-height: 1.2;
-    margin: 8px 0 12px;
+    margin: 12px 0 12px;
   }
+  h1::after { content: ""; display: block; width: 56px; height: 6px; margin-top: 10px; border-radius: 3px; background: var(--highlight); }
   p { margin: 0 0 24px; color: var(--ink2); line-height: 1.5; }
   ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   a {
@@ -49,7 +54,7 @@
     font-weight: 500;
     text-decoration: none;
   }
-  a:hover, a:focus-visible { background: var(--band); }
+  a:hover, a:focus-visible { background: var(--highlight); color: var(--ink); }
 </style>
 </head>
 <body>

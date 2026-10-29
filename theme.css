@@ -27,8 +27,8 @@
   --olive: #546336;      /* yellow + gunmetal */
   --wine: #66191f;       /* terracotta + gunmetal */
 
-  /* Surfaces and text: ivory is the page, cards and rows are slightly deeper tones */
-  --bg: #f6f7eb;
+  /* Surfaces and text: a light ivory is the page, cards and rows are slightly deeper tones */
+  --bg: #fcfcf6;
   --panel: #ebece0;
   --note-bg: #e3e4d5;
   --band: #d8d9c6;
@@ -36,7 +36,7 @@
   --grid: #d8d9c6;
   --ink: #393e41;
   --ink2: #4f5558;
-  --on-bar: #f6f7eb;     /* text colour on top of a solid category colour */
+  --on-bar: #fcfcf6;     /* text colour on top of a solid category colour */
 
   /* One colour per category, the same on every chart */
   --c-origins: var(--grape);
@@ -47,6 +47,9 @@
   --c-breed: var(--olive);
   --c-law: var(--wine);
   --accent: var(--grape);
+  /* Yellow is the accent colour. It is too bright to read on ivory, so it is only
+     used as a fill behind dark text (--ink on yellow is 9:1) */
+  --highlight: var(--yellow);
 
   --tint-chip: 20%;      /* how much category colour goes into a chip */
 
