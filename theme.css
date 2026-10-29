@@ -30,14 +30,14 @@
   --green: #1b742d;
   --navy: #181b67;
 
-  /* Surfaces and text: a light ivory is the page; cards, rows and buttons are soft lilac tints of the grape,
-     so the secondary tones stay clean instead of turning khaki */
+  /* Surfaces and text: a light ivory is the page; cards, rows and buttons are cool, light blue-grey tints,
+     so the secondary tones stay clean (no khaki, no pink) */
   --bg: #fcfcf6;
-  --panel: #f5f2f8;
-  --note-bg: #eeeaf3;
-  --band: #e6e0ed;
-  --line: #d6cee0;
-  --grid: #e6e0ed;
+  --panel: #f1f5fa;
+  --note-bg: #e8eef6;
+  --band: #dce5f0;
+  --line: #c9d6e6;
+  --grid: #dce5f0;
   --ink: #393e41;
   --ink2: #4f5558;
   --on-bar: #fcfcf6;     /* text colour on top of a solid category colour */
