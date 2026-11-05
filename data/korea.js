@@ -174,6 +174,61 @@ window.DOGTL.countries.push({
       "t": "Seo, J., & Paik, J. (18 August 2026). As dog meat ban nears in Korea, canines still require rescue. Korea JoongAng Daily.",
       "u": "https://www.koreajoongangdaily.com/korea/as-dog-meat-ban-nears-in-korea-canines-still-require-rescue/12816395",
       "k": "News report"
+    },
+    "chun2018": {
+      "t": "Chun, M.-S. (2018). Rabies Outbreaks and Control during the Japanese Colonial Period in Korea. Uisahak, 27(3), 323–356.",
+      "u": "https://www.pubmed.gov/30679409/",
+      "k": "Journal article (abstract)"
+    },
+    "jda2012dm": {
+      "t": "Kang, J. (2 December 2012). Korea still conflicted over its custom of dining on dogs. Korea JoongAng Daily.",
+      "u": "https://www.koreajoongangdaily.com/korea/korea-still-conflicted-over-its-custom-of-dining-on-dogs/11423478",
+      "k": "News report"
+    },
+    "kt2008dm": {
+      "t": "Kim, T. (17 July 2008). Dispute over dog meat heats up. The Korea Times.",
+      "u": "https://www.koreatimes.co.kr/amp/southkorea/20080717/dispute-over-dog-meat-heats-up",
+      "k": "News report"
+    },
+    "nbc2018": {
+      "t": "NBC News (c. February 2018, date inferred from image filenames; headline and byline not shown on the page read). Olympic crackdown on dog meat fails to banish it from menus.",
+      "u": "https://www.nbcnews.com/news/world/olympic-crackdown-dog-meat-fails-banish-it-menus-n847091",
+      "k": "News report"
+    },
+    "jda2008pet": {
+      "t": "Cho, J. (6 July 2008). One stop pet shopping builds on ’60s tradition. Korea JoongAng Daily.",
+      "u": "https://www.koreajoongangdaily.com/business/one-stop-pet-shopping-builds-on-60s-tradition/10311453",
+      "k": "News report"
+    },
+    "csm2001": {
+      "t": "Hau, L. (27 November 2001). Pangs of newfound puppy love hit South Korea. The Christian Science Monitor.",
+      "u": "https://www.csmonitor.com/2001/1127/p7s2-woap.html",
+      "k": "News report"
+    },
+    "kt2011reg": {
+      "t": "Rahn, K. (16 October 2011). Obligatory dog registration to begin in 2013. The Korea Times.",
+      "u": "https://www.koreatimes.co.kr/southkorea/20111016/obligatory-dog-registration-to-begin-in-2013",
+      "k": "News report"
+    },
+    "jda2013reg": {
+      "t": "Kim, E. (4 August 2013). Owners ditch dogs to avoid new regulation. Korea JoongAng Daily.",
+      "u": "https://www.koreajoongangdaily.com/korea/owners-ditch-dogs-to-avoid-new-regulation/11304417",
+      "k": "News report"
+    },
+    "kt2020abn": {
+      "t": "Lee, H. (5 October 2020). Animal abandonment increasing in Korea. The Korea Times.",
+      "u": "https://www.koreatimes.co.kr/www/nation/2020/10/281_297056.html",
+      "k": "News report"
+    },
+    "asiae2023stray": {
+      "t": "The Asia Business Daily (2023, year inferred; no date or author shown). [Stray Dogs in Crisis]② 80,000 Strays Annually... Need to Encourage Registration and Revise Adoption Procedures.",
+      "u": "https://www.asiae.co.kr/en/article/2023102714204018378",
+      "k": "News report"
+    },
+    "asiae2023dm": {
+      "t": "The Asia Business Daily (May, year not stated, probably 2023). [Bosintang Byeolgok] (Part 1) Is It Time to Say Goodbye to Meat Dogs? ... A New Phase in the ‘45-Year Debate’.",
+      "u": "https://www.asiae.co.kr/en/article/2023052412392728042",
+      "k": "News report"
     }
   },
   "events": [
@@ -675,8 +730,34 @@ window.DOGTL.countries.push({
       ]
     },
     {
-      "id": "e19",
+      "id": "e35",
       "seq": 19,
+      "cat": "law",
+      "start": 1909,
+      "end": 1945,
+      "approx": false,
+      "date": "1909–1945 (colonial era)",
+      "tag": "Rabies control",
+      "title": "Colonial rabies policy: untagged dogs killed, then mass vaccination",
+      "sum": "Japanese colonial authorities controlled rabies by culling dogs without owner tags, then by vaccination. Outbreaks did not clearly decline.",
+      "pts": [
+        "A 1909 ‘Domestic dog control regulation’ allowed dogs without an owner’s name tag to be killed.",
+        "From 1915 rabies was a reportable disease and thousands of dogs were slaughtered each year until 1926.",
+        "From 1927 vaccination became the main measure: 760,515 dogs were vaccinated between 1927 and 1942.",
+        "The abstract reports public criticism of the violence against dogs and people, and of the state’s failure to understand traditional human–dog relationships."
+      ],
+      "care": "Read through the abstract only. The yearly cull numbers and the phase dates are in the full article.",
+      "src": [
+        {
+          "s": "chun2018",
+          "why": "Peer-reviewed history of colonial dog control; the only scholarly source on dogs in the colonial period so far, and an early example of stray and owned dogs handled as a public-health problem."
+        }
+      ],
+      "verify": "Confirm 1909 regulation name and the year ranges of the three phases in the full text"
+    },
+    {
+      "id": "e19",
+      "seq": 20,
       "cat": "role",
       "start": 1910,
       "end": 1945,
@@ -698,7 +779,7 @@ window.DOGTL.countries.push({
     },
     {
       "id": "e20",
-      "seq": 20,
+      "seq": 21,
       "cat": "breed",
       "start": 1938,
       "date": "1938",
@@ -727,8 +808,32 @@ window.DOGTL.countries.push({
       ]
     },
     {
+      "id": "e36",
+      "seq": 22,
+      "cat": "ownership",
+      "start": 1953,
+      "end": 1969,
+      "approx": true,
+      "date": "After 1953; first pet shops late 1960s",
+      "tag": "Pets after the war",
+      "title": "Pets uncommon until US troops arrive; first Myeong-dong pet shops",
+      "sum": "A 2008 JoongAng feature says pets were not common in Korea until US Army troops brought them after the war, and that Seoul’s first pet shops opened in Myeong-dong in the late 1960s.",
+      "pts": [
+        "The ‘pet street’ began in Myeong-dong in the early 1960s; by the late 1960s it had two pet shops and one animal hospital.",
+        "In the 1970s pet businesses moved to Chungmuro because Myeong-dong rents rose."
+      ],
+      "care": "Single news feature built on shop-owner recollections. The US-troops claim is stated in the article without a source.",
+      "src": [
+        {
+          "s": "jda2008pet",
+          "why": "Oral-history style account of how buying and selling pet dogs began in Seoul; fills a gap between 1945 and 1988."
+        }
+      ],
+      "verify": "Early 1960s and late 1960s dates are the article’s own, not independently checked"
+    },
+    {
       "id": "e21",
-      "seq": 21,
+      "seq": 23,
       "cat": "breed",
       "start": 1962,
       "date": "1962",
@@ -748,7 +853,7 @@ window.DOGTL.countries.push({
     },
     {
       "id": "e22",
-      "seq": 22,
+      "seq": 24,
       "cat": "law",
       "start": 1978,
       "date": "1978",
@@ -759,17 +864,21 @@ window.DOGTL.countries.push({
         "Dog farming remained legal under the Livestock Industry Act.",
         "No clear rules covered butchering or retailing dog meat."
       ],
-      "care": "Taken from one news report. Check the date and wording in a legal source before citing it.",
+      "care": "Sources disagree on which law: your entry names the Food Sanitation Act, the Asia Business Daily names the Livestock Products Processing Act, and JoongAng 2012 says only that the Food Sanitation Act covers dog meat while the Livestock Industry Act does not cover dog farming. Check law.go.kr before editing the text.",
       "src": [
         {
           "s": "kt2024",
           "why": "Gives the legal history behind the 2024 ban."
+        },
+        {
+          "s": "asiae2023dm",
+          "why": "Says the National Assembly amended the Livestock Products Processing Act in 1978 to exclude dogs, which started the debate."
         }
       ]
     },
     {
       "id": "e23",
-      "seq": 23,
+      "seq": 25,
       "cat": "breed",
       "start": 1985,
       "date": "1985",
@@ -794,7 +903,7 @@ window.DOGTL.countries.push({
     },
     {
       "id": "e24",
-      "seq": 24,
+      "seq": 26,
       "cat": "meaning",
       "start": 1988,
       "date": "1988",
@@ -803,9 +912,12 @@ window.DOGTL.countries.push({
       "sum": "Dog meat drew foreign criticism during the 1988 Seoul Olympics, and again in 2002 and 2018.",
       "pts": [
         "Pennington reports that the pressure led to a ban on selling or eating dog meat inside Seoul’s four main gates.",
-        "Dugnoille’s ethnography finds that the public line between pets and food seems designed to deflect foreign criticism, yet often breaks down in practice. Dog meat’s symbolic value (medicinal belief, Korean identity) can override moral doubts."
+        "Dugnoille’s ethnography finds that the public line between pets and food seems designed to deflect foreign criticism, yet often breaks down in practice. Dog meat’s symbolic value (medicinal belief, Korean identity) can override moral doubts.",
+        "2001: Brigitte Bardot launched a campaign ahead of the 2002 World Cup.",
+        "2002: interagency talks on whether dog meat could be a legitimate business ended without agreement.",
+        "2006: a National Assembly-commissioned study ranked dog fourth among meats consumed (after pork, chicken, beef)."
       ],
-      "care": "The four-gates ban comes from a blog with no citation. The foreign-criticism point is in the Korea Times.",
+      "care": "The ‘four gates’ claim still rests only on the blog and should stay flagged or be removed.",
       "src": [
         {
           "s": "kt2024",
@@ -818,13 +930,21 @@ window.DOGTL.countries.push({
         {
           "s": "dugn",
           "why": "Explains why the ‘pet versus food’ line is contested."
+        },
+        {
+          "s": "jda2012dm",
+          "why": "Mainstream source: Seoul called dog meat ‘repugnant food’ in 1984 and moved restaurants out of central Seoul before the 1988 Olympics."
+        },
+        {
+          "s": "nbc2018",
+          "why": "Quotes a professor saying the restrictions fuelled patriotism and some Koreans ate more dog afterwards. Headline and date unconfirmed."
         }
       ],
       "verify": "Moved from Law: it is foreign opinion and pressure"
     },
     {
       "id": "e25",
-      "seq": 25,
+      "seq": 27,
       "cat": "origins",
       "start": 1988,
       "date": "1988",
@@ -844,8 +964,33 @@ window.DOGTL.countries.push({
       ]
     },
     {
+      "id": "e37",
+      "seq": 28,
+      "cat": "ownership",
+      "start": 1988,
+      "end": 1988,
+      "approx": false,
+      "date": "1988",
+      "tag": "First pet boom",
+      "title": "The Seoul Olympics spark Korea’s first pet boom",
+      "sum": "A 2008 JoongAng feature dates the first pet boom to the 1988 Olympics and says owning a pet still signalled wealth in the late 1980s.",
+      "pts": [
+        "More shops opened in Chungmuro after 1988.",
+        "In the early 1980s a German Shepherd cost nearly as much as a small Seoul apartment, according to the article.",
+        "Chungmuro peaked at about 60 shops in the early 2000s, then slumped from 2003–04."
+      ],
+      "care": "Single news feature; the ‘boom’ and price comparison are shop owners’ accounts, not market data.",
+      "src": [
+        {
+          "s": "jda2008pet",
+          "why": "Links dog buying to class and status before the mass pet market; relevant to how purchase choices were first shaped."
+        }
+      ],
+      "verify": "Look for sales or import data for the late 1980s"
+    },
+    {
       "id": "e26",
-      "seq": 26,
+      "seq": 29,
       "cat": "law",
       "start": 1991,
       "date": "1991",
@@ -869,8 +1014,34 @@ window.DOGTL.countries.push({
       ]
     },
     {
+      "id": "e38",
+      "seq": 30,
+      "cat": "ownership",
+      "start": 2001,
+      "end": 2001,
+      "approx": false,
+      "date": "2001",
+      "tag": "Pet boom, early signs of harm",
+      "title": "1.5–2 million pet dogs; breeding and sale problems already reported",
+      "sum": "A 2001 Christian Science Monitor report estimates 1.5–2 million pet dogs and describes crowded breeding operations and puppies sold too young.",
+      "pts": [
+        "Imports of foreign pet food, mostly dog food, rose 644% from 1991 to 2000.",
+        "The article’s drivers: rising incomes before 1997, smaller families, more people living alone, foreign influence.",
+        "Many dogs came from crowded, unsanitary breeding operations and some shops sold puppies younger than vets recommended.",
+        "The Finance Ministry required shops to give credit toward another dog if a puppy died within a week, and planned to extend this to two weeks."
+      ],
+      "care": "Population figure is an estimate quoted in the article. The report does not discuss abandonment.",
+      "src": [
+        {
+          "s": "csm2001",
+          "why": "Contemporary outside view of the boom. Shows breeding and sales quality were already a concern 25 years ago."
+        }
+      ],
+      "verify": "Source of the 1.5–2 million estimate is not named in the article"
+    },
+    {
       "id": "e27",
-      "seq": 27,
+      "seq": 31,
       "cat": "law",
       "start": 2007,
       "end": 2011,
@@ -895,8 +1066,60 @@ window.DOGTL.countries.push({
       ]
     },
     {
+      "id": "e39",
+      "seq": 32,
+      "cat": "law",
+      "start": 2008,
+      "end": 2008,
+      "approx": false,
+      "date": "July 2008",
+      "tag": "First dog-meat inspection since 1988",
+      "title": "Seoul inspects dog meat restaurants, and the actors disagree",
+      "sum": "Seoul’s 2008 hygiene inspection of dog meat restaurants was the first since 1988. The article lays out officials’, restaurant owners’, dog eaters’ and animal rights groups’ positions.",
+      "pts": [
+        "Inspectors checked 30 randomly chosen restaurants over four days.",
+        "A city official said the inspection did not mean the city accepted dog meat as food.",
+        "An animal rights group feared it was a step towards legalising the trade."
+      ],
+      "care": "Single news report. The article does not cite the laws involved.",
+      "src": [
+        {
+          "s": "kt2008dm",
+          "why": "Compact map of competing stakeholder positions; useful for the ‘what do different actors see as the problem’ question."
+        }
+      ],
+      "verify": "None beyond the single article"
+    },
+    {
+      "id": "e40",
+      "seq": 33,
+      "cat": "ownership",
+      "start": 2010,
+      "end": 2011,
+      "approx": false,
+      "date": "2003 to 2010; announced 16 Oct 2011",
+      "tag": "Abandonment rises, registration planned",
+      "title": "About 100,800 animals abandoned in 2010, up from 25,200 in 2003; registration announced",
+      "sum": "The ministry cited rising strays and a lack of owner responsibility when announcing mandatory dog registration for 2013.",
+      "pts": [
+        "Roughly a fourfold rise in abandoned animals between 2003 and 2010, per the article.",
+        "The government spent 10.2 billion won on housing and euthanising strays.",
+        "Dogs over three months old would get a microchip; fines of up to 1 million won for non-compliance.",
+        "Busan, Incheon, Daejeon, Jeju and Gyeonggi Province had already adopted the system on their own in 2009.",
+        "A dog owner quoted in the article predicted ‘massive abandonment’ before the system took effect."
+      ],
+      "care": "The article gives the figures without naming the data source. Start dates for registration differ between articles (2013 here, 2014 in a 2023 article).",
+      "src": [
+        {
+          "s": "kt2011reg",
+          "why": "Earliest mainstream source for the government’s own framing of abandonment as an owner-responsibility problem."
+        }
+      ],
+      "verify": "Check the ministry statistics and the legal start date of mandatory registration"
+    },
+    {
       "id": "e28",
-      "seq": 28,
+      "seq": 34,
       "cat": "breed",
       "start": 2012,
       "date": "April–May 2012",
@@ -915,8 +1138,58 @@ window.DOGTL.countries.push({
       ]
     },
     {
+      "id": "e41",
+      "seq": 35,
+      "cat": "ownership",
+      "start": 2013,
+      "end": 2013,
+      "approx": false,
+      "date": "August 2013",
+      "tag": "Unintended consequence",
+      "title": "Owners abandon dogs to avoid the new registration rule",
+      "sum": "Reporting in 2013 describes owners abandoning dogs before the registration deadline so they could not be traced, and an official admits the law may encourage abandonment in the short term.",
+      "pts": [
+        "Registration with ID (microchip or name tag) was required by the end of 2013; fines were above 1 million won.",
+        "Abandoned dogs had risen steadily since 2011 and a record high was expected in 2013.",
+        "Seoul had the highest dog abandonment rate in the country."
+      ],
+      "care": "Three named owners’ accounts plus one official quote; no abandonment count attributable to the rule itself.",
+      "src": [
+        {
+          "s": "jda2013reg",
+          "why": "Concrete example of a feedback loop: a rule meant to reduce abandonment pushed some owners to abandon. Directly relevant to the project’s hypothesis."
+        }
+      ],
+      "verify": "Find official 2012–2014 abandonment figures to see whether the increase shows in the data"
+    },
+    {
+      "id": "e42",
+      "seq": 36,
+      "cat": "ownership",
+      "start": 2014,
+      "end": 2019,
+      "approx": false,
+      "date": "2014 to 2019",
+      "tag": "Homeless animals up 67%",
+      "title": "Over 135,000 homeless animals in 2019, up 67% on 2014",
+      "sum": "The agriculture ministry’s count rose 10% in 2019 alone. Experts link the rise to impulsive adoption and limited awareness of owner responsibility.",
+      "pts": [
+        "Abandonment spikes at holidays and summer vacations; Pawinhand counted 728 lost or abandoned animals over Chuseok 2019.",
+        "From January 2021 police could investigate abandonment under a revised Animal Protection Act, with fines up to 3 million won.",
+        "A local adoption subsidy of up to 100,000 won had not noticeably raised shelter adoptions."
+      ],
+      "care": "The count covers all animals, not only dogs.",
+      "src": [
+        {
+          "s": "kt2020abn",
+          "why": "Ministry figures and the expert explanation in a mainstream outlet."
+        }
+      ],
+      "verify": "Check the ministry’s own annual report for the 135,000 figure and the dog share"
+    },
+    {
       "id": "e29",
-      "seq": 29,
+      "seq": 37,
       "cat": "law",
       "start": 2018,
       "date": "2018",
@@ -940,8 +1213,34 @@ window.DOGTL.countries.push({
       "verify": "Category: a market closing; could be Role (the dog-meat trade)"
     },
     {
+      "id": "e43",
+      "seq": 38,
+      "cat": "ownership",
+      "start": 2019,
+      "end": 2022,
+      "approx": false,
+      "date": "2019 to 2022",
+      "tag": "Abandoned dogs falling",
+      "title": "Abandoned dogs fall from 102,363 (2019) to 80,393 (2022)",
+      "sum": "A 2023 report shows a decline, with one in three abandoned dogs dying at shelters and 22.1% of surveyed owners having considered giving up or abandoning a pet.",
+      "pts": [
+        "Cumulative registrations passed 2 million in 2019 and reached 3,025,859 ‘last year’ (probably 2022).",
+        "23.0% of dog-owning survey respondents had not registered; the top reasons were seeing no need (27.6%) and a complicated procedure (27.1%).",
+        "The top reason for considering giving up a pet was problem behaviour such as damage and barking (28.8%).",
+        "The article contrasts Korea’s under-30-minute shelter adoption with Germany’s process of three visits and mandatory family education."
+      ],
+      "care": "Abandonment figures have no named source, and the article has no date or author. The Germany ‘95% re-adoption’ figure is also unsourced.",
+      "src": [
+        {
+          "s": "asiae2023stray",
+          "why": "Gives the registration gap and the owner-side reasons for giving up animals. Treat as a lead to the ministry survey, not as a primary source."
+        }
+      ],
+      "verify": "Locate the ministry’s 2022 Companion Animal Survey and Public Awareness Survey and cite those"
+    },
+    {
       "id": "e30",
-      "seq": 30,
+      "seq": 39,
       "cat": "origins",
       "start": 2023,
       "date": "2023",
@@ -968,7 +1267,7 @@ window.DOGTL.countries.push({
     },
     {
       "id": "e31",
-      "seq": 31,
+      "seq": 40,
       "cat": "law",
       "start": 2024,
       "date": "9 January 2024",
@@ -998,7 +1297,7 @@ window.DOGTL.countries.push({
     },
     {
       "id": "e32",
-      "seq": 32,
+      "seq": 41,
       "cat": "ownership",
       "start": 2024,
       "date": "December 2024",
@@ -1024,7 +1323,7 @@ window.DOGTL.countries.push({
     },
     {
       "id": "e33",
-      "seq": 33,
+      "seq": 42,
       "cat": "origins",
       "start": 2026,
       "date": "6 May 2026",
@@ -1055,7 +1354,7 @@ window.DOGTL.countries.push({
     },
     {
       "id": "e34",
-      "seq": 34,
+      "seq": 43,
       "cat": "law",
       "start": 2027,
       "date": "February 2027 (scheduled)",
