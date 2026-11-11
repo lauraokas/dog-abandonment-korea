@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outdoor Dogs</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+/* Outdoor dogs overview: a flow map, a table of figures, a table of claims and a table of sources.
+   The content is written in this file (self-contained); colours, rules and fonts come from theme.css.
+
+   Accessibility: nothing here depends on colour alone.
+   - Every box on the map says what it rests on in words (source line), and its border is solid (source read)
+     or dashed (claim, interpreted or not measured). Stock boxes are filled dark.
+   - Lines are solid (dogs or puppies moving), dashed (planned, claimed or missing) and carry a text label.
+     Death ends in a cross with the word "Death".
+   - Every figure and claim has a status word in a filled label (Evidence, Claim, Interpreted, Not measured).
+   - The red tone (--alert) is a darker mix of the theme rose so that red text is at least 4.5:1 on the violet map panel.
+   - The map fits the page width and can be zoomed with buttons, keys, Ctrl/Cmd + scroll or pinch.
+   - Yellow is only the exact original #fffc31 (tools/check-style.py enforces this). */
+* { box-sizing: border-box; }
+:root { --alert: color-mix(in srgb, var(--rose) 80%, var(--ink)); --boxline: color-mix(in srgb, var(--ink) 68%, var(--card)); }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1560px; margin: 0 auto; padding: 8px max(16px, env(safe-area-inset-right, 0px)) 72px max(16px, env(safe-area-inset-left, 0px)); }
+a { color: var(--accent); }
+a:focus-visible, summary:focus-visible, .scroll:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--highlight); color: var(--ink); font-weight: 600; padding: 8px 14px; border: 2px solid var(--ink); border-radius: 6px; }
+.skip:focus { left: 12px; }
+
+.back { font-size: 13px; font-weight: 500; color: var(--ink2); text-decoration: none; display: inline-block; padding: 6px 0; min-height: 28px; }
+.back:hover { color: var(--ink); text-decoration: underline; }
+header { padding: 8px 0 8px; max-width: 920px; }
+.tag { font: 500 12px var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); display: inline-block; }
+.eyebrow { margin-left: 12px; font-size: 13px; color: var(--ink2); }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(30px, 5vw, 42px); line-height: 1.15; margin: 12px 0 8px; }
+.sub { font-size: 18px; color: var(--ink2); margin: 0 0 4px; max-width: 46em; }
+.method { font-size: 14px; color: var(--ink2); margin: 14px 0 0; max-width: 56em; }
+
+/* jump links: they only move the page, so they look like links with an arrow */
+.jump { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 22px 0 0; padding: 0; list-style: none; }
+.jump a { display: inline-flex; align-items: center; min-height: 28px; font-size: 14px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+.jump a::after { content: "\2193"; margin-left: 6px; text-decoration: none; }
+.jump a:hover { background: var(--highlight); color: var(--ink); }
+
+/* the filter: pick exactly one, so it is a radio group drawn as a tray with a dark selected segment */
+.filterbar { position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 24px; margin: 24px 0 0; padding: 10px 0; background: var(--bg); }
+.tgroup { display: flex; align-items: center; gap: 10px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.tgroup legend { float: left; padding: 0; margin: 0 10px 0 0; font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+.segr { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 3px; border-radius: 10px; background: var(--band); }
+.seg { position: relative; display: inline-flex; cursor: pointer; }
+.seg input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.seg .t { display: inline-flex; align-items: center; min-height: 30px; padding: 4px 15px; border-radius: 7px; font: 500 13px var(--f-body); color: var(--ink); }
+.seg:hover .t { background: color-mix(in srgb, var(--card) 65%, transparent); }
+.seg input:checked + .t { background: var(--ink); color: var(--on-bar); font-weight: 600; }
+.seg input:focus-visible + .t { outline: 3px solid var(--ink); outline-offset: 2px; }
+.status { margin: 0; font-size: 13.5px; color: var(--ink2); }
+
+section { margin-top: 48px; scroll-margin-top: 64px; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(22px, 3vw, 28px); line-height: 1.2; margin: 0 0 8px; }
+h3 { font-family: var(--f-display); font-weight: 600; font-size: 18px; line-height: 1.3; margin: 0 0 8px; }
+.intro { color: var(--ink2); margin: 0 0 20px; max-width: 52em; }
+.small { font-size: 14px; color: var(--ink2); margin: 0 0 14px; max-width: 64em; }
+
+/* map legend */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 24px; margin: 0 0 14px; padding: 0; list-style: none; font-size: 13px; font-weight: 500; }
+.legend li { display: inline-flex; align-items: center; gap: 9px; min-height: 24px; }
+.ls { flex: none; width: 28px; height: 0; border-top: 3px solid var(--ink); }
+.ls.alert { border-color: var(--alert); }
+.ls.dash { border-top-style: dashed; border-color: var(--ink2); }
+.bx { flex: none; width: 24px; height: 16px; border-radius: 4px; background: var(--card); border: 3px solid var(--boxline); }
+.bx.dash { border-style: dashed; }
+.bx.unk { border-style: dashed; border-color: var(--alert); }
+.bx.stock { background: var(--ink); border-color: var(--ink); }
+
+/* the map: a frame with a scroll area. The drawing fits the page width (no sideways scrolling on a desktop);
+   the zoom buttons, Ctrl/Cmd + scroll and the + and - keys make it bigger, and a zoomed map is moved by dragging or scrolling.
+   At "fit" the text is the drawing's own size scaled to the page width, so zooming in is how to read the small print on a small screen. */
+.scroll { overflow: auto; width: 100%; background: var(--card); border: 3px solid var(--rule); border-radius: 8px; scroll-margin-top: calc(var(--bar, 0px) + 8px); }
+.scroll.zoomed { cursor: grab; }
+.scroll.dragging { cursor: grabbing; user-select: none; }
+svg#map { display: block; width: 100%; max-width: none; height: auto; margin: 0 auto; }
+svg text { font-family: var(--f-body); }
+.hint { margin: 8px 0 0; font-size: 13px; color: var(--ink2); }
+/* zoom controls only move the chart, so they are plain underlined link-buttons */
+.zoombar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin: 0 0 0 auto; }
+.zoombar .gl { margin-right: 4px; font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+.zoombar button { min-height: 30px; font: 500 14px var(--f-body); color: var(--ink); background: transparent; border: 0; border-radius: 6px; padding: 5px 9px; cursor: pointer; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; text-decoration-color: var(--rule-strong); }
+.zoombar button:hover:not(:disabled) { background: var(--highlight); text-decoration-color: var(--ink); }
+.zoombar button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.zoombar button:disabled { color: var(--ink2); opacity: .5; cursor: default; text-decoration: none; }
+.zval { min-width: 4ch; font: 600 14px var(--f-body); font-variant-numeric: tabular-nums; color: var(--ink2); }
+.item { transition: opacity .15s; }
+.item.dim { opacity: .16; }
+.zone { fill: var(--panel); }
+.cap { font-size: 12.5px; font-weight: 700; letter-spacing: .09em; fill: var(--ink2); }
+.nbox { fill: var(--card); stroke: var(--boxline); stroke-width: 2.5; }
+.nbox.stock { fill: var(--ink); stroke: var(--ink); }
+.nbox.claim, .nbox.reading { stroke-dasharray: 7 5; }
+.nbox.unknown { stroke: var(--alert); stroke-dasharray: 7 5; }
+.tt { font-size: 14.5px; font-weight: 700; fill: var(--ink); }
+.tb { font-size: 13px; fill: var(--ink); }
+.tf { font-size: 12.5px; fill: var(--ink2); }
+.stock-t .tt, .stock-t .tb { fill: var(--on-bar); }
+.stock-t .tf { fill: var(--on-bar); }
+.bar-l { font-size: 12.5px; fill: var(--ink); }
+.bar-v { font-size: 12.5px; font-weight: 600; fill: var(--ink); }
+.bar-r { fill: var(--ink); }
+.bar-r.hl { fill: var(--alert); }
+.ep { fill: none; stroke: var(--ink); stroke-width: 2; }
+.ep.red { stroke: var(--alert); }
+.ep.dash { stroke-dasharray: 7 5; stroke: var(--ink2); }
+.ep.block { stroke: var(--alert); stroke-dasharray: 7 5; }
+.el { font-size: 13px; fill: var(--ink); }
+.el.red { fill: var(--alert); font-weight: 500; }
+.el.mut { fill: var(--ink2); }
+.mk-ink { fill: var(--ink); }
+.mk-red { fill: var(--alert); }
+.mk-mut { fill: var(--ink2); }
+.mk-blk { stroke: var(--alert); stroke-width: 2.8; fill: none; }
+.xm { fill: var(--card); stroke: var(--alert); stroke-width: 2.4; }
+.xl { stroke: var(--alert); stroke-width: 2.4; stroke-linecap: round; }
+.note { font-size: 13px; font-style: italic; fill: var(--ink2); }
+
+/* panels */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 20px; }
+.card { background: var(--panel); border-radius: 8px; padding: 20px 22px 18px; min-width: 0; }
+.card ul { margin: 0; padding-left: 20px; }
+.card li { margin: 0 0 6px; }
+.card .src { color: var(--ink2); font-size: 13.5px; margin: 12px 0 0; }
+.panel { background: var(--panel); border-radius: 8px; padding: 12px 22px 18px; max-width: 1180px; }
+
+/* tables: no lines between rows, only spacing; each group has a soft rule under its caption */
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 9px 18px 9px 0; font-size: 14.5px; line-height: 1.45; }
+thead th { padding-top: 10px; padding-bottom: 8px; font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+tbody th[scope="row"] { font-weight: 500; width: 30%; }
+td.num, th.num { text-align: right; white-space: nowrap; font-weight: 600; padding-right: 26px; }
+tr.grp th { padding: 26px 0 8px; font: 600 12.5px var(--f-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink); border-bottom: 3px solid var(--line); }
+tbody tr:first-child.grp th { padding-top: 12px; }
+td:last-child, th:last-child { padding-right: 0; }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font: 600 12.5px/1.4 var(--f-body); white-space: nowrap; background: var(--ink); color: var(--on-bar); }
+.pill.claim { background: var(--azure); }
+.pill.reading { background: var(--grape); }
+.pill.unknown { background: var(--alert); }
+#tbl-sources td:first-child { width: 36%; }
+#tbl-sources a { overflow-wrap: anywhere; }
+.flags { margin-top: 20px; max-width: 1180px; }
+
+@media (max-width: 760px) {
+  .filterbar { position: static; }
+  .panel { padding: 8px 16px 14px; }
+  table, tbody, tr, th, td { display: block; }
+  thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  tbody tr { padding: 12px 0; }
+  tbody tr.grp { padding: 0; }
+  th, td, tbody th[scope="row"], td.num { width: auto; padding: 2px 0; text-align: left; white-space: normal; }
+  tbody th[scope="row"] { font-weight: 600; }
+  td[data-label]::before { content: attr(data-label); display: block; font: 600 11.5px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); margin-top: 6px; }
+  #tbl-sources td:first-child { width: auto; }
+}
+@media (forced-colors: active) {
+  .pill, .bx, .ls, .seg input:checked + .t { forced-color-adjust: none; outline: 1px solid CanvasText; }
+  .nbox, .ep { stroke: CanvasText; }
+  .nbox.stock { fill: CanvasText; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .item { transition: none; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the overview</a>
+<div class="wrap">
+<header>
+  <a class="back" href="index.html">&larr; All charts</a><br>
+  <span class="tag">Work in progress</span><span class="eyebrow">Dog breeding, purchasing and abandonment in Korea · Owner choice and responsibility</span>
+  <h1><span class="mark">Outdoor dogs</span></h1>
+  <p class="sub">Outdoor dogs and dogs acquired through acquaintances.</p>
+  <p class="method">An overview of the figures, claims and sources collected so far. Boxes with a solid border rest on a source that was read. Dashed borders are claims or interpreted links. Red dashed borders mark what nobody has measured.</p>
+  <nav aria-label="On this page">
+    <ul class="jump">
+      <li><a href="#map-h">Map</a></li>
+      <li><a href="#numbers-h">Numbers</a></li>
+      <li><a href="#claims-h">Claims and evidence</a></li>
+      <li><a href="#sources-h">Sources</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="filterbar">
+  <fieldset class="tgroup">
+    <legend>Show</legend>
+    <div class="segr" id="filter"></div>
+  </fieldset>
+  <p class="status" id="status" role="status"></p>
+  <div class="zoombar" role="group" aria-label="Map zoom">
+    <span class="gl" aria-hidden="true">Map</span>
+    <button type="button" id="z-in">+ Zoom in</button>
+    <button type="button" id="z-out">&minus; Zoom out</button>
+    <button type="button" id="z-fit">Fit to screen</button>
+    <span class="zval" id="z-val" aria-live="polite">100%</span>
+  </div>
+</div>
+
+<main id="main">
+<noscript><p class="card">The map and tables on this page are drawn with JavaScript. Turn JavaScript on to see them.</p></noscript>
+
+<section aria-labelledby="map-h" id="map-sec">
+  <h2 id="map-h">Map</h2>
+  <p class="intro">Where dogs come from, where outdoor dogs and their litters go, and the public levers around them. It reads left to right: supply, households and their litters, outcomes.</p>
+  <ul class="legend" aria-label="Key to the map">
+    <li><i class="ls"></i>Dogs or puppies moving</li>
+    <li><i class="ls alert"></i>Death</li>
+    <li><i class="ls dash"></i>Planned, claimed or missing link</li>
+    <li><i class="bx"></i>Source read</li>
+    <li><i class="bx dash"></i>Claim or interpreted</li>
+    <li><i class="bx unk"></i>Not measured</li>
+    <li><i class="bx stock"></i>Stock of dogs</li>
+  </ul>
+  <p class="small"><strong>Interpreted</strong> means an inference drawn from news articles, reports and anecdotal accounts such as forum and comment-section posts. No source states it directly, so it needs testing.</p>
+  <div class="scroll" id="scroll" role="region" aria-label="Flow map. Zoom with the buttons above, or press plus and minus here. Arrow keys move around a zoomed map." tabindex="0">
+    <svg id="map" role="img" aria-label="Flow map: where dogs come from, where outdoor dogs and their litters go, and the public levers around them. The same figures are listed in the Numbers table below."></svg>
+  </div>
+  <p class="hint">The whole map fits the window, so the text is small: zoom in with the buttons at the top, Ctrl or Cmd + scroll, or pinch. Drag a zoomed map to move it. "Fit to screen" brings it back. The same figures are in the tables below.</p>
+  <div class="cards">
+    <div class="card">
+      <h3>Jeju: a falling trend with several changes at once</h3>
+      <ul>
+        <li>Shelter intake fell from 7,767 (2019) to 3,886 (2024).</li>
+        <li>Yard-dog neutering counted 747 (2022), 944 (2023) and 481 (2024), 2,172 in all.</li>
+        <li>Over the same years: a registration fee waiver, 67 registration clinics and 74.0% microchip implantation against 51.8% nationally.</li>
+        <li>The province credits neutering. There is no comparison area, and intake counts include lost animals.</li>
+      </ul>
+      <p class="src">Source: DailyVet, 12 July 2025 and 6 May 2021. The 2019 figure appears as both 7,767 and 7,734.</p>
+    </div>
+    <div class="card">
+      <h3>Not yet known</h3>
+      <ul>
+        <li>Share of outdoor or mixed-breed dogs among acquaintance transfers.</li>
+        <li>Where unplaced puppies go in rural areas.</li>
+        <li>Whether the Jeju fall comes from neutering, registration or something else.</li>
+        <li>Who actually persuades yard-dog owners, and with what result.</li>
+        <li>Why Jeju neutering fell to 481 in 2024.</li>
+      </ul>
+      <p class="src">Rural owners are the least observed group: the national surveys sample adults up to age 64 or 69, online.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="numbers-h">
+  <h2 id="numbers-h">Numbers</h2>
+  <p class="intro">One figure per row, with its basis and source. Several rows come from the team desk research document (DR22) as written there.</p>
+  <div class="panel"><table id="tbl-numbers"><caption class="sr">Figures with their basis, source and status</caption><thead><tr><th scope="col">Measure</th><th scope="col" class="num">Value</th><th scope="col">Basis</th><th scope="col">Source</th><th scope="col">Status</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section aria-labelledby="claims-h">
+  <h2 id="claims-h">Claims and evidence</h2>
+  <p class="intro">What is supported by a source that was read, what an actor says, and what is interpreted. Interpreted items are inferences from news articles, reports and anecdotal accounts such as forum and comment-section posts.</p>
+  <div class="panel"><table id="tbl-claims"><caption class="sr">Statements with their status and basis</caption><thead><tr><th scope="col">Statement</th><th scope="col">Status</th><th scope="col">Basis</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section aria-labelledby="sources-h">
+  <h2 id="sources-h">Sources</h2>
+  <p class="intro">Sources behind the map, with the reason each one matters and how far to trust it. Full titles are in the project file.</p>
+  <div class="panel"><table id="tbl-sources"><caption class="sr">Sources, why each matters and how reliable it is</caption><thead><tr><th scope="col">Source</th><th scope="col">Why it matters</th><th scope="col">Reliability</th></tr></thead><tbody></tbody></table></div>
+  <div class="card flags">
+    <h3>Flags on existing material</h3>
+    <ul>
+      <li>DR22 says the 2023 reasons for not neutering allowed several answers, but the rows sum to 97.2%. The 2022 rows sum to 134.1%. Check Table 95 before using the fall in "fear of pain" from 40.5% to 21.8%.</li>
+      <li>DR22's "dogs tied up outdoors neutered" (32.6% in 2022, 43.2% in 2023) and Aware 2025's "outdoor dogs" (54.1%) are different groupings from different surveys. They are not one rising line.</li>
+      <li>The Paju document gives two sets of figures for shelter intake (241 or 252) and euthanasia (127 or 129).</li>
+      <li>The audit's "64,000 a year" is a whole-period figure. The pace still needed after August 2024 is higher.</li>
+      <li>The free acquaintance split by housing type (47.2% detached, 33.9% apartments) is from Aware 2025 Table 47, covering all pets.</li>
+    </ul>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+/* ---------- data ---------- */
+const ST={evidence:'Evidence',claim:'Claim',reading:'Interpreted',unknown:'Not measured'};
+
+const NUM=[
+['Where dogs come from'],
+['Free or paid from an acquaintance','47.7','% of dog owners, 2025 (2024: 51.2)','MAFRA online survey 2025, ages 20–64, via DR22','evidence'],
+['Free from an acquaintance','36.0','% of dog owners, 2025 (2024: 38.5)','MAFRA 2025, via DR22','evidence'],
+['Pet shop','31.0','% of dog owners, 2025 (2024: 28.4)','MAFRA 2025, via DR22','evidence'],
+['Shelter','10.8','% of dog owners, 2025 (2024: 13.3)','MAFRA 2025, via DR22','evidence'],
+['Individual breeder','7.1','% of dog owners, 2025 (2024: 3.5)','MAFRA 2025, via DR22','evidence'],
+['Free acquaintance transfer, detached houses','47.2','% of pets acquired, 2025','Aware 2025 Table 47, via DR22','evidence'],
+['Free acquaintance transfer, apartments','33.9','% of pets acquired, 2025','Aware 2025 Table 47, via DR22','evidence'],
+['Home litters and what happens to the puppies'],
+['Owners with a home litter in five years','19.1','% of pet owners, 2025 (2023: 15.7)','Aware 2025, n=1,122, via DR22','evidence'],
+['Acquaintance transfers that were a home litter','67.9','% of transfers, 2025 (2023: 68.7)','Aware 2025, via DR22','evidence'],
+['Dog litters given free to an acquaintance','67.2','% of litters, 2025 (n=119, several answers)','Aware 2025, via DR22','evidence'],
+['Dog litters sold to an acquaintance','23.5','% of litters, 2025','Aware 2025, via DR22','evidence'],
+['Dog litters kept by the owner','20.2','% of litters, 2025','Aware 2025, via DR22','evidence'],
+['Dog litters given free to a stranger','14.3','% of litters, 2025','Aware 2025, via DR22','evidence'],
+['Dog litters sold to a stranger','7.6','% of litters, 2025','Aware 2025, via DR22','evidence'],
+['Puppies not placed (abandoned, killed, left to roam)','','Not measured','Anecdote only: Kukmin Ilbo, Dec 2023','unknown'],
+['Neutering and registration of dogs'],
+['All dogs neutered','67.3','%, Aware 2025, online panel, owners 20–69, dogs n=823','Aware 2025','evidence'],
+['Indoor dogs neutered','69.5','%, Aware 2025','Aware 2025','evidence'],
+['Outdoor dogs neutered','54.1','%, Aware 2025, n=122','Aware 2025','evidence'],
+['Urban dogs neutered','68.7','%, Aware 2025','Aware 2025','evidence'],
+['Rural dogs neutered','53.8','%, Aware 2025, n=78, about ±11 points','Aware 2025','evidence'],
+['Indoor dogs registered','79.5','%, Aware 2025','Aware 2025','evidence'],
+['Outdoor dogs registered','62.3','%, Aware 2025','Aware 2025','evidence'],
+['Dogs neutered in apartments','69.6','%, Aware 2022','Aware 2022, via DR22','evidence'],
+['Dogs neutered in detached houses','41.0','%, Aware 2022','Aware 2022, via DR22','evidence'],
+['Why owners do not neuter (Aware 2025, owners of unneutered dogs, n=269, one answer each)'],
+['Do not see the need','21.2','%','Aware 2025','evidence'],
+['Pain to the animal','20.1','%','Aware 2025','evidence'],
+['Planning to','17.1','%','Aware 2025','evidence'],
+['Against nature','13.4','%','Aware 2025','evidence'],
+['Health worries','11.5','%','Aware 2025','evidence'],
+['Hard to reach a vet','6.3','%','Aware 2025','evidence'],
+['Cost','5.6','%','Aware 2025','evidence'],
+['Do not see the need, rural keepers','30.6','%, n=36','Aware 2025','evidence'],
+['Do not see the need, kennel keepers','42.9','%, n=21','Aware 2025','evidence'],
+['Hard to reach a vet, kennel keepers','28.6','%, n=21','Aware 2025','evidence'],
+['Outdoor-dog neutering programme'],
+['Outdoor dogs estimated','375,000','dogs, estimate made in 2021, no census','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Target by 2026','319,000','dogs (85% of the estimate)','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Neutered from 2022 to August 2024','38,000','dogs, about','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Share of target reached','12','%','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Budget capacity','18,000','dogs a year','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Pace needed for the target','64,000','dogs a year, whole-period average','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Budget executed, 2022','61','%','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Budget executed, 2023','80','%','Audit report, DailyVet 10 Oct 2024','evidence'],
+['Subsidy cap','400,000','won per dog','eToday, Feb 2022','evidence'],
+['Master Plan target by 2029','200,000','dogs','Third Animal Welfare Master Plan 2025–29, p. 34','evidence'],
+['Programme awareness','83.5','% of respondents','Aware 2025','evidence'],
+['Know the programme well','10.8','% of respondents','Aware 2025','evidence'],
+['Jeju'],
+['Shelter intake, 2019','7,767','animals','DailyVet, 12 Jul 2025','claim'],
+['Shelter intake, 2024','3,886','animals','DailyVet, 12 Jul 2025','claim'],
+['Yard-dog neutering, 2022','747','dogs','DailyVet, 12 Jul 2025','evidence'],
+['Yard-dog neutering, 2023','944','dogs','DailyVet, 12 Jul 2025','evidence'],
+['Yard-dog neutering, 2024','481','dogs','DailyVet, 12 Jul 2025','evidence'],
+['Microchip implantation, Jeju','74.0','%','DailyVet, 12 Jul 2025','evidence'],
+['Microchip implantation, national','51.8','%','DailyVet, 12 Jul 2025','evidence'],
+['Beliefs'],
+['Name owner responsibility as the main cause of abandonment','59.4','% of respondents','Aware 2025','evidence'],
+['Support neutering help for outdoor dogs (last of seven measures)','18.3','% of respondents','Aware 2025','evidence']
+];
+
+const CLAIMS=[
+['About half of dog owners get the dog from an acquaintance','evidence','MAFRA online survey, ages 20–64 (DR22).'],
+['Most acquaintance transfers are home-litter puppies','evidence','Aware 2023 and 2025: 68.7% and 67.9%.'],
+['Outdoor dogs are neutered less often','evidence','54.1% against 69.5% (Aware 2025). The outdoor group is n=122.'],
+['Owners see no need to neuter','evidence','30.6% of rural keepers (n=36) and 42.9% of kennel keepers (n=21). Small groups.'],
+['The 2026 target is unrealistic','evidence','12% reached by August 2024. Budget covers 18,000 dogs a year against 64,000 needed.'],
+['Money alone is the limit','unknown','Not supported: the budget was not fully spent (61% in 2022, 80% in 2023).'],
+['Cost is the main barrier','unknown','Not supported in the survey: cost is 5.6% (Aware 2025). Kara notes cost for multi-dog households.'],
+['Yard-dog neutering cut abandonment in Jeju','claim','The province’s own conclusion. No comparison area.'],
+['Procedures are too complicated','claim','KBS reporter, 2025 (transcript only).'],
+['The fee is too low and tests are excluded','claim','Veterinary association, 2022.'],
+['Neighbours and local markets once absorbed surplus puppies','claim','Kim Jae-young, DailyVet 2022. Untested.'],
+['Owner responsibility is the main cause of abandonment','claim','59.4% of Aware 2025 respondents say so. This is opinion, not data on causes.'],
+['Neutering alone explains the Jeju drop','reading','2,172 dogs neutered over 2022–24 against an intake drop of 3,881, with fee waiver and microchipping in the same years.'],
+['The new fines and keeping bans do not reach the yard-litter channel','reading','Based on the visible text of the Kyunghyang report. Enforcement date unknown.'],
+['Unneutered yard dogs feed a litter-and-gift circuit','reading','Links between litters and acquaintances are sourced. The yard link and the keeping outdoors are interpreted.']
+];
+
+const SRC=[
+['<a href="https://aware.kr/bbs/board.php?bo_table=B10&wr_id=30">Aware (2025). Pet owner survey</a>','Neutering, registration, reasons for not neutering, litter data and opinions.','Online panel, owners 20–69. Rural (n=78) and outdoor (n=122) groups are small. Earlier waves: <a href="https://aware.kr/bbs/board.php?bo_table=B10&wr_id=23&page=2">2023</a>, <a href="https://aware.kr/bbs/board.php?bo_table=B10&wr_id=4&page=2">2022</a>.'],
+['MAFRA national surveys 2024 and 2025, via the team document (DR22)','Acquisition routes: acquaintance, shop, shelter, breeder.','Ministry online survey of 5,000 adults aged 20–64 a year. Quoted as written in DR22, not re-checked against the original tables.'],
+['<a href="https://www.dailyvet.co.kr/?p=225018">DailyVet (10 Oct 2024). 2024 audit: outdoor-dog neutering reached 12% of target</a>','Stock estimate, target, pace, budget execution and the missing progress analysis.','Reports a lawmaker’s audit statements. Figures are not from the ministry directly.'],
+['<a href="https://www.dailyvet.co.kr/?p=251595">DailyVet (12 Jul 2025). Jeju: five years of falling shelter intake</a>','Full 2019–2024 intake series, yearly neutering counts, registration and microchip data.','Attribution is the province’s. The 2019 figure appears as 7,767 and 7,734.'],
+['<a href="https://www.dailyvet.co.kr/?p=146926">DailyVet (6 May 2021). Jeju yard-dog neutering and intake</a>','Earliest result claim for Jeju: rural intake −22%, overall −14.5%, 633 households.','Press report of an announcement. One year, no comparison.'],
+['<a href="https://www.dailyvet.co.kr/?p=128707">DailyVet (25 Mar 2020). Gyeonggi rural yard-dog neutering pilot</a>','Officials’ own story of how unmanaged yard-dog litters become strays, and who gets priority.','Announcement. No results reported.'],
+['<a href="https://www.ekara.org/file/getBlob/35746/방치견%20예방과%20주민%20상생복지를%20위한%20토론회.pdf">Paju Animal Mate and Kara et al. Forum on neglected dogs and resident welfare</a>','Rare rural field data: 38 dogs in Beopwon-eup, 1 neutered; owner reasons; Paju shelter euthanasia 2019–2023.','Advocacy group proceedings, small sample. Some figures conflict inside the document.'],
+['<a href="https://doi.org/10.3390/ani15111613">Rah, H. (2025). Animals, 15(11), 1613</a>','Peer-reviewed regional model of abandonment. Shows the limit of shelter data.','Public shelters only. Does not test rural dogs, neutering or informal rehoming.'],
+['<a href="https://khan.co.kr/article/202610161538001">Kyunghyang (16 Oct 2026). Animal Protection Act amendment passed</a>','Fines up to 1 million won, 1–5 year keeping bans, neutering help for shelter adoptees.','News report. Enforcement date and full text not seen.'],
+['<a href="https://www.etoday.co.kr/news/view/2106336">eToday (Feb 2022). Subsidy of up to 400,000 won per dog</a> and <a href="https://www.dailyvet.co.kr/?p=161035">DailyVet (Feb 2022), 20/70/10 funding split</a>','Programme design: subsidy cap and who pays.','Press reports of the programme launch.'],
+['<a href="https://www.dailyvet.co.kr/?p=168202">DailyVet (Jun 2022). Anseong programme report</a>','Persuasion through village heads; 2022 budget of 7.5 billion won for 18,750 dogs.','Local official’s account, checked against a screenshot.'],
+['<a href="https://www.kmib.co.kr/article/view.asp?arcid=0018976595">Kukmin Ilbo (Dec 2023). Yard-dog owners in a Seoul redevelopment area</a>','Owner voices, and the only account of unplaced puppies being cleared away.','Anecdote, summary only.'],
+['Third Animal Welfare Master Plan 2025–2029, p. 34','200,000 yard-dog target by 2029, home visits from 2025, census of 1,411 eup/myeon.','Government plan. The base year of its count is not stated. Page taken from the project brief.']
+];
+
+/* ---------- tables ---------- */
+const $=s=>document.querySelector(s);
+function cell(tag,text,label,cls){const c=document.createElement(tag);c.textContent=text;if(label)c.dataset.label=label;if(cls)c.className=cls;return c}
+function pill(st,text){const p=document.createElement('span');p.className='pill '+st;p.textContent=text;return p}
+(function(){
+  const tb=$('#tbl-numbers tbody');
+  NUM.forEach(r=>{
+    const tr=document.createElement('tr');
+    if(r.length===1){tr.className='grp';tr.dataset.status='group';const th=cell('th',r[0]);th.colSpan=5;th.scope='colgroup';tr.appendChild(th)}
+    else{
+      tr.dataset.status=r[4];
+      const th=cell('th',r[0]);th.scope='row';tr.appendChild(th);
+      tr.appendChild(cell('td',r[1]||'—','Value','num'));
+      tr.appendChild(cell('td',r[2],'Basis'));
+      tr.appendChild(cell('td',r[3],'Source'));
+      const st=cell('td','','Status');st.appendChild(pill(r[4],ST[r[4]]));tr.appendChild(st);
+    }
+    tb.appendChild(tr);
+  });
+  const cb=$('#tbl-claims tbody');
+  CLAIMS.forEach(c=>{
+    const tr=document.createElement('tr');tr.dataset.status=c[1];
+    const th=cell('th',c[0]);th.scope='row';tr.appendChild(th);
+    const st=cell('td','','Status');st.appendChild(pill(c[1],c[1]==='unknown'?'Not supported':ST[c[1]]));tr.appendChild(st);
+    tr.appendChild(cell('td',c[2],'Basis'));
+    cb.appendChild(tr);
+  });
+  const sb=$('#tbl-sources tbody');
+  SRC.forEach(s=>{
+    const tr=document.createElement('tr');tr.dataset.status='source';
+    ['Source','Why it matters','Reliability'].forEach((lab,i)=>{const td=document.createElement('td');td.dataset.label=lab;td.innerHTML=s[i];tr.appendChild(td)});
+    sb.appendChild(tr);
+  });
+})();
+
+/* ---------- map ---------- */
+const W=1500,NS='http://www.w3.org/2000/svg';
+const F_T='700 14.5px Roboto, system-ui, sans-serif',F_B='400 13px Roboto, system-ui, sans-serif',F_F='400 12.5px Roboto, system-ui, sans-serif',F_L='400 13px Roboto, system-ui, sans-serif';
+const cv=document.createElement('canvas').getContext('2d');
+function wrap(text,font,maxW){cv.font=font;const words=String(text).split(' ');const lines=[];let cur='';
+  for(const w of words){const t=cur?cur+' '+w:w;if(cv.measureText(t).width>maxW&&cur){lines.push(cur);cur=w}else cur=t}
+  if(cur)lines.push(cur);return lines}
+function el(name,attrs,parent,text){const e=document.createElementNS(NS,name);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e}
+
+const NODES=[
+ {id:'S1',x:40,w:300,cy:108,st:'evidence',title:'Individual breeders',items:['7.1% of dog owners got their dog here (2025)','3.5% in 2024'],foot:'MAFRA 2025, via DR22'},
+ {id:'S2',x:40,w:300,cy:235,st:'evidence',title:'Pet shops',items:['31.0% of dog owners (2025)','28.4% in 2024'],foot:'MAFRA 2025, via DR22'},
+ {id:'S4',x:40,w:300,cy:350,st:'evidence',title:'Shelters (adoption)',items:['10.8% of dog owners (2025)','13.3% in 2024'],foot:'MAFRA 2025, via DR22'},
+ {id:'MON',x:40,w:300,cy:520,st:'evidence',title:'Monitoring gap',items:['No progress analysis, no fact-finding survey and no review of regional gaps'],foot:'2024 audit, DailyVet 10 Oct 2024'},
+ {id:'PR',x:40,w:300,cy:740,st:'evidence',title:'Outdoor-dog neutering programme',items:['Target 319,000 dogs by 2026','About 38,000 done by August 2024 (12%)','Capacity 18,000 a year, 64,000 needed','Budget executed: 61% (2022), 80% (2023)','Subsidy up to 400,000 won, split 20/70/10'],foot:'2024 audit, DailyVet; eToday 2022'},
+ {id:'MP',x:40,w:300,cy:965,st:'evidence',title:'Master Plan 2025–2029',items:['200,000 yard dogs by 2029','Home-visit service from 2025','Census of 1,411 eup/myeon, phased mandatory registration'],foot:'Third Animal Welfare Master Plan, p. 34'},
+ {id:'LAW',x:40,w:300,cy:1135,st:'evidence',title:'Animal Protection Act amendment',items:['Fines up to 1 million won; keeping bans of 1–5 years','Neutering help for shelter adoptees','Enforcement date unknown; no yard-dog subsidy in the visible text'],foot:'Kyunghyang, 16 Oct 2026'},
+ {id:'H1',x:480,w:280,cy:175,st:'evidence',stock:1,title:'Indoor dogs',items:['Neutered: 69.5%','Registered: 79.5%','Urban dogs neutered: 68.7%'],foot:'Aware 2025'},
+ {id:'H2',x:480,w:280,cy:740,st:'evidence',stock:1,title:'Outdoor dogs (마당개)',items:['About 375,000 estimated (2021), no census','Neutered: 54.1% (n=122)','Registered: 62.3%','Rural dogs neutered: 53.8% (n=78, about ±11 points)','Unneutered about 45.9% (derived, probably understated)'],foot:'Aware 2025; audit report, Oct 2024'},
+ {id:'B',x:880,w:290,cy:215,st:'evidence',type:'bars',title:'Why owners do not neuter',sub:'Aware 2025, owners of unneutered dogs, n=269, one answer each (%)',
+   bars:[['Do not see the need',21.2],['Pain to the animal',20.1],['Planning to',17.1],['Against nature',13.4],['Health worries',11.5],['Hard to reach a vet',6.3],['Cost',5.6]],
+   notes:['Rural keepers (n=36): no need 30.6%. Kennel keepers (n=21): no need 42.9%, hard to reach a vet 28.6%.'],foot:'Aware 2025'},
+ {id:'PC',x:1230,w:230,cy:215,st:'claim',title:'Persuasion routes',items:['Village heads persuade owners (Anseong official, 2022)','Home visits planned from 2025','Paju, Beopwon-eup: 1 of 38 dogs neutered; village head reports attitude change'],foot:'Claims; no outcome figures'},
+ {id:'L1',x:860,w:280,cy:740,st:'evidence',title:'Home litters',items:['19.1% of pet owners had a home litter in five years (2023: 15.7%)'],foot:'Aware 2025, n=1,122, via DR22'},
+ {id:'U',x:1230,w:230,cy:740,st:'unknown',title:'Unplaced puppies',items:['Abandoned, killed or left to roam: no data','Seen only as anecdote (Kukmin Ilbo 2023; Gyeonggi officials 2020)'],foot:'Not measured'},
+ {id:'L2',x:860,w:280,cy:1043,st:'evidence',title:'Puppies passed on',items:['Of dog litters (n=119): free to an acquaintance 67.2%, sold to an acquaintance 23.5%, kept 20.2%, free to a stranger 14.3%, sold to a stranger 7.6%','Several answers allowed'],foot:'Aware 2025, via DR22'},
+ {id:'S3',x:480,w:280,cy:1043,st:'evidence',title:'Dogs from acquaintances',items:['47.7% of dog owners got their dog from an acquaintance (2025), 36.0% free','67.9% of acquaintance transfers were a home-litter puppy (all pets)'],foot:'MAFRA 2025 and Aware 2025, via DR22'},
+ {id:'O1',x:1230,w:230,cy:930,st:'evidence',title:'Strays and shelter intake',items:['Intake is mostly young, non-pedigree dogs','Counts include lost animals'],foot:'DR21; DailyVet 12 Jul 2025'},
+ {id:'O2',x:1230,w:230,cy:1110,st:'evidence',title:'Shelter outcomes',items:['Mixed-breed dogs: intake 3.5 times and euthanasia 17 times purebreds (SBS analysis)'],foot:'Transcript only; see DR21'}
+];
+const R={};
+function buildNode(n,svg){
+  const px=14,py=12,tw=n.w-2*px;const parts=[];let y=py;
+  const LHT=18,LHB=16.5,LHF=14.5;
+  const push=(cls,lines,lh,x=px)=>{lines.forEach(t=>{parts.push({cls,t,x,y:y+lh-4});y+=lh})};
+  push('tt',wrap(n.title,F_T,tw),LHT);y+=3;
+  if(n.type==='bars'){
+    push('tf',wrap(n.sub,F_F,tw),LHF);y+=6;
+    const lw=128,vw=34,bw=tw-lw-vw-6,max=25;
+    n.bars.forEach((b,i)=>{parts.push({cls:'bar-l',t:b[0],x:px,y:y+13});parts.push({bar:1,x:px+lw,y:y+3,w:bw*b[1]/max,h:11,hl:b[0]==='Do not see the need'});parts.push({cls:'bar-v',t:b[1].toFixed(1),x:px+lw+bw*b[1]/max+6,y:y+13});y+=21});
+    y+=6;n.notes.forEach(t=>{push('tb',wrap(t,F_B,tw),LHB)});
+  }else{
+    n.items.forEach(t=>{push('tb',wrap(t,F_B,tw),LHB);y+=3});
+  }
+  y+=4;push('tf',wrap(n.foot,F_F,tw),LHF);
+  const h=y+py-4;const top=n.cy-h/2;
+  R[n.id]={x:n.x,y:top,w:n.w,h};
+  const g=el('g',{class:'item'+(n.stock?' stock-t':''),'data-status':n.st},svg);
+  el('rect',{x:n.x,y:top,width:n.w,height:h,rx:6,class:'nbox '+(n.stock?'stock ':'')+n.st},g);
+  parts.forEach(p=>{
+    if(p.bar)el('rect',{x:n.x+p.x,y:top+p.y,width:p.w,height:p.h,rx:2,class:'bar-r'+(p.hl?' hl':'')},g);
+    else el('text',{x:n.x+p.x,y:top+p.y,class:p.cls},g,p.t);
+  });
+}
+function pt(id,side,off=0){const r=R[id];
+  if(side==='l')return{x:r.x,y:r.y+r.h/2+off};
+  if(side==='r')return{x:r.x+r.w,y:r.y+r.h/2+off};
+  if(side==='t')return{x:r.x+r.w/2+off,y:r.y};
+  return{x:r.x+r.w/2+off,y:r.y+r.h};}
+function rounded(pts,r=10){
+  const p=pts.filter((q,i)=>i===0||q.x!==pts[i-1].x||q.y!==pts[i-1].y);
+  let d=`M${p[0].x},${p[0].y}`;
+  for(let i=1;i<p.length-1;i++){
+    const a=p[i-1],b=p[i],c=p[i+1];
+    const v1={x:b.x-a.x,y:b.y-a.y},v2={x:c.x-b.x,y:c.y-b.y};
+    const l1=Math.hypot(v1.x,v1.y),l2=Math.hypot(v2.x,v2.y),rr=Math.min(r,l1/2,l2/2);
+    d+=` L${b.x-v1.x/l1*rr},${b.y-v1.y/l1*rr} Q${b.x},${b.y} ${b.x+v2.x/l2*rr},${b.y+v2.y/l2*rr}`;
+  }
+  const z=p[p.length-1];return d+` L${z.x},${z.y}`}
+function label(g,text,x,y,w,anchor,va,cls){
+  const lines=wrap(text,F_L,w);const lh=15;
+  let y0=va==='above'?y-lines.length*lh+11:va==='middle'?y-(lines.length*lh)/2+11:y+11;
+  lines.forEach((t,i)=>{el('text',{x,y:y0+i*lh,'text-anchor':anchor,class:'el '+(cls||'')},g,t)});}
+function edge(svg,o){
+  const g=el('g',{class:'item','data-status':o.st},svg);
+  const mk=o.cls==='red'?'red':o.cls==='dash'?'mut':o.cls==='block'?'blk':'ink';
+  el('path',{d:rounded(o.pts),class:'ep '+(o.cls||''),'marker-end':`url(#ah-${mk})`},g);
+  if(o.lb)label(g,o.lb.t,o.lb.x,o.lb.y,o.lb.w,o.lb.a||'start',o.lb.va||'middle',o.lb.cls);
+}
+function draw(){
+  const svg=$('#map');svg.innerHTML='';
+  const defs=el('defs',{},svg);
+  [['ink','mk-ink'],['red','mk-red'],['mut','mk-mut']].forEach(([id,c])=>{
+    const m=el('marker',{id:'ah-'+id,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:11,markerHeight:11,markerUnits:'userSpaceOnUse',orient:'auto'},defs);
+    el('path',{d:'M0,0 L10,5 L0,10 z',class:c},m)});
+  const mb=el('marker',{id:'ah-blk',viewBox:'0 0 4 14',refX:2,refY:7,markerWidth:5,markerHeight:16,markerUnits:'userSpaceOnUse',orient:'auto'},defs);
+  el('path',{d:'M2,0 V14',class:'mk-blk'},mb);
+
+  const zone=el('rect',{x:440,y:20,width:1040,height:1225,rx:8,class:'zone'},svg);
+  el('text',{x:40,y:36,class:'cap'},svg,'MARKET SUPPLY');
+  el('text',{x:40,y:436,class:'cap'},svg,'PUBLIC LEVERS');
+  el('text',{x:466,y:52,class:'cap'},svg,'HOUSEHOLDS');
+  NODES.forEach(n=>buildNode(n,svg));
+  el('text',{x:880,y:R.B.y-9,class:'cap'},svg,'OWNER CHOICE');
+  el('text',{x:1230,y:R.U.y-14,class:'cap'},svg,'WHERE PUPPIES GO');
+  const nt=wrap('How many shop, breeder and shelter dogs live outdoors is not measured.',F_L,280);
+  nt.forEach((t,i)=>el('text',{x:480,y:R.H1.y+R.H1.h+20+i*15,class:'note'},svg,t));
+
+  const hv=(a,b,mx)=>[a,{x:mx,y:a.y},{x:mx,y:b.y},b];
+  const mid=(a,b)=>(a+b)/2;
+  // supply into households
+  let a,b;
+  a=pt('S1','r');b=pt('H1','l',-35);edge(svg,{st:'evidence',pts:hv(a,b,378)});
+  a=pt('S2','r');b=pt('H1','l',0);edge(svg,{st:'evidence',pts:hv(a,b,395)});
+  a=pt('S4','r');b=pt('H1','l',35);edge(svg,{st:'evidence',pts:hv(a,b,412)});
+  // programme and levers
+  a=pt('PR','r');b=pt('H2','l');edge(svg,{st:'evidence',pts:[a,b],lb:{t:'Subsidised neutering',x:mid(a.x,b.x),y:a.y-6,w:128,a:'middle',va:'above'}});
+  a=pt('MON','b');b=pt('PR','t');edge(svg,{st:'evidence',cls:'red',pts:[a,b],lb:{t:'No feedback on progress',x:a.x+8,y:mid(a.y,b.y),w:140,cls:'red'}});
+  a=pt('MP','t');b=pt('PR','b');edge(svg,{st:'evidence',cls:'dash',pts:[a,b],lb:{t:'Planned',x:a.x+8,y:mid(a.y,b.y),w:120,cls:'mut'}});
+  // owner choice
+  a=pt('B','l');b=pt('H2','t');
+  edge(svg,{st:'evidence',pts:[a,{x:830,y:a.y},{x:830,y:b.y-215},{x:b.x,y:b.y-215},b],lb:{t:'Owners’ stated reasons',x:842,y:R.B.y+R.B.h+18,w:200,va:'top'}});
+  a=pt('PC','l');b=pt('B','r');edge(svg,{st:'claim',cls:'dash',pts:[a,b]});
+  // litter circuit
+  a=pt('H2','r');b=pt('L1','l');edge(svg,{st:'reading',pts:[a,b],lb:{t:'Unneutered dogs breed (interpreted)',x:mid(a.x,b.x),y:a.y-6,w:94,a:'middle',va:'above',cls:'mut'}});
+  a=pt('L1','b');b=pt('L2','t');edge(svg,{st:'evidence',pts:[a,b],lb:{t:'Puppies leave the home',x:a.x+10,y:mid(a.y,b.y),w:190}});
+  a=pt('L2','l');b=pt('S3','r');edge(svg,{st:'evidence',pts:[a,b],lb:{t:'Free to acquaintances: 67.2%',x:mid(a.x,b.x),y:a.y-6,w:94,a:'middle',va:'above'}});
+  a=pt('S3','t');b=pt('H2','b');edge(svg,{st:'evidence',pts:[a,b],lb:{t:'Free puppies: detached houses 47.2%, apartments 33.9% (Aware 2025, all pets)',x:a.x+10,y:mid(a.y,b.y),w:230}});
+  // outcomes
+  a=pt('L1','r');b=pt('U','l');edge(svg,{st:'reading',pts:[a,b],lb:{t:'Not placed (interpreted)',x:mid(a.x,b.x),y:a.y-6,w:80,a:'middle',va:'above',cls:'mut'}});
+  a=pt('U','b');b=pt('O1','t');edge(svg,{st:'reading',pts:[a,b],lb:{t:'Some roam or are surrendered (interpreted)',x:a.x+8,y:mid(a.y,b.y),w:112,cls:'mut'}});
+  a=pt('O1','b');b=pt('O2','t');edge(svg,{st:'evidence',pts:[a,b],lb:{t:'Euthanasia differs by breed label',x:a.x+8,y:mid(a.y,b.y),w:112}});
+  a=pt('O2','b');b={x:a.x,y:a.y+44};edge(svg,{st:'evidence',cls:'red',pts:[a,b]});
+  const xg=el('g',{class:'item','data-status':'evidence'},svg);
+  el('circle',{cx:b.x,cy:b.y+12,r:12,class:'xm'},xg);
+  el('path',{d:`M${b.x-5},${b.y+7} L${b.x+5},${b.y+17} M${b.x+5},${b.y+7} L${b.x-5},${b.y+17}`,class:'xl'},xg);
+  el('text',{x:b.x+20,y:b.y+17,class:'el red'},xg,'Death');
+  // law does not reach the handover
+  a=pt('LAW','r');b=pt('S3','l',45);
+  edge(svg,{st:'reading',cls:'block',pts:[a,{x:410,y:a.y},{x:410,y:b.y},b],lb:{t:'No step covers litter handovers (interpreted)',x:348,y:a.y+10,w:124,va:'top',cls:'red'}});
+
+  const H=Math.max(...Object.values(R).map(r=>r.y+r.h))+110;
+  zone.setAttribute('height',H-40);
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  applyFilter();
+  applyZoom();
+}
+
+/* ---------- zoom ---------- */
+const ZS=[1,1.25,1.5,2,2.5,3,4];let zi=0,lastWheel=0;
+/* "fit" = the whole map inside the window, both width and height (below the sticky bar), but never narrower than 600px.
+   The scroll area is never taller than the window, and at fit it has nothing to scroll, so the wheel keeps scrolling the page. */
+function fitSize(){
+  const sc=$('#scroll'),bar=document.querySelector('.filterbar');
+  const top=getComputedStyle(bar).position==='sticky'?bar.offsetHeight:0;
+  const availH=Math.max(320,innerHeight-top-24);
+  const availW=sc.parentElement.clientWidth-6;
+  const vb=$('#map').viewBox.baseVal,ratio=vb&&vb.height?vb.width/vb.height:W/1320;
+  document.documentElement.style.setProperty('--bar',top+'px');
+  sc.style.maxHeight=availH+'px';
+  return Math.max(Math.min(availW,(availH-8)*ratio),600);   /* 6px of frame border plus a little slack */
+}
+function applyZoom(cx,cy){
+  const sc=$('#scroll'),svg=$('#map');
+  if(cx==null){cx=sc.clientWidth/2;cy=sc.clientHeight/2}
+  const oldW=svg.getBoundingClientRect().width||1;
+  const px=sc.scrollLeft+cx,py=sc.scrollTop+cy;
+  const newW=Math.round(fitSize()*ZS[zi]);
+  svg.style.width=newW+'px';
+  sc.classList.toggle('zoomed',zi>0);
+  const k=newW/oldW;
+  sc.scrollLeft=px*k-cx;sc.scrollTop=py*k-cy;
+  $('#z-val').textContent=Math.round(ZS[zi]*100)+'%';
+  $('#z-in').disabled=zi===ZS.length-1;
+  $('#z-out').disabled=zi===0;
+}
+function zoomTo(i,cx,cy){i=Math.max(0,Math.min(ZS.length-1,i));if(i===zi)return;zi=i;applyZoom(cx,cy)}
+(function(){
+  const sc=$('#scroll');
+  $('#z-in').addEventListener('click',()=>zoomTo(zi+1));
+  $('#z-out').addEventListener('click',()=>zoomTo(zi-1));
+  $('#z-fit').addEventListener('click',()=>{zi=0;applyZoom();sc.scrollLeft=0;sc.scrollTop=0;sc.scrollIntoView({block:'start'})});
+  /* Ctrl or Cmd + scroll, and a trackpad pinch (which arrives as Ctrl + wheel) */
+  sc.addEventListener('wheel',e=>{
+    if(!(e.ctrlKey||e.metaKey))return;
+    e.preventDefault();
+    const t=Date.now();if(t-lastWheel<140)return;lastWheel=t;
+    const r=sc.getBoundingClientRect();
+    zoomTo(zi+(e.deltaY<0?1:-1),e.clientX-r.left,e.clientY-r.top);
+  },{passive:false});
+  sc.addEventListener('keydown',e=>{
+    if(e.ctrlKey||e.metaKey||e.altKey)return;
+    if(e.key==='+'||e.key==='='){e.preventDefault();zoomTo(zi+1)}
+    else if(e.key==='-'||e.key==='_'){e.preventDefault();zoomTo(zi-1)}
+    else if(e.key==='0'){e.preventDefault();zoomTo(0)}
+  });
+  /* drag to move a zoomed map (mouse and pen; touch already scrolls and pinches natively) */
+  let drag=null;
+  sc.addEventListener('pointerdown',e=>{
+    if(zi===0||e.pointerType==='touch'||e.button!==0)return;
+    drag={x:e.clientX,y:e.clientY,l:sc.scrollLeft,t:sc.scrollTop};
+    sc.setPointerCapture(e.pointerId);sc.classList.add('dragging');
+  });
+  sc.addEventListener('pointermove',e=>{if(!drag)return;sc.scrollLeft=drag.l-(e.clientX-drag.x);sc.scrollTop=drag.t-(e.clientY-drag.y)});
+  const end=()=>{drag=null;sc.classList.remove('dragging')};
+  sc.addEventListener('pointerup',end);sc.addEventListener('pointercancel',end);
+  let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>applyZoom(),120)});
+})();
+
+/* ---------- filter ---------- */
+const FILTERS=[['all','All'],['evidence','Evidence'],['claim','Claim'],['reading','Interpreted'],['unknown','Not measured']];
+let FILTER='all';
+(function(){
+  const box=$('#filter');
+  FILTERS.forEach(([v,t])=>{
+    const l=document.createElement('label');l.className='seg';
+    const i=document.createElement('input');i.type='radio';i.name='filter';i.value=v;i.checked=v==='all';
+    i.addEventListener('change',()=>{if(i.checked){FILTER=v;applyFilter(true)}});
+    const s=document.createElement('span');s.className='t';s.textContent=t;
+    l.append(i,s);box.appendChild(l);
+  });
+})();
+function applyFilter(announce){
+  document.querySelectorAll('#map .item').forEach(e=>e.classList.toggle('dim',FILTER!=='all'&&e.dataset.status!==FILTER));
+  let nums=0,claims=0;
+  [['#tbl-numbers',n=>nums=n],['#tbl-claims',n=>claims=n]].forEach(([sel,set])=>{
+    const rows=[...document.querySelectorAll(sel+' tbody tr')];let count=0,grp=null,grpCount=0;
+    const closeGrp=()=>{if(grp)grp.hidden=grpCount===0};
+    rows.forEach(tr=>{
+      if(tr.dataset.status==='group'){closeGrp();grp=tr;grpCount=0;return}
+      const show=FILTER==='all'||tr.dataset.status===FILTER;
+      tr.hidden=!show;if(show){count++;grpCount++}
+    });
+    closeGrp();set(count);
+  });
+  const name=(FILTERS.find(f=>f[0]===FILTER)||[])[1];
+  $('#status').textContent=FILTER==='all'
+    ?'Showing everything: the map, all figures and all claims.'
+    :`Showing ${name}: ${nums} figure${nums===1?'':'s'} and ${claims} claim${claims===1?'':'s'}. Other items on the map are dimmed.`;
+  if(announce)applyZoom();   /* the sticky bar may have changed height */
+}
+const ready=(document.fonts&&document.fonts.load)?Promise.race([document.fonts.load('400 13px Roboto').then(()=>document.fonts.load('700 14px Roboto')),new Promise(r=>setTimeout(r,1500))]):Promise.resolve();
+ready.then(draw).catch(draw);
+</script>
+</body>
+</html>

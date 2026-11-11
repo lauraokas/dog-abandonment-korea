@@ -10,6 +10,7 @@ Research and graph work in progress for a school project. The charts are plain H
 |---|---|---|
 | Dog Timeline | How dogs have been used, viewed and lived with, with one line per country on a shared year axis, every event coloured and labelled by category (role, meaning, ownership, law, breed, origins) with its short heading beside it. Korea is the main timeline. A switch changes between a compressed and an even time scale | [open](https://lauraokas.github.io/dog-abandonment-korea/timeline.html) |
 | Statistics: where Korean dog owners get their dogs | Survey figures (2022 to 2025) on the informal acquaintance route: how owners got their dog, home litters, neutering and average price paid, from the ministry (MAFRA) and Aware surveys, with a note on how far to trust each number | [open](https://lauraokas.github.io/dog-abandonment-korea/statistics.html) |
+| Outdoor dogs | A flow map of where dogs and litters come from and go, then tables of figures, claims and sources, each marked Evidence, Claim, Interpreted or Not measured. A filter dims everything else | [open](https://lauraokas.github.io/dog-abandonment-korea/outdoor-dogs.html) |
 
 On the combined timeline each country is one line; markers are dated events or finds, and bars are things that lasted a long time. The timeline fills the whole window. Select a dot or bar and the details and sources open in a pop-up; Escape closes it, and the arrow keys move to the previous or next entry while it is open. Scroll to the bottom for "How to read this", a short disclaimer and key.
 
@@ -21,6 +22,7 @@ On the combined timeline each country is one line; markers are dated events or f
 | `timeline.html` | The combined timeline. It reads every country file in `data/` |
 | `data/` | One data file per country (`korea.js`, `netherlands.js`), the shared categories, and `data/README.md` explaining the format |
 | `statistics.html` | The statistics page. It draws its charts from `data/stats/korea-acquaintance.js` |
+| `outdoor-dogs.html` | The outdoor dogs overview: map, numbers, claims and sources. Self-contained (its content is written in the file) |
 | `tools/check-data.py` | Checks the data files for mistakes before publishing |
 | `theme.css` | Shared colours and fonts. Every page links to it, so changing a value there changes the whole site |
 | `CLAUDE.md` | Style rules for working on the charts with Claude |
