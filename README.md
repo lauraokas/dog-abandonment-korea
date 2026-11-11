@@ -8,10 +8,8 @@ Research and graph work in progress for a school project. The charts are plain H
 
 | Chart | What it shows | Link |
 |---|---|---|
-| Dog Timeline (Korea and the Netherlands) | How dogs have been used, viewed and lived with, with one line per country on a shared year axis, every event coloured and labelled by category (role, meaning, ownership, law, breed, origins) with its short heading beside it. Korea is the main timeline. A switch changes between a compressed and an even time scale | [open](https://lauraokas.github.io/dog-abandonment-korea/timeline.html) |
+| Dog Timeline | How dogs have been used, viewed and lived with, with one line per country on a shared year axis, every event coloured and labelled by category (role, meaning, ownership, law, breed, origins) with its short heading beside it. Korea is the main timeline. A switch changes between a compressed and an even time scale | [open](https://lauraokas.github.io/dog-abandonment-korea/timeline.html) |
 | Statistics: where Korean dog owners get their dogs | Survey figures (2022 to 2025) on the informal acquaintance route: how owners got their dog, home litters, neutering and average price paid, from the ministry (MAFRA) and Aware surveys, with a note on how far to trust each number | [open](https://lauraokas.github.io/dog-abandonment-korea/statistics.html) |
-| Korean Dog Timeline (earlier version) | The roles dogs have played on the Korean peninsula, from the Neolithic to 2026, with the sources behind each entry | [open](https://lauraokas.github.io/dog-abandonment-korea/korean-dog-timeline.html) |
-| Dutch Dog Timeline (earlier version) | How dogs were kept in the Netherlands and how the rules around owning them developed, from the 16th century to 2026 | [open](https://lauraokas.github.io/dog-abandonment-korea/dutch-dog-timeline.html) |
 
 On the combined timeline each country is one line; markers are dated events or finds, and bars are things that lasted a long time. The timeline fills the whole window. Select a dot or bar and the details and sources open in a pop-up; Escape closes it, and the arrow keys move to the previous or next entry while it is open. Scroll to the bottom for "How to read this", a short disclaimer and key.
 
@@ -24,7 +22,6 @@ On the combined timeline each country is one line; markers are dated events or f
 | `data/` | One data file per country (`korea.js`, `netherlands.js`), the shared categories, and `data/README.md` explaining the format |
 | `statistics.html` | The statistics page. It draws its charts from `data/stats/korea-acquaintance.js` |
 | `tools/check-data.py` | Checks the data files for mistakes before publishing |
-| `korean-dog-timeline.html`, `dutch-dog-timeline.html` | The two earlier single-country timelines. They stay until the combined one replaces them |
 | `theme.css` | Shared colours and fonts. Every page links to it, so changing a value there changes the whole site |
 | `CLAUDE.md` | Style rules for working on the charts with Claude |
 

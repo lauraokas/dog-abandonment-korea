@@ -52,15 +52,10 @@
 
   /* One colour per category, the same on every chart */
   --c-origins: var(--magenta);
-  --c-food: var(--vermilion);
-  --c-ritual: var(--azure);
-  --c-hunt: var(--teal);
-  --c-bond: var(--rose);
   --c-breed: var(--emerald);
   --c-law: var(--indigo);
   /* The combined timeline uses six shared categories (Origins, Role, Meaning, Ownership, Law, Breed).
-     origins, law and breed keep the colours above; these three reuse existing colours.
-     The older names above (food, ritual, hunt, bond) go away when the two old pages are replaced. */
+     origins, law and breed keep the colours above; these three reuse existing colours. */
   --c-role: var(--teal);
   --c-meaning: var(--rose);
   --c-ownership: var(--vermilion);
