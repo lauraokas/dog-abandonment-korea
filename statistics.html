@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dog Statistics</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+/* Statistics page. Numbers come from data/stats/*.js; colours, rules and fonts come from theme.css.
+
+   Accessibility: nothing here depends on colour alone.
+   - Every bar has its value printed next to it, and every chart is a real table (or has a text label per point).
+   - Years are told apart by a label on every bar AND a fill: striped for the earlier year, solid for the later one.
+   - Colour is a bonus on top of that: one colour per route or theme, the same in every chart (vermilion = acquaintance, azure = pet shop,
+     teal = shelter, magenta = breeder and home litters). Each is at least 3:1 against the card (bars), and big numbers are large text.
+   - The line chart uses two marker shapes and two line styles (solid + filled circle, dashed + open diamond) with direct labels.
+   - Yellow is only the exact original #fffc31 (tools/check-style.py enforces this). */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 920px; margin: 0 auto; padding: 8px max(16px, env(safe-area-inset-right, 0px)) 72px max(16px, env(safe-area-inset-left, 0px)); }
+a { color: var(--accent); }
+a:focus-visible, summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--highlight); color: var(--ink); font-weight: 600; padding: 8px 14px; border: 2px solid var(--ink); border-radius: 6px; }
+.skip:focus { left: 12px; }
+
+.back { font-size: 13px; font-weight: 500; color: var(--ink2); text-decoration: none; display: inline-block; padding: 6px 0; min-height: 28px; }
+.back:hover { color: var(--ink); text-decoration: underline; }
+header { padding: 8px 0 8px; }
+.tag { font: 500 12px var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); display: inline-block; }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(30px, 5vw, 42px); line-height: 1.15; margin: 12px 0 8px; }
+.sub { font-size: 18px; color: var(--ink2); margin: 0 0 4px; max-width: 46em; }
+.method { font-size: 14px; color: var(--ink2); margin: 14px 0 0; max-width: 56em; }
+
+/* jump links: they only move the page, so they look like links with an arrow */
+.jump { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 22px 0 0; padding: 0; list-style: none; }
+.jump a { display: inline-flex; align-items: center; min-height: 28px; font-size: 14px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+.jump a::after { content: "\2193"; margin-left: 6px; text-decoration: none; }
+.jump a:hover { background: var(--highlight); color: var(--ink); }
+
+section { margin-top: 56px; scroll-margin-top: 12px; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(22px, 3vw, 28px); line-height: 1.2; margin: 0 0 8px; }
+h3 { font-family: var(--f-display); font-weight: 600; font-size: 18px; line-height: 1.3; margin: 0 0 4px; }
+.intro { color: var(--ink2); margin: 0 0 20px; max-width: 46em; }
+
+/* headline numbers */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 32px 0 0; padding: 0; list-style: none; }
+.tile { background: var(--panel); border-radius: 8px; padding: 18px 18px 16px; }
+.tile .big { color: var(--c, var(--ink)); display: block; font: 600 clamp(34px, 5vw, 44px)/1.05 var(--f-display); letter-spacing: -0.01em; }
+.tile .lab { display: block; margin-top: 8px; font-size: 15px; line-height: 1.4; }
+.tile .su { display: block; margin-top: 6px; font-size: 13px; line-height: 1.4; color: var(--ink2); }
+
+/* chart cards */
+.fig { margin: 0 0 20px; padding: 20px 20px 16px; background: var(--panel); border-radius: 8px; }
+.fig .lead { margin: 0 0 12px; color: var(--ink2); font-size: 14.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0 0 8px; padding: 0; list-style: none; font-size: 13px; font-weight: 500; }
+.legend li { display: inline-flex; align-items: center; gap: 8px; min-height: 24px; }
+.sw { display: inline-block; width: 26px; height: 14px; border-radius: 3px; flex: none; }
+.hatch { background: repeating-linear-gradient(135deg, var(--c, var(--accent)) 0 3px, var(--band) 3px 6px); }
+.solid { background: var(--c, var(--accent)); }
+.dots { background: radial-gradient(circle, var(--c, var(--accent)) 1.6px, transparent 2.1px) 0 0 / 6px 6px, var(--band); }
+.legend .sw { --c: var(--ink); }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0; text-align: left; vertical-align: middle; }
+tbody th[scope="row"] { width: 36%; min-width: 96px; padding: 6px 12px 6px 0; font-weight: 500; font-size: 14px; line-height: 1.3; }
+tbody td { padding: 6px 0; }
+th.grp { padding: 16px 0 4px; font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+tbody tr:first-child th.grp { padding-top: 4px; }
+.grp .tot { display: block; margin-top: 2px; font: 500 13px var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink); }
+.line { display: flex; align-items: center; gap: 8px; min-height: 24px; }
+.line + .line { margin-top: 3px; }
+.yr { flex: none; width: 34px; font-size: 12px; font-weight: 500; color: var(--ink2); }
+.bar { flex: none; height: 16px; min-width: 4px; width: calc((100% - 100px) * var(--f)); border-radius: 3px; }
+.line.one .bar { width: calc((100% - 62px) * var(--f)); }
+.val { flex: none; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.val.na { font-weight: 400; font-style: italic; color: var(--ink2); }
+.notes { margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--ink2); }
+.notes li + li { margin-top: 4px; }
+.src { margin: 10px 0 0; font-size: 12.5px; color: var(--ink2); }
+
+/* line chart (two points per line) */
+.slope { display: block; width: 100%; max-width: 520px; height: auto; margin: 4px 0 0; }
+.slope text { font-family: var(--f-body); font-size: 13px; fill: var(--ink); }
+.slope .nm { font-weight: 600; }
+.slope .yrl { fill: var(--ink2); font-weight: 500; }
+.slope .rail { stroke: var(--line); stroke-width: 2; }
+.slope .ln { fill: none; stroke: var(--c); stroke-width: 3; }
+.slope .ln.dash { stroke-dasharray: 7 5; }
+.slope .mk-fill { fill: var(--c); }
+.slope .mk-open { fill: var(--panel); stroke: var(--c); stroke-width: 3; }
+
+/* one bar split into parts */
+.stack { display: flex; gap: 3px; height: 30px; margin: 4px 0 14px; }
+.stack span { display: block; height: 100%; }
+.stack span:first-child { border-radius: 4px 0 0 4px; }
+.stack span:last-child { border-radius: 0 4px 4px 0; }
+.key { margin: 0; padding: 0; list-style: none; }
+.key li { display: flex; align-items: flex-start; gap: 10px; padding: 3px 0; font-size: 14px; line-height: 1.35; }
+.key .sw { margin-top: 2px; }
+.key .val { margin-left: auto; padding-left: 12px; }
+
+/* notes and reading boxes */
+.note { margin: 0 0 20px; padding: 18px 20px; background: var(--note-bg); border-left: 5px solid var(--accent); border-radius: 0 8px 8px 0; }
+.note p { margin: 0; }
+.note p + p { margin-top: 10px; }
+ul.plain { margin: 0; padding-left: 20px; max-width: 52em; }
+ul.plain li { margin: 0 0 8px; }
+ol.refs { margin: 0; padding-left: 22px; max-width: 52em; }
+ol.refs li { margin: 0 0 12px; font-size: 14.5px; }
+ol.refs a { overflow-wrap: anywhere; }
+
+@media (max-width: 560px) {
+  .fig { padding: 16px 14px 14px; }
+  tbody th[scope="row"] { width: 34%; font-size: 13.5px; }
+  .tile .big { font-size: 36px; }
+}
+@media (forced-colors: active) {
+  .bar, .sw, .stack span { forced-color-adjust: none; outline: 1px solid CanvasText; }
+  .slope .ln, .slope .rail { stroke: CanvasText; }
+  .slope .mk-fill { fill: CanvasText; }
+  .slope .mk-open { fill: Canvas; stroke: CanvasText; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the statistics</a>
+<div class="wrap">
+<header>
+  <a class="back" href="index.html">&larr; All charts</a><br>
+  <span class="tag">Work in progress</span>
+  <h1><span class="mark">Statistics</span></h1>
+  <p class="sub">Where Korean dog owners get their dogs: the informal acquaintance route.</p>
+  <p class="method" id="method"></p>
+  <nav aria-label="On this page">
+    <ul class="jump">
+      <li><a href="#headline">Headline numbers</a></li>
+      <li><a href="#routes-h">Where dogs come from</a></li>
+      <li><a href="#acq-h">The acquaintance route</a></li>
+      <li><a href="#litters-h">Home litters</a></li>
+      <li><a href="#neutering-h">Neutering</a></li>
+      <li><a href="#price-h">Price</a></li>
+      <li><a href="#reading-h">Reading the numbers</a></li>
+      <li><a href="#sources-h">Sources</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+<noscript><p class="note">The charts on this page are drawn with JavaScript from <code>data/stats/korea-acquaintance.js</code>. Turn JavaScript on to see them.</p></noscript>
+
+<section id="headline" aria-labelledby="headline-h">
+  <h2 id="headline-h" class="sr">Headline numbers</h2>
+  <ul class="tiles" id="tiles"></ul>
+</section>
+
+<section aria-labelledby="routes-h">
+  <h2 id="routes-h">Where dogs come from</h2>
+  <p class="intro">About half of Korean dog owners got their dog from someone they know, mostly for free. Pet shops come second, and they grew between the two surveys.</p>
+  <div data-block="routes"></div>
+  <div data-block="trend"></div>
+  <div data-block="housing"></div>
+</section>
+
+<section aria-labelledby="acq-h">
+  <h2 id="acq-h">The acquaintance route</h2>
+  <p class="intro">“From an acquaintance” is not one thing. It covers litters from a friend’s dog, animals that an owner could no longer keep, and people met online. People who take a pet this way say they trust the source and want to see the animal first.</p>
+  <div data-block="meaning"></div>
+  <div data-block="reasons"></div>
+</section>
+
+<section aria-labelledby="litters-h">
+  <h2 id="litters-h">Home litters</h2>
+  <p class="intro">Most home litters are passed on to people the owner knows, and usually for free. These are small samples, so read them as a rough picture.</p>
+  <div data-block="litters"></div>
+</section>
+
+<section aria-labelledby="neutering-h">
+  <h2 id="neutering-h">Neutering</h2>
+  <p class="intro">Neutering rose between 2022 and 2023, most for dogs tied up outdoors. Fewer owners named fear of pain or cost as a reason not to neuter.</p>
+  <div data-block="neutering"></div>
+</section>
+
+<section aria-labelledby="price-h">
+  <h2 id="price-h">Price</h2>
+  <p class="intro">Buyers paid the most at pet shops and the least when buying from an acquaintance.</p>
+  <div data-block="price"></div>
+</section>
+
+<section aria-labelledby="reading-h">
+  <h2 id="reading-h">Reading the numbers</h2>
+  <p class="intro">This part is our interpretation, not a survey result.</p>
+  <div class="note">
+    <p>Acquaintance transfers are the largest single supply route for dogs (47.7% to 51.2%). Puppies pass on with no seller, screening or education step, so owner-side measures, such as neutering access and guidance that reaches people who receive a puppy as a gift, fit this route better than rules about sales. Pet shops (31.0%) and individual breeders (7.1%) both grew in 2025, so a market-side lever probably still matters.</p>
+  </div>
+  <h3>Data notes and open questions</h3>
+  <ul class="plain">
+    <li>Both ministry surveys are online panels of adults aged 20–64. The tables do not print how many owners answered. Dog owners under one year old work out to about 48 people (inferred from the percentages), too few to use.</li>
+    <li>“From an acquaintance” mixes home litters, takeovers and distant online acquaintances. The surveys do not say whether litters were planned.</li>
+    <li>Not asked in any source found: why givers give puppies away free, how many litters are accidental, and how disguised commercial sellers classify themselves (likely “individual breeder” or “paid from acquaintance”; interpreted).</li>
+    <li>Some individual breeders may be unlicensed commercial sellers presented as home breeders. Journalists report this, but no one has measured how many.</li>
+    <li>Awareness of the Animal Protection Act: 75.4% said they knew it in 2024 and 74.9% in 2025.</li>
+    <li>Next step: short interviews with owners who rehomed a litter would answer the “why free” question directly.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="sources-h">
+  <h2 id="sources-h">Sources</h2>
+  <ol class="refs" id="refs"></ol>
+</section>
+</main>
+</div>
+
+<script src="data/stats/korea-acquaintance.js"></script>
+<script>
+(function () {
+  var D = window.DOGSTATS;
+  if (!D) return;
+  var NS = "http://www.w3.org/2000/svg";
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function svg(tag, attrs) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+  function fmt(v, unit) {
+    if (unit === "%") return v.toFixed(1) + "%";
+    return String(v);
+  }
+  // the earlier of two series is striped, the later one solid; a single series is solid
+  function col(n) { return n ? "var(--" + n + ")" : null; }
+  function fillClass(count, i) { return count > 1 ? (i === 0 ? "hatch" : "solid") : "solid"; }
+
+  document.getElementById("method").textContent = D.method;
+
+  /* headline tiles */
+  var tiles = document.getElementById("tiles");
+  D.headline.forEach(function (h) {
+    var li = el("li", "tile");
+    if (h.c) li.style.setProperty("--c", col(h.c));
+    li.appendChild(el("span", "big", h.v));
+    li.appendChild(el("span", "lab", h.label));
+    li.appendChild(el("span", "su", h.sub));
+    tiles.appendChild(li);
+  });
+
+  /* sources */
+  var refs = document.getElementById("refs");
+  D.sources.forEach(function (s) {
+    var li = el("li");
+    var t = el("span", null, s.t + " ");
+    if (s.lang) t.lang = s.lang;
+    li.appendChild(t);
+    var a = el("a", null, s.u);
+    a.href = s.u;
+    li.appendChild(a);
+    refs.appendChild(li);
+  });
+
+  function figure(b) {
+    var f = el("figure", "fig");
+    f.appendChild(el("h3", null, b.title));
+    f.appendChild(el("p", "lead", b.lead));
+    return f;
+  }
+  function footer(f, b) {
+    if (b.notes) {
+      var ul = el("ul", "notes");
+      b.notes.forEach(function (n) { ul.appendChild(el("li", null, n)); });
+      f.appendChild(ul);
+    }
+    if (b.src) f.appendChild(el("p", "src", "Source: " + b.src));
+  }
+
+  /* bars: a real table, one row per measure, one bar per series */
+  function bars(b) {
+    var f = figure(b);
+    var n = b.series.length;
+    if (n > 1) {
+      var lg = el("ul", "legend");
+      lg.setAttribute("aria-label", "Years");
+      b.series.forEach(function (s, i) {
+        var li = el("li");
+        li.appendChild(el("span", "sw " + fillClass(n, i)));
+        li.appendChild(document.createTextNode(s));
+        lg.appendChild(li);
+      });
+      f.appendChild(lg);
+    }
+    var tb = el("table");
+    tb.appendChild(el("caption", "sr", b.title + ". " + b.lead));
+    var head = el("thead", "sr"), hr = el("tr");
+    var h1 = el("th", null, "Measure"); h1.scope = "col";
+    var h2 = el("th", null, n > 1 ? "Values by year (" + b.series.join(", ") + ")" : "Value"); h2.scope = "col";
+    hr.appendChild(h1); hr.appendChild(h2); head.appendChild(hr); tb.appendChild(head);
+    var body = el("tbody");
+    b.groups.forEach(function (g) {
+      if (g.name) {
+        var gr = el("tr"), gh = el("th", "grp", g.name);
+        gh.colSpan = 2; gh.scope = "colgroup";
+        if (g.total) gh.appendChild(el("span", "tot", g.total));
+        gr.appendChild(gh); body.appendChild(gr);
+      }
+      g.rows.forEach(function (r) {
+        var tr = el("tr");
+        var th = el("th", null, r.label); th.scope = "row";
+        var td = el("td");
+        r.v.forEach(function (v, i) {
+          var line = el("div", "line" + (n > 1 ? "" : " one"));
+          if (n > 1) line.appendChild(el("span", "yr", b.series[i]));
+          if (v == null) {
+            line.appendChild(el("span", "val na", "not asked"));
+          } else {
+            var bar = el("span", "bar " + fillClass(n, i));
+            var c = col(r.c || g.c || b.c);
+            if (c) bar.style.setProperty("--c", c);
+            bar.style.setProperty("--f", (v / b.max).toFixed(4));
+            bar.setAttribute("aria-hidden", "true");
+            line.appendChild(bar);
+            var val = el("span", "val", fmt(v, b.unit));
+            line.appendChild(val);
+            if (n > 1) val.setAttribute("aria-label", b.series[i] + ": " + fmt(v, b.unit));
+          }
+          td.appendChild(line);
+        });
+        tr.appendChild(th); tr.appendChild(td); body.appendChild(tr);
+      });
+    });
+    tb.appendChild(body);
+    f.appendChild(tb);
+    footer(f, b);
+    return f;
+  }
+
+  /* line chart with two points per line */
+  function slope(b) {
+    var f = figure(b);
+    var W = 360, H = 232, x0 = 104, x1 = 256, yb = 196, k = 3.2;
+    function y(v) { return yb - v * k; }
+    var desc = b.lines.map(function (l) { return l.label + " went from " + fmt(l.v[0], b.unit) + " in " + b.years[0] + " to " + fmt(l.v[1], b.unit) + " in " + b.years[1]; }).join("; ");
+    var s = svg("svg", { "class": "slope", viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": b.title + ". " + desc + "." });
+    [x0, x1].forEach(function (x) { s.appendChild(svg("line", { "class": "rail", x1: x, x2: x, y1: 24, y2: yb })); });
+    [[x0, 0], [x1, 1]].forEach(function (p) {
+      var t = svg("text", { "class": "yrl", x: p[0], y: 218, "text-anchor": "middle" });
+      t.textContent = b.years[p[1]]; s.appendChild(t);
+    });
+    b.lines.forEach(function (l, i) {
+      var a = y(l.v[0]), c = y(l.v[1]);
+      var cc = "--c:" + col(l.c);
+      s.appendChild(svg("line", { "class": "ln" + (i ? " dash" : ""), style: cc, x1: x0, y1: a, x2: x1, y2: c }));
+      [[x0, a], [x1, c]].forEach(function (p) {
+        if (i === 0) s.appendChild(svg("circle", { "class": "mk-fill", style: cc, cx: p[0], cy: p[1], r: 6.5 }));
+        else s.appendChild(svg("rect", { "class": "mk-open", style: cc, x: p[0] - 5.5, y: p[1] - 5.5, width: 11, height: 11, transform: "rotate(45 " + p[0] + " " + p[1] + ")" }));
+      });
+      var tl = svg("text", { x: x0 - 14, y: a + 5, "text-anchor": "end" }); tl.textContent = fmt(l.v[0], b.unit); s.appendChild(tl);
+      var tr = svg("text", { x: x1 + 14, y: c + 5 }); tr.textContent = fmt(l.v[1], b.unit); s.appendChild(tr);
+      var nm = svg("text", { "class": "nm", x: (x0 + x1) / 2, y: (a + c) / 2 - 16, "text-anchor": "middle" });
+      nm.textContent = l.label; s.appendChild(nm);
+    });
+    f.appendChild(s);
+    footer(f, b);
+    return f;
+  }
+
+  /* one bar split into parts */
+  function parts(b) {
+    var f = figure(b);
+    var cls = ["solid", "hatch", "dots"];
+    var st = el("div", "stack");
+    st.setAttribute("aria-hidden", "true");
+    b.parts.forEach(function (p, i) {
+      var sp = el("span", cls[i % 3]);
+      sp.style.setProperty("--c", col(p.c));
+      sp.style.flex = p.v + " 1 0";
+      st.appendChild(sp);
+    });
+    f.appendChild(st);
+    var ul = el("ul", "key");
+    b.parts.forEach(function (p, i) {
+      var li = el("li");
+      var sw = el("span", "sw " + cls[i % 3]);
+      sw.style.setProperty("--c", col(p.c));
+      li.appendChild(sw);
+      li.appendChild(el("span", null, p.label));
+      li.appendChild(el("span", "val", p.v.toFixed(1) + "%"));
+      ul.appendChild(li);
+    });
+    f.appendChild(ul);
+    footer(f, b);
+    return f;
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-block]"), function (slot) {
+    var b = D.blocks[slot.getAttribute("data-block")];
+    if (!b) return;
+    slot.appendChild(b.lines ? slope(b) : b.parts ? parts(b) : bars(b));
+  });
+})();
+</script>
+</body>
+</html>

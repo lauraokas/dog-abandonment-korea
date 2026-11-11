@@ -14,6 +14,20 @@ After you edit anything here, run this in the project folder. It lists every mis
 python3 tools/check-data.py
 ```
 
+## Statistics blocks
+
+The statistics page (`statistics.html`) reads `data/stats/korea-acquaintance.js`. It lives in its own folder because it is not a country timeline, so `tools/check-data.py` does not read it. Each block under `blocks` becomes one chart, and a `<div data-block="name"></div>` in `statistics.html` says where it goes:
+
+| Block shape | Fields | Draws |
+|---|---|---|
+| Bars | `series` (one or two labels, such as `["2024", "2025"]`), `max` (the value that fills the bar), `unit` (`"%"` or `""`), `groups` with `rows` of `{ label, v: [one value per series] }`; `null` shows "not asked" | A table with a bar per value. With two series the earlier is striped and the later solid |
+| Line | `years` (two), `lines` of `{ label, v: [first, last] }` | Two points per line, with direct labels |
+| Parts | `parts` of `{ label, v }` that add up to 100 | One bar split in parts, with a key |
+
+Colour: `c` on a group, row, line, part or headline number names a palette colour (`vermilion`, `azure`, `teal`, `magenta`, `emerald`, `rose`, `indigo`); a row's own `c` wins over its group's. Keep one colour per route so it means the same thing in every chart: vermilion = acquaintance, azure = pet shop, teal = shelter, magenta = breeder and home litters. Never use yellow.
+
+Every block also has `title`, `lead`, optional `notes` (small print under the chart) and `src` (the table and page in the report). Copy numbers exactly from the source and keep "derived" or "interpreted" in the text when a figure is not printed in the report.
+
 ## The categories
 
 | Key | Name | What goes in it |
